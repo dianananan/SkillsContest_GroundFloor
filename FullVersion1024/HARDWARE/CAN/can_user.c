@@ -34,29 +34,31 @@ uint32_t canu_zibe_rxtime = 0;
 
 void Can_WifiRx_Save(uint8_t res)
 {
-//	if(Wifi_Rx_num > 0)
-//	{
-//		Wifi_Rx_Buf[Wifi_Rx_num]=res;
-//		++Wifi_Rx_num;
-//	}
-//	else if(res == 0xff || res ==0x55)
-//	{
-//		Wifi_Rx_Buf[Wifi_Rx_num]=res;
-//		Wifi_Rx_num=1;
-//		canu_wifi_rxtime = gt_get()+10;	//设置接收时间
-//	}
-//	if(Wifi_Rx_num>=8 && gt_get_sub(canu_wifi_rxtime) )	//在预定的时间内接收
-//	{
-//		if((Wifi_Rx_Buf[0]==0xff && Wifi_Rx_Buf[7] == 0xf0) || (Wifi_Rx_Buf[0]==0x55 && Wifi_Rx_Buf[7] == 0xbb))	//校验包头包尾
-//		{
-//			if(Normal_data(1,Wifi_Rx_Buf))
-//			{
-//				Wifi_Rx_flag=1;
-//			}		
-//		}
-//		Wifi_Rx_num=0;
-//	}
-//	
+	if(Wifi_Rx_flag)
+		return;
+	if(Wifi_Rx_num > 0)
+	{
+		Wifi_Rx_Buf[Wifi_Rx_num]=res;
+		++Wifi_Rx_num;
+	}
+	else if(res == 0xff || res ==0x55)
+	{
+		Wifi_Rx_Buf[Wifi_Rx_num]=res;
+		Wifi_Rx_num=1;
+		canu_wifi_rxtime = gt_get()+10;	//设置接收时间
+	}
+	if(Wifi_Rx_num>=8 && gt_get_sub(canu_wifi_rxtime) )	//在预定的时间内接收
+	{
+		if((Wifi_Rx_Buf[0]==0xff && Wifi_Rx_Buf[7] == 0xf0) || (Wifi_Rx_Buf[0]==0x55 && Wifi_Rx_Buf[7] == 0xbb))	//校验包头包尾
+		{
+			if(Normal_data(1,Wifi_Rx_Buf))
+			{
+				Wifi_Rx_flag=1;
+			}		
+		}
+		Wifi_Rx_num=0;
+	}
+	
 ////	if(Wifi_Rx_flag == 0)
 ////	{
 ////		canu_wifi_rxtime = gt_get()+10;

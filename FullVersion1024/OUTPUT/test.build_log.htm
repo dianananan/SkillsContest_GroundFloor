@@ -21,27 +21,278 @@ Target DLL:      Segger\JL2CM3.dll V2.99.23.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-D:\SkillsContest\PrepareCompetition\VersionReository\FullVersion11\USAR\test.uvprojx
+C:\Users\czz\Desktop\SkillsContest_GroundFloor\FullVersion1024\USAR\test.uvprojx
 Project File Date:  10/15/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Build target 'Target 1'
+Rebuild target 'Target 1'
+compiling sys.c...
+compiling delay.c...
+compiling main.c...
+main.c(114): warning:  #177-D: variable "CodedDisk_Value"  was declared but never referenced
+  	uint16_t CodedDisk_Value = 0;			//码盘
+main.c(115): warning:  #177-D: variable "Nav_Value"  was declared but never referenced
+  	uint16_t Nav_Value = 0;					//角度
+main.c(116): warning:  #177-D: variable "sum"  was declared but never referenced
+  	u8 sum=31;
+main.c(107): warning:  #550-D: variable "LED_twinkle_times"  was set but never used
+  static uint32_t LED_twinkle_times;		  //LED闪烁周期
+main.c(108): warning:  #550-D: variable "WIFI_Upload_data_times"  was set but never used
+  static uint32_t WIFI_Upload_data_times;   //通过Wifi上传数据周期
+main.c(109): warning:  #550-D: variable "RFID_Init_Check_times"  was set but never used
+  static uint32_t RFID_Init_Check_times;
+main.c: 6 warnings, 0 errors
+compiling Timer.c...
+compiling cba.c...
+compiling power_check.c...
+compiling RC522.C...
+..\HARDWARE\Core_Board\RC522.C(45): warning:  #68-D: integer conversion resulted in a change of sign
+  	char status = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(61): warning:  #68-D: integer conversion resulted in a change of sign
+  			status=
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(66): warning:  #68-D: integer conversion resulted in a change of sign
+  				status=
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(71): warning:  #68-D: integer conversion resulted in a change of sign
+  					status=
+I_ERR;	
+..\HARDWARE\Core_Board\RC522.C(77): warning:  #68-D: integer conversion resulted in a change of sign
+  						status = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(82): warning:  #68-D: integer conversion resulted in a change of sign
+  							status = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(87): warning:  #68-D: integer conversion resulted in a change of sign
+  							status = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(50): warning:  #177-D: variable "RXRFIDH"  was declared but never referenced
+  	uint8_t RXRFIDH[8];
+..\HARDWARE\Core_Board\RC522.C(138): warning:  #68-D: integer conversion resulted in a change of sign
+  		  return 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(143): warning:  #68-D: integer conversion resulted in a change of sign
+  		  return 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(183): warning:  #68-D: integer conversion resulted in a change of sign
+     
+riteRawRC(BitFramingReg,0x07);
+..\HARDWARE\Core_Board\RC522.C(203): warning:  #68-D: integer conversion resulted in a change of sign
+     {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(221): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(BitFramingReg,0x00);
+..\HARDWARE\Core_Board\RC522.C(237): warning:  #68-D: integer conversion resulted in a change of sign
+           {   status = 
+I_ERR;    }
+..\HARDWARE\Core_Board\RC522.C(273): warning:  #68-D: integer conversion resulted in a change of sign
+      {   status = 
+I_ERR;    }
+..\HARDWARE\Core_Board\RC522.C(305): warning:  #68-D: integer conversion resulted in a change of sign
+      {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(334): warning:  #68-D: integer conversion resulted in a change of sign
+      {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(358): warning:  #68-D: integer conversion resulted in a change of sign
+      {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(369): warning:  #68-D: integer conversion resulted in a change of sign
+          {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(403): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(CommandReg,PCD_IDLE);
+..\HARDWARE\Core_Board\RC522.C(406): warning:  #68-D: integer conversion resulted in a change of sign
+      {   
+riteRawRC(FIFODataReg, *(pIndata+i));   }
+..\HARDWARE\Core_Board\RC522.C(407): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(CommandReg, PCD_CALCCRC);
+..\HARDWARE\Core_Board\RC522.C(435): warning:  #68-D: integer conversion resulted in a change of sign
+  		return 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(437): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(CommandReg,PCD_RESETPHASE);
+..\HARDWARE\Core_Board\RC522.C(440): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(ModeReg,0x3D);            //和Mifare卡通讯，CRC初始值0x6363
+..\HARDWARE\Core_Board\RC522.C(441): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(TReloadRegL,30);           
+..\HARDWARE\Core_Board\RC522.C(442): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(TReloadRegH,0);
+..\HARDWARE\Core_Board\RC522.C(443): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(TModeReg,0x8D);
+..\HARDWARE\Core_Board\RC522.C(444): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(TPrescalerReg,0x3E);
+..\HARDWARE\Core_Board\RC522.C(445): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(TxAutoReg,0x40); 
+..\HARDWARE\Core_Board\RC522.C(460): warning:  #68-D: integer conversion resulted in a change of sign
+         
+riteRawRC(ModeReg,0x3D);//3F
+..\HARDWARE\Core_Board\RC522.C(461): warning:  #68-D: integer conversion resulted in a change of sign
+         
+riteRawRC(RxSelReg,0x86);//84
+..\HARDWARE\Core_Board\RC522.C(462): warning:  #68-D: integer conversion resulted in a change of sign
+         
+riteRawRC(RFCfgReg,0x7F);   //4F
+..\HARDWARE\Core_Board\RC522.C(463): warning:  #68-D: integer conversion resulted in a change of sign
+     	   
+riteRawRC(TReloadRegL,30);//tmoLength);// TReloadVal = 'h6a =tmoLength(dec) 
+..\HARDWARE\Core_Board\RC522.C(464): warning:  #68-D: integer conversion resulted in a change of sign
+  			 
+riteRawRC(TReloadRegH,0);
+..\HARDWARE\Core_Board\RC522.C(465): warning:  #68-D: integer conversion resulted in a change of sign
+         
+riteRawRC(TModeReg,0x8D);
+..\HARDWARE\Core_Board\RC522.C(466): warning:  #68-D: integer conversion resulted in a change of sign
+  	     
+riteRawRC(TPrescalerReg,0x3E);
+..\HARDWARE\Core_Board\RC522.C(474): warning:  #68-D: integer conversion resulted in a change of sign
+     else{ return -1; }
+..\HARDWARE\Core_Board\RC522.C(646): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(reg,tmp | mask);  // set bit mask
+..\HARDWARE\Core_Board\RC522.C(659): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(reg, tmp & ~mask);  // clear bit mask
+..\HARDWARE\Core_Board\RC522.C(677): warning:  #68-D: integer conversion resulted in a change of sign
+      char status = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C(697): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(ComIEnReg,irqEn|0x80);
+..\HARDWARE\Core_Board\RC522.C(699): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(CommandReg,PCD_IDLE);
+..\HARDWARE\Core_Board\RC522.C(703): warning:  #68-D: integer conversion resulted in a change of sign
+      {   
+riteRawRC(FIFODataReg, pInData[i]);    }
+..\HARDWARE\Core_Board\RC522.C(704): warning:  #68-D: integer conversion resulted in a change of sign
+      
+riteRawRC(CommandReg, Command);
+..\HARDWARE\Core_Board\RC522.C(726): warning:  #68-D: integer conversion resulted in a change of sign
+               {   status = 
+I_NOTAGERR;   }
+..\HARDWARE\Core_Board\RC522.C(744): warning:  #68-D: integer conversion resulted in a change of sign
+           {   status = 
+I_ERR;   }
+..\HARDWARE\Core_Board\RC522.C(750): warning:  #68-D: integer conversion resulted in a change of sign
+     
+riteRawRC(CommandReg,PCD_IDLE); 
+..\HARDWARE\Core_Board\RC522.C(824): warning:  #68-D: integer conversion resulted in a change of sign
+  	uint8_t Rt = 
+I_ERR;
+..\HARDWARE\Core_Board\RC522.C: 49 warnings, 0 errors
+compiling uart_drv.c...
+compiling uart_a72.c...
+compiling usart.c...
+compiling bh1750.c...
+..\HARDWARE\Task_Board\bh1750.c(229): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      temp=(float)dis_data/1.2;
+..\HARDWARE\Task_Board\bh1750.c: 1 warning, 0 errors
+compiling infrared.c...
+..\HARDWARE\Task_Board\infrared.c(270): warning:  #111-D: statement is unreachable
+  		    break;
+..\HARDWARE\Task_Board\infrared.c: 1 warning, 0 errors
+compiling syn7318.c...
+..\HARDWARE\Task_Board\syn7318.c(611): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+          sprintf(str_test,"%d",S[3]);
+..\HARDWARE\Task_Board\syn7318.c: 1 warning, 0 errors
+compiling tba.c...
+compiling ultrasonic.c...
+compiling misc.c...
+compiling stm32f4xx_adc.c...
+compiling stm32f4xx_can.c...
+compiling stm32f4xx_cec.c...
+compiling stm32f4xx_crc.c...
+compiling stm32f4xx_cryp.c...
+compiling stm32f4xx_cryp_aes.c...
+compiling stm32f4xx_cryp_des.c...
+compiling stm32f4xx_cryp_tdes.c...
+compiling stm32f4xx_dac.c...
+compiling stm32f4xx_dbgmcu.c...
+compiling stm32f4xx_dcmi.c...
+compiling stm32f4xx_dfsdm.c...
+compiling stm32f4xx_dma.c...
+compiling stm32f4xx_dma2d.c...
+compiling stm32f4xx_dsi.c...
+compiling stm32f4xx_exti.c...
+compiling stm32f4xx_flash.c...
+compiling stm32f4xx_flash_ramfunc.c...
+compiling stm32f4xx_fmpi2c.c...
+compiling stm32f4xx_fsmc.c...
+compiling stm32f4xx_gpio.c...
+compiling stm32f4xx_hash.c...
+compiling stm32f4xx_hash_md5.c...
+compiling stm32f4xx_hash_sha1.c...
+compiling stm32f4xx_i2c.c...
+compiling stm32f4xx_iwdg.c...
+compiling stm32f4xx_lptim.c...
+compiling stm32f4xx_ltdc.c...
+compiling stm32f4xx_pwr.c...
+compiling stm32f4xx_qspi.c...
+compiling stm32f4xx_rng.c...
+compiling stm32f4xx_rcc.c...
+compiling stm32f4xx_rtc.c...
+compiling stm32f4xx_sai.c...
+compiling stm32f4xx_sdio.c...
+compiling stm32f4xx_spdifrx.c...
+compiling stm32f4xx_syscfg.c...
+compiling stm32f4xx_spi.c...
+compiling stm32f4xx_tim.c...
+compiling stm32f4xx_wwdg.c...
+compiling stm32f4xx_usart.c...
+assembling startup_stm32f40_41xxx.s...
+compiling system_stm32f4xx.c...
+compiling Can_check.c...
+compiling can_drv.c...
+compiling fifo_drv.c...
+compiling can_user.c...
+compiling CanP_HostCom.c...
+..\HARDWARE\CAN\CanP_HostCom.c(363): warning:  #68-D: integer conversion resulted in a change of sign
+  					m = -1;
+..\HARDWARE\CAN\CanP_HostCom.c: 1 warning, 0 errors
+compiling Hard_Can.c...
+compiling my_lib.c...
+compiling data_base.c...
+compiling data_filtering.c...
+compiling roadway_check.c...
+compiling Activity.c...
+compiling Task.c...
+..\FUNCTION\Task.c(172): warning:  #111-D: statement is unreachable
+  			break;
+..\FUNCTION\Task.c: 1 warning, 0 errors
+compiling PathPlanning.c...
 compiling TaskWifiChannel.c...
 ..\FUNCTION\TaskWifiChannel.c(250): warning:  #177-D: variable "data"  was declared but never referenced
       u8 data[30];
 ..\FUNCTION\TaskWifiChannel.c: 1 warning, 0 errors
+compiling TaskZigbeeChannel.c...
+compiling Init.c...
+..\FUNCTION\Init.c(142): warning:  #1-D: last line of file ends without a newline
+  }
+..\FUNCTION\Init.c: 1 warning, 0 errors
 linking...
-Program Size: Code=28296 RO-data=696 RW-data=6552 ZI-data=2744  
+Program Size: Code=28304 RO-data=696 RW-data=6552 ZI-data=2744  
 FromELF: creating hex file...
-"..\OUTPUT\test.axf" - 0 Error(s), 1 Warning(s).
+"..\OUTPUT\test.axf" - 0 Error(s), 62 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_Target_1
   C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:24
 </pre>
 </body>
 </html>

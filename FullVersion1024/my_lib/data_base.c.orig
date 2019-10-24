@@ -1,0 +1,46 @@
+#include "stm32f4xx.h"
+#include "data_base.h"
+#include "PathPlanning.h"
+#include "delay.h"
+#include "task.h"
+#include "canp_hostcom.h"
+
+
+uint8_t Principal_Tab[Principal_Length]; 
+uint8_t Follower_Tab[Follower_Length];
+u8 C_Tab[10];	//返回状态数组	
+u8 zig_send_door_Rev_flag = 0;	  //道闸打开标志位
+u8 zig_send_voice_Rev_flag = 0;   // 语音芯片状态返回
+
+u8 getNEWTask()
+{
+	NowTaskPot++;
+
+switch(NowTaskPot)  //2西，1北，0东，3南
+{
+case 1 :
+initTask(setVaule(1, 1, 2),  0, 0, 0, 0 ); //报警
+Send_InfoData_To_Fifo((u8 *)"one\n", sizeof("one\n"));
+setNowTask(TaskZigbee, CMD_ZG_SEG, 0);	
+break;
+case  2:
+initTask(setVaule(5, 1, 2),  0, 0, 0, 0 ); //数码管
+setNowTask(TaskHW, HW_OPENBJQ, 0);
+break;		
+case  3:
+initTask(setVaule(5, 5, 0),  0, 0, 0, 0 ); //
+setNowTask(TaskHW, HW_OPENBJQ, 0);	
+break;	
+case  4:
+initTask(setVaule(1, 1, 1),  0, 0, 0, 0 ); //
+setNowTask(TaskHW, HW_OPENBJQ, 0);	
+break;				
+default :
+NowTaskPot = 255;
+break;
+}		
+}
+
+
+
+

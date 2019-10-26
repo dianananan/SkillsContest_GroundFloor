@@ -12,6 +12,8 @@
 #define   TRACK_Q7    7   // 前7位寻迹数据
 #define   TRACK_H8    8   // 后8位寻迹数据
 #define   TRACK_ALL   0   // 所有寻迹数据
+#define   NEGATION_Q7	  9	  //取反的循迹数据
+#define   NEGATION_H8     10
 
 GLOBAL void CanP_Init(void);
 GLOBAL void CanP_FifoInit(void);

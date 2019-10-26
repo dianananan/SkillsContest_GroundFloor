@@ -52,6 +52,7 @@ u8 Dispose_array_num = 1; //数组中信息的个数 //默认为1
 //u8 fulfill_flag = 0; //wifi命令执行成功标志位
 u8 con_num = 0;
 struct Mailbox MailboxReceiving; //收信邮箱
+u8 TempArray[8]={0x55,0x0e,0x02,0x00,0x00,0x00,0x00,0xbb};
 
 void hw_Data_Dispose(u8 *Data) //处理立体显示的红外信息
 {
@@ -250,22 +251,25 @@ void Wifi_Remote_Control () //wifi信号接收
     u8 data[30];
     u8 readBuf[8];
     u8 i;
-    if(Wifi_Rx_flag == 1) //有接收到WiFi信号
+    if(Wifi_Rx_flag > 0) //有接收到WiFi信号
     {
-//        if((Wifi_Rx_Buf[0] == 0x55 && Wifi_Rx_Buf[7] == 0xbb) || (Wifi_Rx_Buf[0] == 0xff && Wifi_Rx_Buf[7] == 0xf0) ) //两种协议的包头
-//        {
-//            Normal_data(1, Wifi_Rx_Buf); //正常数据校验码验和
-//        }
-		Send_ZigbeeData_To_Fifo(Wifi_Rx_Buf,8);
-        memcpy(readBuf, Wifi_Rx_Buf, sizeof(readBuf));//获得缓冲区里的数据
-        memset(Wifi_Rx_Buf, 0, sizeof(Wifi_Rx_Buf)); //清除缓冲区中的数据
-        Wifi_Rx_flag = 0;
+        if((Head->StackData[0] == 0x55 && Head->StackData[7] == 0xbb) 
+			|| (Head->StackData[0] == 0xff && Head->StackData[7] == 0xf0) ) //两种协议的包头
+        {
+            if(Normal_data(1, Head->StackData)) //正常数据校验码验和
+			{
+				for(i=0;i<8;i++)
+					readBuf[i] = Head->StackData[i];
+			}
+        }		
+		Head=Head->Next;
+        Wifi_Rx_flag--;
     }
 
     if(Rx_Flag == 1) //正确信息，执行wifi命令
     {
         Rx_Flag = 0;
-		Send_InfoData_To_Fifo(readBuf,8);
+		
         if(readBuf[0] == 0x55 && readBuf[7] == 0xbb && readBuf[1] != 0xAA) //ZigBee信息直接转发
         {
             //Wifi_Send_Dispose_zigbee(Wifi_Rx_Buf);
@@ -299,10 +303,11 @@ void Wifi_Remote_Control () //wifi信号接收
 					wifi_send_QR_flag = 2;
 					break;
 				case 0x08 : //红绿灯
-					JTD_END[3] = (readBuf[3] + 1);	 //00/01/02
-					JTD_END[6] =CheckSum(JTD_END,3);
+					TempArray[3] = (readBuf[3] + 1);	 //00/01/02
+//					JTD_END[6] =CheckSum(JTD_END,3);
+					TempArray[6] =TempArray[3];
+					PrintfDebug(TempArray[3]);
 					wifi_send_HLLIGHT_flag = 1; //接收到信息
-					PrintfDebug(JTD_END[3]);
 					break;
 //				case 0x09:
 //					switchBackinfo(readBuf[3]);
@@ -515,8 +520,8 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         wifi_send_HLLIGHT_flag = 0;
         DelayTimerMS(3000);
         Send_ZigbeeData_To_Fifo(JTD_READ, 8); //发送红绿灯进入识别模式
-		delay_ms(700);
-		WaitTimer_ms=gt_get()+1500;
+		delay_ms(600);
+		WaitTimer_ms=gt_get()+2000;
         Send_WifiData_To_Fifo(TrafficLight,8);//发送到达信号
         return ;
     }
@@ -527,21 +532,20 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
             if(gt_get_sub(WaitTimer_ms) == 0)
             {
                 ++WaitTimer_const;
-                if(WaitTimer_const > 3)	//如果发送三次都没有收到则取消发送 强制结束任务
+                if(WaitTimer_const > 4)	//如果发送三次都没有收到则取消发送 强制结束任务
                 {
                     wifi_send_HLLIGHT_flag=1;
                 }
                 else
                 {
                     Send_WifiData_To_Fifo(TrafficLight, 8);
-					WaitTimer_ms=gt_get()+1500;
+					WaitTimer_ms=gt_get()+2000;
                 }
             }
         }
         else if(  wifi_send_HLLIGHT_flag == 1)
         {
-			Send_InfoData_To_Fifo((u8 *)"3\n",sizeof("3\n"));
-            RepeatedlySend_ZG(JTD_END, 4,50); //发送识别结果
+            RepeatedlySend_ZG(TempArray, 4,50); //发送识别结果
             wifi_send_HLLIGHT_flag = 0;
             endTask();
 			EndWaitTim();

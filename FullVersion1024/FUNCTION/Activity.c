@@ -72,6 +72,15 @@ void Track_Test( u8 sp, u16 len, u8 cntrod, u8 state) // 已50的速度循迹路口
     TIM_Cmd(TIM9, ENABLE);
 }
 
+void TrackingLamp_Test(u8 sp)
+{
+	Roadway_mp_syn();MP=0;
+	TrackingLamp_Flag =1;
+    intocorner = 0;
+    Car_Spend = sp;
+    Control(Car_Spend,Car_Spend);
+}
+
 void STOP(void)
 {
 	Roadway_Flag_clean();  //清除标志位
@@ -80,7 +89,8 @@ void STOP(void)
     TIM1->CCR2 = 100;
     TIM1->CCR3 = 100;
     TIM1->CCR4 = 100;
-    //TIM1->BDTR &=~(1<<15);  //开启OC和OCN输出
+	
+    TIM1->BDTR &=~(1<<15);  //开启OC和OCN输出
 	
 	TIM_Cmd(TIM9,DISABLE);
 	Send_UpMotor(0 , 0);
@@ -270,15 +280,17 @@ u8 Car_Run(u8 order)//行走函数
         Stop_Test();
         break;
     case GO_TERRAIN:
-        Track_Test(CARSPEED, ZERO, ZERO, TRACKTERRAIN); //走地形标志物
-        delay_ms(100);
-        break;
-	case TRACK_LINE_SHORT:
-		Track_Test(CARSPEED, MP_LINE_SHORT, ZERO, LENMODE); //走地形标志物
+		TrackingLamp_Test(CARSPEED);
 		break;
-	case TRACK_LINE_LANG:
-		Track_Test(CARSPEED, MP_LINE_LANG, ZERO, LENMODE); //走地形标志物
-		break;
+//        Track_Test(CARSPEED, ZERO, ZERO, TRACKTERRAIN); //走地形标志物
+//        delay_ms(50);
+//        break;
+//	case TRACK_LINE_SHORT:
+//		Track_Test(CARSPEED, MP_LINE_SHORT, ZERO, LENMODE); //走地形标志物
+//		break;
+//	case TRACK_LINE_LANG:
+//		Track_Test(CARSPEED, MP_LINE_LANG, ZERO, LENMODE); //走地形标志物
+//		break;
 	case DEBUG:
 		endAction();
 		break;

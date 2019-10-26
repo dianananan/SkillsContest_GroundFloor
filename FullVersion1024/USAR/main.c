@@ -77,27 +77,26 @@ uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
 返 回 值：无
 */
 uint16_t Light_Value = 4564;	
-
 void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
 		startRun();
+//		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
 	}
 	if(S2==0){
 		while(S2==0);
-		PrintfDebug(JTD_END[3]);
+		TrackingLamp_Test(CARSPEED);
 	}
 	if(S3==0){
 		while(S3==0);
-		Infrared_Send(H_N[0], 4);
+		PrintfDebug(car_x);
+		PrintfDebug(car_y);
 	}
 	if(S4==0){
 		while(S4==0);
-		DataSum = Get_Bh_Value();
-		PrintfDebug(DataSum/100);
-		PrintfDebug(DataSum%100);
-		Send_InfoData_To_Fifo((u8 *)"\n",sizeof("\n"));
+		PrintfDebug(RSpeed);
+		PrintfDebug(LSpeed);
 	}	
 }
 
@@ -130,6 +129,7 @@ int main(void)
 	
 	Send_UpMotor(0 ,0);
 //*******************************************************************
+	WifiSignal_Rx_Init();
 //	Car_Spend=50;  //行走速度50	
 	delay_ms(50);	//延时启动
 	NowTaskPot=0;
@@ -137,6 +137,11 @@ int main(void)
 	STOP();
 	runtimeInit();  //初始化任务标志位
 	initStartCoord(5, 1, 1); //设置起始位置
+//    xydInit(&passivity.TerrainPot, 5, 3, 1); //设置地形标物位置
+//    xydInit(&passivity.TrafficPot, 5, 4, 3); //设置交通灯标物位置G4
+//    xydInit(&passivity.ETCPot, 4, 1, 0); //设置ETC标物位置  E2
+//    xydInit(&passivity.BarrierszPot, 2, 5, 0); //设置道闸位置
+//    xydInit(&passivity.RFIDCard, 4, 5, 0); //设置RFID位置
 	InitDataBase();   //初始化默认的数据//超声波//光源挡位//车库几层
 //	Host_Set_UpTrack(50);  //更新数据上传时间
 //******************************************************************	

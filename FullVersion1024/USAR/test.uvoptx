@@ -117,6 +117,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+          <Name>堯o</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
           <Name>-L70 -Z18 -C0 -M0 -T1</Name>
         </SetRegEntry>
@@ -146,17 +151,17 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>isRunControl.PathCount</ItemText>
+          <ItemText>RSpeed</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>isRunControl.NowPot</ItemText>
+          <ItemText>LSpeed</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>isRunControl.PathGather[isRunControl.NowPot]</ItemText>
+          <ItemText>Car_Spend</ItemText>
         </Ww>
         <Ww>
           <count>3</count>

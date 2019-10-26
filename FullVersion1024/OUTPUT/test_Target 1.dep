@@ -1,5 +1,5 @@
 Dependencies for Project 'test', Target 'Target 1': (DO NOT MODIFY !)
-F (.\main.c)(0x5DB05C01)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\main.o --omf_browse ..\output\main.crf --depend ..\output\main.d)
+F (.\main.c)(0x5DB440B4)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\main.o --omf_browse ..\output\main.crf --depend ..\output\main.d)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
@@ -40,14 +40,14 @@ I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\HARDWARE\Core_Board\cba.h)(0x5AFADCD8)
 I (..\HARDWARE\Task_Board\ultrasonic.h)(0x5AA9312E)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\HARDWARE\CAN\hard_can.h)(0x5AA08B36)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 I (..\HARDWARE\Task_Board\syn7318.h)(0x5BBAF904)
 I (..\HARDWARE\Core_Board\power_check.h)(0x5AACB2AC)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\my_lib\data_base.h)(0x5DB054DF)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\my_lib\swopt_drv.h)(0x5A0BEA94)
 I (..\HARDWARE\Core_Board\uart_a72.h)(0x5D9CABA8)
@@ -56,7 +56,7 @@ I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\HARDWARE\Core_Board\Rc522.h)(0x5CD548CA)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
 I (..\FUNCTION\Task.h)(0x5DA7B89B)
@@ -133,8 +133,8 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
-I (..\FUNCTION\activity.h)(0x5DA82283)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
+I (..\FUNCTION\activity.h)(0x5DB3EBA6)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
@@ -215,7 +215,7 @@ I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\HARDWARE\Core_Board\power_check.h)(0x5AACB2AC)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
-I (..\HARDWARE\CAN\CanP_HostCom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\CanP_HostCom.h)(0x5DB3A54D)
 I (..\my_lib\data_filtering.h)(0x5AACB230)
 F (..\HARDWARE\Core_Board\RC522.C)(0x5CD5489E)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\rc522.o --omf_browse ..\output\rc522.crf --depend ..\output\rc522.d)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
@@ -258,8 +258,8 @@ I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
 I (..\HARDWARE\Core_Board\cba.h)(0x5AFADCD8)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
-F (..\HARDWARE\Core_Board\uart_a72.c)(0x5DAE9328)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\uart_a72.o --omf_browse ..\output\uart_a72.crf --depend ..\output\uart_a72.d)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
+F (..\HARDWARE\Core_Board\uart_a72.c)(0x5DB1961A)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\uart_a72.o --omf_browse ..\output\uart_a72.crf --depend ..\output\uart_a72.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
@@ -296,13 +296,13 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\HARDWARE\Core_Board\uart_drv.h)(0x5D9DC2EB)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\my_lib\data_channel.h)(0x5D8C8F0A)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
-I (..\FUNCTION\activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
@@ -467,15 +467,15 @@ I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\my_lib\data_base.h)(0x5DB054DF)
-I (..\FUNCTION\activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\FUNCTION\Task.h)(0x5DA7B89B)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 F (..\HARDWARE\Task_Board\syn7318.c)(0x5DAA6BF1)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\syn7318.o --omf_browse ..\output\syn7318.crf --depend ..\output\syn7318.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
@@ -520,7 +520,7 @@ I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\HARDWARE\Task_Board\syn7318.h)(0x5BBAF904)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 F (..\HARDWARE\Task_Board\tba.c)(0x5DAFCFD6)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\tba.o --omf_browse ..\output\tba.crf --depend ..\output\tba.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
@@ -2192,7 +2192,7 @@ I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\HARDWARE\CAN\fifo_drv.h)(0x5AE6E7FC)
 I (..\HARDWARE\CAN\can_drv.h)(0x5D9D3C43)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
-F (..\HARDWARE\CAN\can_user.c)(0x5DB10BF5)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\can_user.o --omf_browse ..\output\can_user.crf --depend ..\output\can_user.d)
+F (..\HARDWARE\CAN\can_user.c)(0x5DB251F3)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\can_user.o --omf_browse ..\output\can_user.crf --depend ..\output\can_user.d)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
@@ -2227,11 +2227,11 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-I (..\HARDWARE\CAN\canP_HostCom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canP_HostCom.h)(0x5DB3A54D)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\my_lib\data_channel.h)(0x5D8C8F0A)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
@@ -2243,12 +2243,12 @@ I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
 I (..\FUNCTION\Task.h)(0x5DA7B89B)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
-F (..\HARDWARE\CAN\CanP_HostCom.c)(0x5DB044EE)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\canp_hostcom.o --omf_browse ..\output\canp_hostcom.crf --depend ..\output\canp_hostcom.d)
+F (..\HARDWARE\CAN\CanP_HostCom.c)(0x5DB3F936)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\canp_hostcom.o --omf_browse ..\output\canp_hostcom.crf --depend ..\output\canp_hostcom.d)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
 I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
@@ -2289,10 +2289,10 @@ I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\HARDWARE\CAN\can_drv.h)(0x5D9D3C43)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\HARDWARE\CAN\fifo_drv.h)(0x5AE6E7FC)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\HARDWARE\Core_Board\uart_a72.h)(0x5D9CABA8)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 F (..\HARDWARE\CAN\fifo_drv.c)(0x5A129D38)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\fifo_drv.o --omf_browse ..\output\fifo_drv.crf --depend ..\output\fifo_drv.d)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
 I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
@@ -2334,8 +2334,8 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
-I (..\HARDWARE\CAN\CanP_HostCom.h)(0x5DA17755)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\CanP_HostCom.h)(0x5DB3A54D)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\HARDWARE\CAN\Hard_Can.h)(0x5AA08B36)
 F (..\my_lib\my_lib.c)(0x5AA8C7BA)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\my_lib.o --omf_browse ..\output\my_lib.crf --depend ..\output\my_lib.d)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
@@ -2373,7 +2373,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\my_lib\my_lib.h)(0x5875D826)
-F (..\my_lib\data_base.c)(0x5DB01E0E)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\data_base.o --omf_browse ..\output\data_base.crf --depend ..\output\data_base.d)
+F (..\my_lib\data_base.c)(0x5DB44038)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\data_base.o --omf_browse ..\output\data_base.crf --depend ..\output\data_base.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
@@ -2412,11 +2412,11 @@ I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\FUNCTION\task.h)(0x5DA7B89B)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
@@ -2424,7 +2424,7 @@ I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
-F (..\my_lib\roadway_check.c)(0x5DA8293F)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\roadway_check.o --omf_browse ..\output\roadway_check.crf --depend ..\output\roadway_check.d)
+F (..\my_lib\roadway_check.c)(0x5DB43F0A)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\roadway_check.o --omf_browse ..\output\roadway_check.crf --depend ..\output\roadway_check.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
@@ -2459,16 +2459,21 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-I (..\HARDWARE\CAN\CanP_Hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\CanP_Hostcom.h)(0x5DB3A54D)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\HARDWARE\Core_Board\cba.h)(0x5AFADCD8)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
+I (..\FUNCTION\Init.h)(0x5DB03D45)
+I (..\FUNCTION\Task.h)(0x5DA7B89B)
+I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
+I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
+I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 F (..\my_lib\data_filtering.c)(0x5AF1A3F6)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\data_filtering.o --omf_browse ..\output\data_filtering.crf --depend ..\output\data_filtering.d)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
@@ -2504,8 +2509,8 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-F (..\FUNCTION\Activity.c)(0x5DA823AE)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\activity.o --omf_browse ..\output\activity.crf --depend ..\output\activity.d)
-I (..\FUNCTION\activity.h)(0x5DA82283)
+F (..\FUNCTION\Activity.c)(0x5DB43592)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\activity.o --omf_browse ..\output\activity.crf --depend ..\output\activity.d)
+I (..\FUNCTION\activity.h)(0x5DB3EBA6)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
 I (..\CMSIS\core_cm4.h)(0x581CC64E)
 I (D:\ARM\arm\INCLUDE\stdint.h)(0x3BEB19E6)
@@ -2540,7 +2545,7 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
@@ -2552,8 +2557,8 @@ I (..\FUNCTION\Task.h)(0x5DA7B89B)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
-F (..\FUNCTION\PathPlanning.c)(0x5DAC5549)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\pathplanning.o --omf_browse ..\output\pathplanning.crf --depend ..\output\pathplanning.d)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
+F (..\FUNCTION\PathPlanning.c)(0x5DB43F6B)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\pathplanning.o --omf_browse ..\output\pathplanning.crf --depend ..\output\pathplanning.d)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\CMSIS\stm32f4xx.h)(0x582097AC)
@@ -2590,11 +2595,11 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 F (..\FUNCTION\Task.c)(0x5DAFA4D6)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\task.o --omf_browse ..\output\task.crf --depend ..\output\task.d)
 I (..\FUNCTION\task.h)(0x5DA7B89B)
 I (..\FUNCTION\pathPlanning.h)(0x5DAC5549)
@@ -2633,12 +2638,12 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x5821F052)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
@@ -2647,7 +2652,7 @@ I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 I (..\HARDWARE\Task_Board\ultrasonic.h)(0x5AA9312E)
-F (..\FUNCTION\TaskWifiChannel.c)(0x5DB05E8F)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\taskwifichannel.o --omf_browse ..\output\taskwifichannel.crf --depend ..\output\taskwifichannel.d)
+F (..\FUNCTION\TaskWifiChannel.c)(0x5DB1AB3A)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CMSIS -I ..\FWLIB\inc -I ..\USAR -I ..\HARDWARE\Task_Board -I ..\HARDWARE\Core_Board -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\timer -I ..\HARDWARE\CAN -I ..\my_lib -I ..\FUNCTION-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="523" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\output\taskwifichannel.o --omf_browse ..\output\taskwifichannel.crf --depend ..\output\taskwifichannel.d)
 I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
@@ -2687,17 +2692,17 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (..\FUNCTION\TaskZigbeeChannel.h)(0x5DAC58F5)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\FUNCTION\task.h)(0x5DA7B89B)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 I (..\HARDWARE\Core_Board\uart_a72.h)(0x5D9CABA8)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
@@ -2742,16 +2747,16 @@ I (D:\ARM\arm\INCLUDE\string.h)(0x3BEB19E6)
 I (..\FUNCTION\TaskWifiChannel.h)(0x5DB04B75)
 I (..\FUNCTION\PathPlanning.h)(0x5DAC5549)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
-I (..\FUNCTION\Activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\Activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\FUNCTION\task.h)(0x5DA7B89B)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
 I (..\HARDWARE\Core_Board\uart_a72.h)(0x5D9CABA8)
-I (..\HARDWARE\CAN\can_user.h)(0x5DA86BFA)
+I (..\HARDWARE\CAN\can_user.h)(0x5DB19672)
 I (..\HARDWARE\Task_Board\syn7318.h)(0x5BBAF904)
 I (..\FUNCTION\Init.h)(0x5DB03D45)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
@@ -2794,8 +2799,8 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x581CC67C)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x581CC67C)
 I (..\SYSTEM\delay\delay.h)(0x5AE9CBEA)
 I (..\SYSTEM\timer\Timer.h)(0x5DAA76C0)
-I (..\FUNCTION\activity.h)(0x5DA82283)
-I (..\my_lib\roadway_check.h)(0x5DA69306)
+I (..\FUNCTION\activity.h)(0x5DB3EBA6)
+I (..\my_lib\roadway_check.h)(0x5DB42683)
 I (..\my_lib\data_base.h)(0x5DB054DF)
 I (D:\ARM\arm\INCLUDE\stdio.h)(0x3BEB19E6)
 I (..\SYSTEM\sys\sys.h)(0x5AA886E0)
@@ -2804,5 +2809,5 @@ I (..\FUNCTION\Task.h)(0x5DA7B89B)
 I (..\HARDWARE\Task_Board\tba.h)(0x5AAFE82E)
 I (..\HARDWARE\Task_Board\bh1750.h)(0x5AA94572)
 I (..\HARDWARE\Task_Board\infrared.h)(0x5DA53977)
-I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DA17755)
+I (..\HARDWARE\CAN\canp_hostcom.h)(0x5DB3A54D)
 I (..\HARDWARE\Core_Board\uart_a72.h)(0x5D9CABA8)

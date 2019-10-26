@@ -245,7 +245,6 @@ void CanP_Host_Main(void)
 					break;
 				case 3:
 					CanP_CanRx_TrackUp();
-					//up_Test_Upmp();
 					break;
 				case 4:
 					CanHost_Navig = U8ToU16_Big(crbuf[1]);
@@ -440,7 +439,7 @@ void Send_UpMotor( int x1, int x2)
 	//CanDrv_WhaitTxEmpty();
 	if(CanDrv_TxEmptyCheck())
 	{
-		CanDrv_TxData(txbuf,4,CAN_SID_HL(ID_MOTOR,0),0,_NULL);	
+		CanDrv_TxData(txbuf,4,CAN_SID_HL(ID_MOTOR,0),0,_NULL);	//发送数据
 		CanP_Cmd_Write(CANP_CMD_ID_MOTO,txbuf,0,CAN_SID_HL(ID_MOTOR,0),0);
 	}
 	else
@@ -514,15 +513,21 @@ u16  Get_Host_UpTrack( u8 mode)  // 获取循迹数据
 	uint16_t Rt = 0;
 	switch(mode)
 	{
-	case TRACK_ALL: 
-		Rt = (u16)((Track_buf[0] <<8)+ Track_buf[1] );
-		break;
-	case TRACK_Q7:
-		Rt = Track_buf[1] ;
-		break;
-	case TRACK_H8:
-		Rt = Track_buf[0];
-		break;
+		case TRACK_ALL: 
+			Rt = (u16)((Track_buf[0] <<8)+ Track_buf[1] );
+			break;
+		case TRACK_Q7:
+			Rt = Track_buf[1] ;
+			break;
+		case TRACK_H8:
+			Rt = Track_buf[0];
+			break;
+		case NEGATION_Q7:
+			Rt =((~Track_buf[1]) & 0x7f);
+			break;
+		case NEGATION_H8:
+			Rt =(~(Track_buf[0]));
+			break;
 	}
 	return Rt;
 }

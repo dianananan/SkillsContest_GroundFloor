@@ -48,14 +48,14 @@
 #define TURNSPEED 	80        		//转弯速度
 #define CARSPEED   	50				//跑的速度
 
-#define MAXHALFLEN 	2000				//到达最长线一半的MP值
-#define MIDHALFLEN	2000				//到达中等长度一半的MP值
-#define LSMALLLEN    280				//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
-#define BACKLEN	 40					//倒退的MP值
-#define RSMALLLEN     280			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
-#define CARBODYLEN     600			//走一个车身距离
-#define MP_LINE_SHORT 2000			//走一条边d的码盘值（短边）
-#define MP_LINE_LANG  2000			//(走一条边的码盘值) （长边）
+#define MAXHALFLEN 	1150				//到达最长线一半的MP值
+#define MIDHALFLEN	1400				//到达中等长度一半的MP值
+#define LSMALLLEN	255				//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
+#define BACKLEN		40					//倒退的MP值
+#define RSMALLLEN	255			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
+#define CARBODYLEN	  600			//走一个车身距离
+#define MP_LINE_SHORT 1150			//走一条边d的码盘值（短边）
+#define MP_LINE_LANG  1400			//(走一条边的码盘值) （长边）
 
 #define ZERO	0					//零
 #define ROADONE	1					//循迹一个路口
@@ -91,6 +91,7 @@ void Back_Test(u8 sp , u16 len );
 void Left_Test( u8 sp, u8 NAV) ;
 void Right_Test(u8 sp,u8 NAV);  // 以80的速度右转弯
 void Track_Test( u8 sp, u16 len, u8 cntrod, u8 state);  //循迹行走
+void TrackingLamp_Test(u8 sp);
 void STOP(void);   //停止
 
 void runControl(void);

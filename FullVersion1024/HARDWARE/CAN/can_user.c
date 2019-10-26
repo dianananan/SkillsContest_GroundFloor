@@ -18,13 +18,16 @@
 #include "TaskZigbeeChannel.h"
 #include "Init.h"
 
-uint8_t Wifi_Rx_Buf[ WIFI_MAX_NUM ];
+struct Signal WifiSignalQueue[5];
+struct Signal *Head =WifiSignalQueue; //头指针
+struct Signal *Tail =WifiSignalQueue; //尾指针
+
+//uint8_t Wifi_Rx_Buf[ WIFI_MAX_NUM ];
 uint8_t Zigb_Rx_Buf[ ZIGB_RX_MAX ];
 uint8_t Wifi_Rx_num ;
 uint8_t Wifi_Rx_flag ;  //接收完成标志位
 uint8_t Zigbee_Rx_num ;
 uint8_t Zigbee_Rx_flag ;  //接收完成标志位
-
 
 uint8_t Host_AGV_Return_Flag = RESET;
 uint8_t AGV_data_Falg = RESET;
@@ -32,44 +35,68 @@ uint8_t AGV_data_Falg = RESET;
 uint32_t canu_wifi_rxtime = 0;
 uint32_t canu_zibe_rxtime = 0;
 
+void WifiSignal_Rx_Init()	//设置wifi接收初始化
+{
+	u8 i=0;
+	for(i=0;i<4;i++)	//环形结构体
+	{
+		WifiSignalQueue[i].Next=&WifiSignalQueue[i+1];
+	}
+	WifiSignalQueue[4].Next=&WifiSignalQueue[0];
+	Head =WifiSignalQueue;
+	Tail =WifiSignalQueue;
+}
+
 void Can_WifiRx_Save(uint8_t res)
 {
-	if(Wifi_Rx_flag)
-		return;
-	if(Wifi_Rx_num > 0)
+	if(Wifi_Rx_num >0) //正在接收
 	{
-		Wifi_Rx_Buf[Wifi_Rx_num]=res;
-		++Wifi_Rx_num;
+		Tail->StackData[Wifi_Rx_num++]=res;
 	}
-	else if(res == 0xff || res ==0x55)
+	else if(res == 0xff || res==0x55)	//遇到包头
 	{
-		Wifi_Rx_Buf[Wifi_Rx_num]=res;
+		Tail->StackData[Wifi_Rx_num]=res;
 		Wifi_Rx_num=1;
-		canu_wifi_rxtime = gt_get()+10;	//设置接收时间
+		canu_wifi_rxtime = gt_get()+20;	//设置接收时间		
 	}
-	if(Wifi_Rx_num>=8 && gt_get_sub(canu_wifi_rxtime) )	//在预定的时间内接收
+	if(gt_get_sub(canu_wifi_rxtime))	
 	{
-		if((Wifi_Rx_Buf[0]==0xff && Wifi_Rx_Buf[7] == 0xf0) || (Wifi_Rx_Buf[0]==0x55 && Wifi_Rx_Buf[7] == 0xbb))	//校验包头包尾
+		if(Wifi_Rx_num>=8 )//在规定的时间里接收数据
 		{
-			if(Normal_data(1,Wifi_Rx_Buf))
-			{
-				Wifi_Rx_flag=1;
-			}		
+			Tail=Tail->Next;
+			Wifi_Rx_flag++;
+			Wifi_Rx_num=0;
 		}
-		Wifi_Rx_num=0;
+		
 	}
+	else 	//时间结束
+		Wifi_Rx_num=0;
 	
-////	if(Wifi_Rx_flag == 0)
-////	{
-////		canu_wifi_rxtime = gt_get()+10;
-////		Wifi_Rx_num =0;
-////		Wifi_Rx_Buf[Wifi_Rx_num]=res;
-////		Wifi_Rx_flag = 1;
-////	}
-////	else if(Wifi_Rx_num < WIFI_MAX_NUM )	
-////	{
-////		Wifi_Rx_Buf[++Wifi_Rx_num]=res;	 
-////	}
+	
+//	if(Wifi_Rx_flag)
+//		return;
+//	if(Wifi_Rx_num > 0)
+//	{
+//		Wifi_Rx_Buf[Wifi_Rx_num]=res;
+//		++Wifi_Rx_num;
+//	}
+//	else if(res == 0xff || res ==0x55)
+//	{
+//		Wifi_Rx_Buf[Wifi_Rx_num]=res;
+//		Wifi_Rx_num=1;
+//		canu_wifi_rxtime = gt_get()+10;	//设置接收时间
+//	}
+//	if(Wifi_Rx_num>=8 && gt_get_sub(canu_wifi_rxtime) )	//在预定的时间内接收
+//	{
+//		if((Wifi_Rx_Buf[0]==0xff && Wifi_Rx_Buf[7] == 0xf0) || (Wifi_Rx_Buf[0]==0x55 && Wifi_Rx_Buf[7] == 0xbb))	//校验包头包尾
+//		{
+//			if(Normal_data(1,Wifi_Rx_Buf))
+//			{
+//				Wifi_Rx_flag=1;
+//			}		
+//		}
+//		Wifi_Rx_num=0;
+//	}
 }
 
 uint8_t Rx_Flag ;
@@ -116,36 +143,36 @@ u8 Normal_data(u8 mode, u8 *buff)	 	  // 正常接收8字节控制指令
 
 void Abnormal_data(void)	  //数据异常处理
 {
-	u8 i,j;
-	u8 sum=0;
-	
-	if(Wifi_Rx_num <8)			// 异常数据字节数小于8字节不做处理
-	{
-	   Rx_Flag =0;
-	}
-	else {
-		for(i=0;i<=(Wifi_Rx_num -7);i++)  
-		{
-			if(Wifi_Rx_Buf[i]==0x55)	   // 寻找包头
-			{
-			   if(Wifi_Rx_Buf[i+7]==0xbb)	// 判断包尾
-			   {
-			   	    sum=(Wifi_Rx_Buf[i+2]+Wifi_Rx_Buf[i+3]+Wifi_Rx_Buf[i+4]+Wifi_Rx_Buf[i+5])%256;
+//	u8 i,j;
+//	u8 sum=0;
+//	
+//	if(Wifi_Rx_num <8)			// 异常数据字节数小于8字节不做处理
+//	{
+//	   Rx_Flag =0;
+//	}
+//	else {
+//		for(i=0;i<=(Wifi_Rx_num -7);i++)  
+//		{
+//			if(Wifi_Rx_Buf[i]==0x55)	   // 寻找包头
+//			{
+//			   if(Wifi_Rx_Buf[i+7]==0xbb)	// 判断包尾
+//			   {
+//			   	    sum=(Wifi_Rx_Buf[i+2]+Wifi_Rx_Buf[i+3]+Wifi_Rx_Buf[i+4]+Wifi_Rx_Buf[i+5])%256;
 
-		           if(sum==Wifi_Rx_Buf[i+6])	 // 判断求和
-	              {
-			         for(j=0;j<8;j++)
-					 {
-					 	 Wifi_Rx_Buf[j]=Wifi_Rx_Buf[j+i];	 // 数据搬移
-					 }
-					    Rx_Flag =1;
-		          }
-	  	         else Rx_Flag =0;
-		       }
-			}
-	    }
+//		           if(sum==Wifi_Rx_Buf[i+6])	 // 判断求和
+//	              {
+//			         for(j=0;j<8;j++)
+//					 {
+//					 	 Wifi_Rx_Buf[j]=Wifi_Rx_Buf[j+i];	 // 数据搬移
+//					 }
+//					    Rx_Flag =1;
+//		          }
+//	  	         else Rx_Flag =0;
+//		       }
+//			}
+//	    }
 
-	}
+//	}
 }
 
 uint8_t Infrared_Tab[6];			//红外数据存放数组

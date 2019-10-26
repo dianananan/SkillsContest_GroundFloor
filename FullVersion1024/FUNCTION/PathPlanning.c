@@ -521,7 +521,7 @@ u8 getStep(u8 *x,u8 *y,u8 type) //Ê®×ÖÂ·¿ÚÅÐ¶Ï£¬ÒòÎªMPÖµÊÇµ½Ê®×ÖÂ·¿ÚÇåÁã
         step = 1;
     return step;
 }
-#define MINMP 1500
+#define MINMP 3000
 void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ð¡³µµÄÊµ¼Ê×ø±ê
 {
     //    char data[10];
@@ -545,11 +545,11 @@ void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ð¡³µµÄÊµ¼Ê×ø±
         default:
             break;
         }
-        if(car_x == getVauleX(passivity.TerrainPot.data) && car_y == getVauleY(passivity.TerrainPot.data)) //Èç¹ûÊÇµØÐÎ±êÖ¾Îï Ôò²»¸üÐÂÂ·Ïß
-        {
-            car_x = tx;
-            car_y = ty;
-        }
+//        if(car_x == getVauleX(passivity.TerrainPot.data) && car_y == getVauleY(passivity.TerrainPot.data)) //Èç¹ûÊÇµØÐÎ±êÖ¾Îï Ôò²»¸üÐÂÂ·Ïß
+//        {
+//            car_x = tx;
+//            car_y = ty;
+//        }
     }
     else if(type == 1) //Ñ­¼£×ßÂëÅÌÖµ
     {
@@ -591,10 +591,6 @@ void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ð¡³µµÄÊµ¼Ê×ø±
             break;
         }
     }
-    //	sprintf(data,"%d %d\n",car_x,car_y);
-    //	send_data_wifi(data,sizeof(data));
-    //	if(car_x>6 )car_x-= 1;
-    //	if(car_y>6)	car_y-= 1;
 }
 
 short int rotate = 0;//Ð¡³µ×ó×ª45

@@ -6,12 +6,14 @@
 #include "cba.h"
 #include "Timer.h"
 #include "activity.h"
+#include "Init.h"
 
 uint8_t L_Flag =0,R_Flag = 0;
 uint8_t G_Flag = 0,B_Flag = 0;
 u8 Upright_Flag=0;
 uint8_t Track_Flag = 0;
-uint8_t wheel_Nav_Flag = 0;
+uint8_t wheel_Nav_Flag = 0; 
+u8 TrackingLamp_Flag =0; //循迹的标志位，=8
 
 
 uint8_t Line_Flag = 0;
@@ -93,6 +95,7 @@ void Roadway_Flag_clean(void)
 	G_Flag = 0;B_Flag = 0;
 	wheel_Nav_Flag=0;
 	Track_Flag = 0;
+	TrackingLamp_Flag=0;
 	Stop_Flag = 0;
 	temp_MP = 0;
 	
@@ -227,13 +230,24 @@ u8 light_flagF=0,light_flagB=0;  //light led sum
 u8 reflag=0;   //路口计数
 u8 RodCnt=0; 
 
+void Set_UpTrack_Value(u8 mode)	//设置取正取反
+{
+	if(mode == 0)
+	{
+		gd=Get_Host_UpTrack(TRACK_H8);
+		gdg=Get_Host_UpTrack(TRACK_Q7);	
+	}
+	else if(mode == 1)
+	{
+		gd=Get_Host_UpTrack(NEGATION_H8);
+		gdg=Get_Host_UpTrack(NEGATION_Q7);
+	}
+	light_flagF=Countbits((~gdg) & 0x7f);
+	light_flagB=Countbits(~gd);		
+}
+
 void Track_Check(u16 tracklen, u8 roadSum, u8 state)
 {
-	gd=Get_Host_UpTrack(TRACK_H8);
-	gdg=Get_Host_UpTrack(TRACK_Q7);
-	light_flagF=Countbits((~gdg) & 0x7f);
-	light_flagB=Countbits(~gd);
-
 	if(state==ROADMODE)//检测十字路口
 	{
 		if(((light_flagF >= 5) || (((gdg & 0x18) != 0x18) && (light_flagF > 3) ) ) && (intocorner == 0))
@@ -243,24 +257,20 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)
 		else if(((light_flagB >= 5) || (((gd & 0x18) != 0x18) && (light_flagB >3) )) && (intocorner == 1)) //||((gdg&0x18)!=0x18)  )
 		{
 			intocorner = 2;
-	//		Abnormal_Cross=5; //异常也是判定后排，检测为异常的同时也检测为路口状态后排进去了//优先认为是路口
 		}
-		else if((intocorner == 2) && (light_flagF < 3)) ////前排出去了
+		else if((light_flagF < 3) && (intocorner == 2)) ////前排出去了
 		{
 			intocorner = 3; //
 		}
-		else if((intocorner == 3) && (light_flagB < 3) ) //后排
+		else if((light_flagB < 3) && (intocorner == 3)) //后排
 		{
 			intocorner = 4; 
 		}
 		else if(intocorner == 4)
 		{
-//			Abnormal_Cross=5;
 			getCarPosition(&cardirection, &car_x, &car_y, 0);  //跟新坐标
 			intocorner = 0;
 			reflag++;
-			//如果有障碍 重新生成路线?rrefalg=0;break;
-			//PrintValue(reflag);
 			if(reflag >= roadSum)
 			{
 				reflag = 0;
@@ -277,15 +287,26 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)
 			STOP();
         }
     }
+	else if((state == LENMODE )  && (MP >= tracklen))
+	{	
+		if(tracklen>3000)
+			getCarPosition(&cardirection, &car_x, &car_y, 0);
+//			else
+//				getCarPosition(&cardirection, &car_x, &car_y, 1);
+		STOP();
+//		Host_Close_UpTrack();
+		MP = 0;
+		endAction();
+	}	
 
-    if( Track_Flag == 0)
+    if( Track_Flag == 0 && TrackingLamp_Flag ==0)
     {
-//		STOP();
-//       Host_Close_UpTrack( );  // 关闭寻迹数据上传
+		STOP();
+//		Host_Close_UpTrack( );  // 关闭寻迹数据上传
     }
 	else 
 	{
-		Track_Correct(tracklen, state);
+		Track_Correct();
 	}
 }
 
@@ -294,12 +315,30 @@ void Roadway_Check(void)
 {
 	if(Track_Flag==ROADMODE||Track_Flag == BLACKMODE||Track_Flag==LENMODE)//
 	{
+		Set_UpTrack_Value(0);
 		Track_Check(TraLen,RodCnt,Track_Flag);	//循迹程序
 	}
-	else if(Track_Flag==TRACKTERRAIN)
-	{
-		Track_Flag=0;
-		STOP();
+	if(TrackingLamp_Flag >= 1)	//走地形
+	{	
+		if(intocorner == 2 && TrackingLamp_Flag == 1) //走到了地形标志位上
+		{
+			if(MP >=1000)
+				getCarPosition(&cardirection, &car_x, &car_y, 0);
+			Roadway_mp_syn();MP=0;
+			TrackingLamp_Flag =2;
+			intocorner=0;
+		}
+		if(TrackingLamp_Flag ==2)
+		{
+			Set_UpTrack_Value(1);
+			Track_Check(1350,0,LENMODE);
+		}
+		else 
+		{
+			Set_UpTrack_Value(0);
+			Track_Check(0,1,ROADMODE);
+		}
+		Set_UpTrack_Value(1);
 	}	
 	Go_and_Back_Check();
 	wheel_Track_check();  //转弯
@@ -317,7 +356,7 @@ void Roadway_Check(void)
 void Control(int L_Spend,int R_Spend)
 {
 	TIM_Cmd(TIM9, ENABLE); //开启定时器2
-	delay_ms(1);
+//	delay_ms(1);
 	if(L_Spend>=0)
 	{	
 		if(L_Spend>100)L_Spend=100;if(L_Spend<5)L_Spend=5;		//限制速度参数
@@ -357,10 +396,10 @@ u8 Countbits(u8 tstByte)
     return nCount;
 }
 
-void Track_Correct(u16 tracklen, u8 state)
+void Track_Correct()
 {
 //	   	Stop_Flag=0;
-    if(gd == 0XE7 || (light_flagB >= 3) || ((gd == 0xFF ) && (Track_Flag != 0))) //)//1、中间3/4传感器检测到黑线，全速运行
+    if(gdg == 0X77 || (light_flagB >= 3) || ((gd == 0xE7 )/* && (Track_Flag != 0)*/)) //)//1、中间3/4传感器检测到黑线，全速运行
     {
         LSpeed = Car_Spend;
         RSpeed = Car_Spend;
@@ -423,13 +462,13 @@ void Track_Correct(u16 tracklen, u8 state)
         }
         else if(gd == 0X3F) //8、中间8、7传感器检测到黑线，强左拐
         {
-            RSpeed = Car_Spend + 50;
+            RSpeed = Car_Spend + 90;
             LSpeed = Car_Spend - 120;
             Line_Flag = 0;
         }
         else if(gd == 0X7F) //9、最左8传感器检测到黑线，再强左拐
         {
-            RSpeed = Car_Spend + 50;
+            RSpeed = Car_Spend + 120;
             LSpeed = Car_Spend - 150;
             Line_Flag = 2;
         }
@@ -437,39 +476,24 @@ void Track_Correct(u16 tracklen, u8 state)
 	
 	if(gd==0xFF)   //循迹灯全亮
 	{
-		if(count > 1500)
+		if(count > 500)
 		{
-				count=0;
-				STOP();
-				if(Line_Flag ==0) 
-					Stop_Flag=4;
+			count=0;
+			STOP();
+			if(Line_Flag ==0) 
+				Stop_Flag=4;
 		}	
 		else 
 			count++;				
 	}
 	else 
 		count=0;
-	if(Track_Flag != 0)
-	{
-		Control(LSpeed,RSpeed);
-		if((state == LENMODE ) && (MP >= tracklen))
-        {
-			if(tracklen>2000)
-				getCarPosition(&cardirection, &car_x, &car_y, 0);
-			else
-				getCarPosition(&cardirection, &car_x, &car_y, 1);
-            STOP();
-            Track_Flag = 0;
-//            Host_Close_UpTrack();
-            MP = 0;
-            endAction();
-
-//					PrintArray[0] = car_x;
-//					PrintArray[1] = car_y;
-//					PrintArray[2] = cardirection;
-//					send_data_wifi(PrintArray,3);
-        }
-	}
+	
+	Control(LSpeed,RSpeed);
+//	if(Track_Flag != 0)
+//	{
+//		Control(LSpeed,RSpeed);
+//	}
 }
 
 

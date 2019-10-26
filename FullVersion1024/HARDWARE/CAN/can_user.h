@@ -11,7 +11,16 @@
 #define  ZIGB_RX_MAX    200
 #define  WIFI_MAX_NUM   200
 
-extern uint8_t Wifi_Rx_Buf[ WIFI_MAX_NUM ];
+struct Signal	//信号接收结构体
+{
+	u8 StackData[8];
+	struct Signal *Next;
+};
+extern struct Signal WifiSignalQueue[5];
+extern struct Signal *Head; //头指针
+extern struct Signal *Tail; //尾指针
+
+//extern uint8_t Wifi_Rx_Buf[ WIFI_MAX_NUM ];
 extern uint8_t Zigb_Rx_Buf[ ZIGB_RX_MAX ];
 extern uint8_t Wifi_Rx_num;
 extern uint8_t Wifi_Rx_flag;  //接收完成标志位
@@ -22,6 +31,8 @@ extern uint8_t Host_AGV_Return_Flag;
 extern uint8_t AGV_data_Falg;
 extern uint32_t canu_wifi_rxtime;
 extern uint32_t canu_zibe_rxtime;
+
+void WifiSignal_Rx_Init();//设置wifi接收初始化
 
 GLOBAL void Canuser_Init(void);
 GLOBAL void Canuser_main(void);

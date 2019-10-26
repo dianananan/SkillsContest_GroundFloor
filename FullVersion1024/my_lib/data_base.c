@@ -22,6 +22,15 @@ u8 getNEWTask() //设置多项任务
     switch(NowTaskPot)  //2西，1北，0东，3南
     {
 //    case 1 :
+//		initTask(setVaule(5, 5, 0 ),  0, 0, 0, 0 );  //数码管开始计时
+//        setNowTask(TaskZigbee, CMD_ZG_SEG, OPEN_SEG);
+//		Send_ZigbeeData_To_Fifo(SMG_SHOWTWO,8); //显示第二排
+//		break;
+//	case 2 :
+//		initTask(setVaule(1, 5, 3 ), 0, 0, 0, 0 );  //道闸
+//		Send_ZigbeeData_To_Fifo(SMG_SHOWTWO,8); 
+//		break;		
+//    case 1 :
 //		initTask(setVaule(5, 1, 1 ),  0, 0, 0, 0 );  //数码管开始计时
 //        setNowTask(TaskZigbee, CMD_ZG_SEG, OPEN_SEG);
 //		Send_ZigbeeData_To_Fifo(SMG_SHOWTWO,8); //显示第二排
@@ -30,10 +39,10 @@ u8 getNEWTask() //设置多项任务
 //		initTask(setVaule(5, 1, 1 ),  0, 0, 0, 0 );  //道闸
 //		setNowTask(TaskZigbee, CMD_ZG_DOOR, 0);
 //		break;
-	case 1 :
-		initTask(setVaule(5, 1, 1 ),  0, 0, 0, 0 );  //交通灯
-		setNowTask(TaskWifi, CMD_LIGHT_READ, 0);	
-		break;
+//	case 1 :
+//		initTask(setVaule(5, 1, 1 ),  0, 0, 0, 0 );  //交通灯
+//		setNowTask(TaskWifi, CMD_LIGHT_READ, 0);	
+//		break;
 //	case 4:
 //		initTask(setVaule(3, 5, 1 ),  0, GO, 100, 1 );  //光源跳档2
 //		setNowTask(TaskHW, HW_LIGHT, 0);	

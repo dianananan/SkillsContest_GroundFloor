@@ -122,13 +122,13 @@ void USART2_IRQHandler(void)
 		{
 			canu_wifi_rxtime = gt_get()+10;
 			Wifi_Rx_num =0;
-			Wifi_Rx_Buf[Wifi_Rx_num]= USART_ReceiveData(USART2);
+			Tail->StackData[Wifi_Rx_num]= USART_ReceiveData(USART2);
 			Wifi_Rx_flag = 1;
-			PrintfDebug(Wifi_Rx_Buf[Wifi_Rx_num]);
+			PrintfDebug(Tail->StackData[Wifi_Rx_num]);
 		}
 		else if(Wifi_Rx_num < WIFI_MAX_NUM )	
 		{
-			Wifi_Rx_Buf[++Wifi_Rx_num]= USART_ReceiveData(USART2);	 
+			Tail->StackData[++Wifi_Rx_num]= USART_ReceiveData(USART2);	 
 		}
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 	}

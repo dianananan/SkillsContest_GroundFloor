@@ -56,6 +56,7 @@ void Zigbee_Rev_Control(void)
                     else if(buf[4] == 0x06) //ETC
                     {
                         zig_send_etc_flag = 1;
+						ECCTimer_ms = gt_get()+6000;
                     }
                 }
             }
@@ -133,9 +134,9 @@ void Zig_Send_Dispose(u8 taskchoose)
 		{
 			startTask();
 			zig_send_etc_flag = 0;
-			WaitTimer_ms=gt_get()+2000;	
+			WaitTimer_ms=gt_get()+3000;	
 		}
-		if(zig_send_etc_flag == 1 || gt_get_sub(WaitTimer_ms))
+		if((zig_send_etc_flag == 1 &&  gt_get_sub(ECCTimer_ms)) || gt_get_sub(WaitTimer_ms)== 0)
 		{
 			endTask();
 			EndWaitTim();

@@ -8,7 +8,7 @@ extern volatile uint32_t global_times;
 extern volatile uint32_t delay_ms_const;
 extern volatile u32 WaitTimer_const;  //定时器计数常数
 extern volatile u32 WaitTimer_ms;	//时间ms
-
+extern volatile u32 ECCTimer_ms;  //ETC
 
 void Timer_Init(uint16_t arr,uint16_t psc);
 //void Timer12_Init(uint16_t arr,uint16_t psc);

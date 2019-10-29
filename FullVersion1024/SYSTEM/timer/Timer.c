@@ -6,8 +6,9 @@
 
 volatile uint32_t global_times = 0;
 volatile uint32_t delay_ms_const = 0;
-volatile u32 WaitTimer_const;
-volatile u32 WaitTimer_ms;
+volatile u32 WaitTimer_const=0;
+volatile u32 WaitTimer_ms=0;
+volatile u32 ECCTimer_ms=0;
 
 
 void Timer_Init(uint16_t arr,uint16_t psc) //定时器10
@@ -34,7 +35,7 @@ void Timer_Init(uint16_t arr,uint16_t psc) //定时器10
 	TIM_Cmd(TIM10, ENABLE);
 }
 
-void TIM1_UP_TIM10_IRQHandler(void)
+void TIM1_UP_TIM10_IRQHandler(void) //定时
 {
 	if(TIM_GetITStatus(TIM10,TIM_IT_Update) == SET)
 	{
@@ -51,12 +52,12 @@ u32 gt_get(void)
 u32 gt_get_sub(u32 c)
 {
 	if(c > global_times)
-		c -= global_times;
+//		c-= global_times;
+		return 0;
 	else
 		c = 0;
 	return c;
 }
-
 
 //void Timer12_Init(uint16_t arr,uint16_t psc) //定时器12
 //{

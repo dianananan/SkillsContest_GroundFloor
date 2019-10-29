@@ -1,4 +1,4 @@
-分支WifiReceive_chen
+支WifiReceive_chen
 
 10.24
 更新内容 
@@ -8,4 +8,5 @@
 	地形标志物行走，先走路口，遇到灯黑4个以上开始反转循迹走码盘1000，如果，遇到黑灯之前的
 MP>1000则更新路线，地形标志物如果在路口，则走地形的动作会被当成过了一个路口，路线更新中在路过
 地形标志物时，不应该不改变实时位置，所以注释，
-	添加了地形标志物动作函数TrackingLamp_Test（u8 sp）和标志位TrackingLamp_Flag；
+	添加了地形标志物动作函数TrackingLamp_Test（u8 sp）和标志位TrackingLamp_Flag,
+	ETC计时标志位设置和计时比较函数修改

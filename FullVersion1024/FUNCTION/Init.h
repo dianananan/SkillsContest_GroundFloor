@@ -12,6 +12,7 @@
 #include "tba.h"
 #include "bh1750.h"
 #include "infrared.h"
+#include "rc522.h"
 
 #define TIMER_ONE	1
 #define TIMER_TWO	2
@@ -21,6 +22,8 @@
 #define TIMER_SIX	6
 #define TIMER_SEVEN 7
 
+void Send_USART_To_Fifo(u8 *array,u8 len);//发送串口信息
+void RFID_Funition(void);	//RFID触发函数
 
 void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont);  //扩展数组内容
 void bubble_sort(u16 arr[], u8 len);  //冒泡

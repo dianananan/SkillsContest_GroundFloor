@@ -43,13 +43,13 @@ void WifiSignal_Rx_Init()	//设置wifi接收初始化
 		WifiSignalQueue[i].Next=&WifiSignalQueue[i+1];
 	}
 	WifiSignalQueue[4].Next=&WifiSignalQueue[0];
-	Head =WifiSignalQueue;
-	Tail =WifiSignalQueue;
+	Head = WifiSignalQueue;
+	Tail = WifiSignalQueue;
 }
 
 void Can_WifiRx_Save(uint8_t res)
 {
-	if(Wifi_Rx_num >0) //正在接收
+	if(Wifi_Rx_num >0 && Wifi_Rx_num<8) //正在接收
 	{
 		Tail->StackData[Wifi_Rx_num++]=res;
 	}
@@ -57,17 +57,17 @@ void Can_WifiRx_Save(uint8_t res)
 	{
 		Tail->StackData[Wifi_Rx_num]=res;
 		Wifi_Rx_num=1;
-		canu_wifi_rxtime = gt_get()+20;	//设置接收时间		
+		canu_wifi_rxtime = gt_get()+5;	//设置接收时间		
 	}
-	if(gt_get_sub(canu_wifi_rxtime))	
+	if(gt_get_sub(canu_wifi_rxtime) ) //在规定的时间内
 	{
-		if(Wifi_Rx_num>=8 )//在规定的时间里接收数据
+		if(Wifi_Rx_num>=8)//在规定的时间里接收数据
 		{
+			Send_ZigbeeData_To_Fifo(Tail->StackData,8);
 			Tail=Tail->Next;
 			Wifi_Rx_flag++;
 			Wifi_Rx_num=0;
 		}
-		
 	}
 	else 	//时间结束
 		Wifi_Rx_num=0;

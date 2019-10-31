@@ -17,24 +17,12 @@
 //#define	 TRAFFIC	0x05					  //交通灯识别
 //#define  POINT	0x06						//坐标代号
 
-struct Mailbox	//邮箱
-{
-	u8 Graph_Sum_Shape[5][10];	//图形数量和形状
-	u8 PlateNumber[2][8];		//车牌
-	u8 TrafficLightA[8];			//交通灯
-	xyd CoordinatePoint[1];		//返回点
-	u8 OneNum;					//单纯数字
-};//接收邮箱
-
-extern struct Mailbox MailboxReceiving;
-
 extern u8 wifi_send_PLATE_flag;//车牌识别点已到达
 extern u8 wifi_send_QR_flag;//wifi发送二维码读命令给平板  0:init 1:car->pad 2:pad->car
 extern u8 wifi_send_SHAPE_flag;
 extern u8 wifi_rev_card_flag_1;
 
 extern u8 light_xxx;
-extern u8 gg_flag;
 
 extern u8 Timeout;
 extern u8 wifitask;

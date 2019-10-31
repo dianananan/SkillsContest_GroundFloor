@@ -643,14 +643,12 @@ void Send_ZigbeeData_To_Fifo( u8 *p ,u8 len)
 void Send_WifiData_To_Fifo( u8 *p ,u8 len)   
 {
 	FifoDrv_BufWrite( &Fifo_WifiTx , p , len);
-	
-//	UartA72_TxAddStr(p,len);	//发送串口信息
-//	UartA72_TxStart();
 }
 
 void Send_InfoData_To_Fifo( u8 *p ,u8 len)   
 {
 	FifoDrv_BufWrite( &Fifo_Info , p , len);
+	
 }
 //_____________________________________________________________________________
 

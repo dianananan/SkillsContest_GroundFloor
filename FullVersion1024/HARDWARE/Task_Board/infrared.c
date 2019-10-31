@@ -99,7 +99,6 @@ void Acquire_rank(u8 num) //跳档
 {
     if(num == 1)
 	{
-		Send_InfoData_To_Fifo((u8 *)"\n1",sizeof("\n1"));
 		return ;
 	}
     Infrared_Send(H_N[num - 2], 4);////从一档到n档，中间只要加n-1档，此操作在数组num-2中
@@ -112,16 +111,17 @@ void light_Self_Tes() //路灯的挡位检测
     u16 light1, light2;
     while(i < 20)
     {
+		++i;
         light2 = Get_Bh_Value();		//测试光照强度 	Get_Bh_Value
         if(light1 > light2)
 		{
+//			MailboxRe.ConfigInfo.LightLevelNow =(3-(i%4))+1; //读出现在的任务点
 			break;
 		}
         Infrared_Send(H_N[0], 4);
         delay_ms(1200);
         light1 = light2;
-        ++i;
-		Send_InfoData_To_Fifo((u8 *)"ts",sizeof("ts"));
+//		Send_InfoData_To_Fifo((u8 *)"ts",sizeof("ts"));
     }
 }
 
@@ -210,15 +210,11 @@ u8 HW_Send_Choose(u8 choose_task)
 			break;
 		
 		case HW_TYPESHOW://图形显示HW_TYPESHOW
+			
 			for(i = 0;i<5;i++)
 			{
-				delay_ms(1200);
-//				CP_G1[6]={0xFF,0x12,0x00,0x00,0x00,0x00};
-				ll[0]=0xff;
-				ll[1]=0x12;
-				ll[2]=gg_flag;
-				ll[3]=ll[4]=ll[5]=0x00;
-				Infrared_Send(ll,6);
+				delay_ms(500);
+				Infrared_Send(CP_G1,6);
 			}
 			delay_ms(2000);
 		   break;
@@ -235,9 +231,9 @@ u8 HW_Send_Choose(u8 choose_task)
 			Infrared_Send(SD_MRXX,6);delay_ms(5);
 			break;	
 			
-		case HW_TENNEL://隧道排风
-			Infrared_Send(H_SD,4);delay_ms(5);
-			break;
+//		case HW_TENNEL://隧道排风
+//			Infrared_Send(H_SD,4);delay_ms(5);
+//			break;
 			
 		case HW_PICUP://图片上翻
 			Infrared_Send(H_S,4);delay_ms(5);
@@ -256,8 +252,8 @@ u8 HW_Send_Choose(u8 choose_task)
 			break;
 			
 		case HW_DISSHOW :  //立体显示距离  cm厘米制
-			SD_JL[2] = ASCLLSwitch(dynamicInfo.distance/100);
-			SD_JL[3] = ASCLLSwitch(dynamicInfo.distance/10);
+			SD_JL[2] = ASCLLSwitch(MailboxRe.ConfigInfo.distance/100);
+			SD_JL[3] = ASCLLSwitch(MailboxRe.ConfigInfo.distance/10);
 			for(i = 0;i<10;i++)
 			{
 				Infrared_Send(SD_JL,6);
@@ -272,6 +268,10 @@ u8 HW_Send_Choose(u8 choose_task)
 	    endTask();	
 	return 1; 
 }
+
+
+
+
 
 
 u8 HD_BCDSwitch(u16 object)  //十六进制的BCD转码

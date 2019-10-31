@@ -53,7 +53,7 @@ u32 gt_get_sub(u32 c)
 {
 	if(c > global_times)
 //		c-= global_times;
-		return 0;
+		return 1;
 	else
 		c = 0;
 	return c;

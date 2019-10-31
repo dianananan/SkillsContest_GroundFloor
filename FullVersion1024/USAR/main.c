@@ -58,8 +58,7 @@ void Hardware_Init()
 	UartA72_Init();
 	Can_check_Init(83,7);  //8us											//CAN总线定时器初始化
 	
-//	Timer12_Init(840-1,10000-1); //100ms
-	roadway_check_TimInit(167,2000-1);//1ms精准度较高4							//路况检测
+	roadway_check_TimInit(167,2000-1);//4ms 延时时间过短会妨碍can总线上的码盘和循迹灯	//路况检测
 	
 	Timer_Init(167,999);										    //串行数据通讯时间帧
 	Readcard_daivce_Init();											//RFID初始化
@@ -81,22 +80,24 @@ void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
-		startRun();
+//		startRun();
 //		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
+		TaskBoardTest(1);
 	}
 	if(S2==0){
 		while(S2==0);
-		TrackingLamp_Test(CARSPEED);
+//		Send_WifiData_To_Fifo(QRCode, 8);
+		TaskBoardTest(2);
 	}
 	if(S3==0){
 		while(S3==0);
-		PrintfDebug(car_x);
-		PrintfDebug(car_y);
+//		Send_WifiData_To_Fifo(ShapeRead, 8);
+		TaskBoardTest(3);
 	}
 	if(S4==0){
 		while(S4==0);
-		PrintfDebug(RSpeed);
-		PrintfDebug(LSpeed);
+//		Send_WifiData_To_Fifo(TrafficLight, 8);
+		TaskBoardTest(4);
 	}	
 }
 
@@ -117,7 +118,7 @@ int main(void)
 	Hardware_Init();						//硬件初始化
 	
 	LED_twinkle_times =  gt_get() + 50;     
-	Power_check_times =  gt_get() + 200;
+	Power_check_times =  gt_get() + 1000;
 	WIFI_Upload_data_times = gt_get() + 200;
 	RFID_Init_Check_times = gt_get()+200;
 	
@@ -130,13 +131,12 @@ int main(void)
 	Send_UpMotor(0 ,0);
 //*******************************************************************
 	WifiSignal_Rx_Init();
-//	Car_Spend=50;  //行走速度50	
-	delay_ms(50);	//延时启动
 	NowTaskPot=0;
 	Send_InfoData_To_Fifo((u8 *)"OK\n", sizeof("OK\n"));
+	delay_ms(5);	//延时启动
 	STOP();
 	runtimeInit();  //初始化任务标志位
-	initStartCoord(5, 1, 1); //设置起始位置
+	initStartCoord(1, 0, 1); //设置起始位置
 //    xydInit(&passivity.TerrainPot, 5, 3, 1); //设置地形标物位置
 //    xydInit(&passivity.TrafficPot, 5, 4, 3); //设置交通灯标物位置G4
 //    xydInit(&passivity.ETCPot, 4, 1, 0); //设置ETC标物位置  E2
@@ -152,9 +152,20 @@ int main(void)
 //		Wifi_Remote_Control ();//WIFI接收控制
         runControl();//路线行驶控制
         RunTaskControl();
-//		
+		
 		Can_WifiRx_Check();
 		Can_ZigBeeRx_Check();
+//=============================================22点注释
+//		if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
+//		{
+//			Read_Card();
+//		}
+		if(gt_get_sub(Power_check_times) == 0) 			
+		{
+			Power_check_times =  gt_get() + 1000;		//电池电量检测
+			Power_Check();		
+		} 
+		
 //		
 //		#if 0
 //		if(gt_get_sub(LED_twinkle_times) == 0) 			
@@ -163,12 +174,7 @@ int main(void)
 //			LED4 = !LED4;
 //		} 
 //		#endif
-//		
-		if(gt_get_sub(Power_check_times) == 0) 			
-		{
-			Power_check_times =  gt_get() + 200;		//电池电量检测
-			Power_Check();		
-		} 
+//				
 //		
 //		#if 1
 //		if(gt_get_sub(RFID_Init_Check_times) == 0) 			

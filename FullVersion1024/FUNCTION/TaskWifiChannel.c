@@ -31,7 +31,6 @@ u8 wifi_send_GARAGE_flag = 0;//得到计算的入库点
 u8 wifi_send_HLLIGHT_flag = 0; //红绿灯识别点已到达
 
 u8 light_xxx=2;
-u8 gg_flag=2;
 
 //u8 shapedata[3] = {0};//图形识别数据
 u8 HW_SEND_SHAPE[10] = {0};//形状
@@ -51,7 +50,7 @@ u8 Dispose_Data_array[20];//用来解析来自WiFi中的信号
 u8 Dispose_array_num = 1; //数组中信息的个数 //默认为1
 //u8 fulfill_flag = 0; //wifi命令执行成功标志位
 u8 con_num = 0;
-struct Mailbox MailboxReceiving; //收信邮箱
+
 u8 TempArray[8]={0x55,0x0e,0x02,0x00,0x00,0x00,0x00,0xbb};
 
 void hw_Data_Dispose(u8 *Data) //处理立体显示的红外信息
@@ -248,7 +247,7 @@ void switchBackinfo(u8 vaule)
 }
 void Wifi_Remote_Control () //wifi信号接收
 {
-    u8 data[30];
+//    u8 data[30];
     u8 readBuf[8];
     u8 i;
     if(Wifi_Rx_flag > 0) //有接收到WiFi信号
@@ -269,12 +268,12 @@ void Wifi_Remote_Control () //wifi信号接收
     if(Rx_Flag == 1) //正确信息，执行wifi命令
     {
         Rx_Flag = 0;
-		
+		Send_ZigbeeData_To_Fifo(readBuf,8); //打印数据
         if(readBuf[0] == 0x55 && readBuf[7] == 0xbb && readBuf[1] != 0xAA) //ZigBee信息直接转发
         {
             //Wifi_Send_Dispose_zigbee(Wifi_Rx_Buf);
         }
-        else if(readBuf[0] == 0xff && readBuf[7] == 0xf0 && readBuf[1] == 0x01)//主车控制
+        else if(readBuf[0] == 0xff && readBuf[7] == 0xf0 && readBuf[1] == 0x01)//遥控
         {
             switch(readBuf[2])
             {
@@ -323,7 +322,7 @@ void Wifi_Remote_Control () //wifi信号接收
 			{
 				case RUNSTART:
 					Send_InfoData_To_Fifo((u8 *)"RUN\n",sizeof("RUM\n"));
-					if(getRunState() == 1)break;
+					if(getRunState() == 0)
 //					xydInit(&passivity.RFIDCard, getVauleX(readBuf[3]), getVauleY(readBuf[3]), 0);		//初始化RFID位置//不可删除
 //					sprintf(data,"RFID %x\n", readBuf[3]);
 //					Send_InfoData_To_Fifo((u8 *)data,strlen(data));
@@ -354,7 +353,7 @@ void Wifi_Remote_Control () //wifi信号接收
 				{
 					for(i = 0; i < 3; i++)
 					{
-						MailboxReceiving.PlateNumber[0][i]=readBuf[3+i];
+						MailboxRe.PlateNumber[0][i]=readBuf[3+i];
 					}
 					wifi_rev_card_flag_1 = 1;
 				}
@@ -363,7 +362,7 @@ void Wifi_Remote_Control () //wifi信号接收
 				
 			case PLATEREV2://车牌2
 				for(i = 0; i < 3; i++)
-					MailboxReceiving.PlateNumber[0][i+3]=readBuf[3 + i];
+					MailboxRe.PlateNumber[0][i+3]=readBuf[3 + i];
 //                CP_SHOW2[4] = 'A' + car_x;
 //                CP_SHOW2[5] = '1' + car_y;
 				// HW_Send_Choose(HW_PICUP);  //TFT图片上翻**************************************
@@ -381,7 +380,6 @@ void Wifi_Remote_Control () //wifi信号接收
 				else
 				{
 					// HW_Send_Choose(HW_PICUP);//******************************************
-					gg_flag=readBuf[3];
 					wifi_send_SHAPE_flag = 1;
 				}
 				break;

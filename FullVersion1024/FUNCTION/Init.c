@@ -3,8 +3,38 @@
 #include "canp_hostcom.h"
 #include "activity.h"
 #include "uart_a72.h"
+#include "TaskZigbeeChannel.h"
+#include "task.h"
 
-//*************************Timer******************************/
+//*************************kerlen******************************/
+void Send_USART_To_Fifo(u8 *array,u8 len) //发送串口信息
+{
+	UartA72_TxClear();
+	UartA72_TxAddStr(array,len);	//发送串口信息
+	UartA72_TxStart();	
+}
+
+void RFID_Funition(void)	//读卡时要执行的任务函数
+{
+	u8 i=0;
+	u16 sum=0;
+	SendVoice((u8 *)"卡片位置为",sizeof("卡片位置为"));	//发送语音播报
+	if(Carx==4)
+		SendVoice((u8 *)"C2",sizeof("C2"));	//发送语音播报
+	if(Carx==3)
+		SendVoice((u8 *)"D2",sizeof("D2"));	//发送语音播报
+	if(Carx==2)
+		SendVoice((u8 *)"F2",sizeof("F2"));	//发送语音播报
+	
+//	for(i=0;i<16;i++)
+//	{
+//		if(RFIDCard_S50.RXRFID[i]%2 == 0)
+//		{
+//			sum+=RFIDCard_S50.RXRFID[i];
+//		}
+//	}
+//	MailboxRe.ConfigInfo.LightLevelTask=((sum)%4)+1;	//获取光源挡位的值
+}
 
 
 //******************************math***********************/Upright_Flag
@@ -108,6 +138,7 @@ void TaskBoardTest(u8 mode) //打印关照强度的信息到debug面板  mode=0 =1dis
 	else if(mode == 4)
 	{
 		Infrared_Send(HW_K,6);
+		delay_ms(100);
 		Infrared_Send(H_N[0],4);
 	}
 }
@@ -140,3 +171,6 @@ u8 CheckSum(u8 *array,u8 orig)	//计算校验和
 	return result;
 	
 }
+
+
+

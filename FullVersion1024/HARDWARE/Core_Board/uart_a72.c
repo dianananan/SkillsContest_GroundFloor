@@ -4,9 +4,11 @@
 #include "data_channel.h"
 #include "Timer.h"
 #include "Init.h"
+#include "can_user.h"
 
 #define __UART_A72_C__
 #include "uart_a72.h"
+#include "canp_hostcom.h"
 
 //************************************************´®¿Ú4********************************************//
 void Uart_A72_PortInit(void)
@@ -116,20 +118,26 @@ void USART2_IRQHandler(void)
 //		USART_ClearITPendingBit(uart_prot_buf[p->uart_port], USART_IT_TXE);		
 //	}
 	
+//	if(USART_GetITStatus(USART2,USART_IT_RXNE) == SET)
+//	{
+//		if(Wifi_Rx_flag == 0)
+//		{
+//			canu_wifi_rxtime = gt_get()+10;
+//			Wifi_Rx_num =0;
+//			Tail->StackData[Wifi_Rx_num]= USART_ReceiveData(USART2);
+//			Wifi_Rx_flag = 1;
+//			PrintfDebug(Tail->StackData[Wifi_Rx_num]);
+//		}
+//		else if(Wifi_Rx_num < WIFI_MAX_NUM )	
+//		{
+//			Tail->StackData[++Wifi_Rx_num]= USART_ReceiveData(USART2);	 
+//		}
+//		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+//	}
+
 	if(USART_GetITStatus(USART2,USART_IT_RXNE) == SET)
 	{
-		if(Wifi_Rx_flag == 0)
-		{
-			canu_wifi_rxtime = gt_get()+10;
-			Wifi_Rx_num =0;
-			Tail->StackData[Wifi_Rx_num]= USART_ReceiveData(USART2);
-			Wifi_Rx_flag = 1;
-			PrintfDebug(Tail->StackData[Wifi_Rx_num]);
-		}
-		else if(Wifi_Rx_num < WIFI_MAX_NUM )	
-		{
-			Tail->StackData[++Wifi_Rx_num]= USART_ReceiveData(USART2);	 
-		}
+		Can_WifiRx_Save(USART_ReceiveData(USART2));
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 	}
 }

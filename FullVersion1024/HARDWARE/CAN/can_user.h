@@ -32,7 +32,7 @@ extern uint8_t AGV_data_Falg;
 extern uint32_t canu_wifi_rxtime;
 extern uint32_t canu_zibe_rxtime;
 
-void WifiSignal_Rx_Init();//设置wifi接收初始化
+void WifiSignal_Rx_Init(void);//设置wifi接收初始化
 
 GLOBAL void Canuser_Init(void);
 GLOBAL void Canuser_main(void);

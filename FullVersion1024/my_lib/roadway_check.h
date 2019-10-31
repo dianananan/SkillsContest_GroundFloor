@@ -61,7 +61,7 @@ uint16_t Roadway_mp_Get(void);
 u8 Countbits(u8 tstByte);
 
 void Control(int L_Spend,int R_Spend);
-void Track_Correct();
+void Track_Correct(void);
 
 extern uint8_t Roadway_GoBack_Check(void);
 void roadway_check_TimInit(uint16_t arr,uint16_t psc);

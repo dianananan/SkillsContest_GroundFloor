@@ -5,20 +5,19 @@
 #include "cba.h"
 #include "Timer.h"
 #include "canp_hostcom.h"
+#include "Init.h"
 
 #define MAXRLEN 18  
 
 #define MF522_RST   PFout(1)
-
-
 static uint8_t Rc522_LinkFlag;
 
 //#define RC522_LINKTEST_RT(rt)	if(Rc522_LinkFlag == 0) return (rt)	
 //#define RC522_LINKTEST_NULL()	if(Rc522_LinkFlag == 0) return	
 
-uint32_t Rs522_cmd_cnt;
 
 #define WriteRawRC(addr,datas)	if(WriteRawRC_HDL(addr,datas)!= STATUS_SUCCESS) return MI_ERR
+
 
 void delay_ns(u32 ns)
 {
@@ -31,10 +30,10 @@ void delay_ns(u32 ns)
   }
 }
 
-
-
+uint32_t Rs522_cmd_cnt;
+//struct RFID_Card RFID_S50;
 uint8_t TXRFID[16] = {0x41,0x31,0x42,0x32,0x43,0x33,0x44,0x34,0x46,0x31,0x42,0x32,0x43,0x33,0x44,0x34};
-uint8_t RXRFID[16];
+
 /*
 函数功能：全自动读卡函数
 参    数：无
@@ -42,58 +41,68 @@ uint8_t RXRFID[16];
 **/
 void Read_Card(void)
 {
-	char status = MI_ERR;
-	uint8_t CT[2];									//卡类型
-	uint8_t SN[4]; 									//卡号
-	uint8_t KEY[6]={0xff,0xff,0xff,0xff,0xff,0xff}; //密钥
-	uint8_t s = 0x01;       						  	
-	uint8_t RXRFIDH[8];
-	#define  DATA_LEN    16                     	//定义数据字节长度	
+//	char status = MI_ERR;
+//	uint8_t CT[2];									//卡类型
+//	uint8_t SN[4]; 									//卡号
+//	uint8_t KEY[6]={0xff,0xff,0xff,0xff,0xff,0xff}; //密钥
+//	uint8_t s = 0x01;       						//读取的块区	
+//	uint8_t RXRFIDH[8];
+//	#define  DATA_LEN    16                     	//定义数据字节长度	
 
-	LED1 = 0;
-	LED2 = 0;
-	LED3 = 0;
-	LED4 = 0;
-	
-		status = PcdRequest(PICC_REQALL,CT);		//寻卡
-		if(status == MI_OK)							//寻卡成功
-		{
-			status=MI_ERR;
-			LED1 = 1;
-			status = PcdAnticoll(SN);				//防冲撞
-			if(status == MI_OK)
-			{
-				status=MI_ERR;
-				LED2 = 1;				
-				status =PcdSelect(SN);				//选定此卡
-				if(status == MI_OK)					//选定成功
-				{
-					status=MI_ERR;	
-					LED3 = 1;
-					MP_SPK = 1;					
-					status =PcdAuthState(0x60,0x03,KEY,SN);		//验证密钥
-					if(status == MI_OK)
-					{
-						status = MI_ERR;
-											
-						status = PcdWrite(s,TXRFID);			//写卡
-						if(status == MI_OK)
-						{
-							status = MI_ERR;
-						}							
-						status=PcdRead(s,RXRFID);				//读卡
-						if(status == MI_OK)
-						{
-							status = MI_ERR;
-							LED4 = 1;							//读卡成功
-							MP_SPK = 0;								
-							Send_InfoData_To_Fifo(RXRFID,16);
-							Send_InfoData_To_Fifo("\n",2);
-						}						
-					}
-				}
-			}
-	}
+//	LED1 = 0;
+//	LED2 = 0;
+//	LED3 = 0;
+//	LED4 = 0;
+//	
+//		status = PcdRequest(PICC_REQALL,CT);		//寻卡，并填充型号
+//		if(status == MI_OK)							//寻卡成功
+//		{
+//			status=MI_ERR;
+//			LED1 = 1;
+//			status = PcdAnticoll(SN);				//防冲撞
+//			if(status == MI_OK)
+//			{
+//				status=MI_ERR;
+//				LED2 = 1;				
+//				status =PcdSelect(SN);				//选定此卡
+//				if(status == MI_OK)					//选定成功
+//				{
+//					status=MI_ERR;	
+//					LED3 = 1;
+//					MP_SPK = 1;					
+//					status =PcdAuthState(0x60,0x03,KEY,SN);		//验证密钥
+//					if(status == MI_OK)
+//					{
+//						status = MI_ERR;
+//						if(RFID_S50.RFID_Mode == READ)
+//						{
+//							status=PcdRead(s,RFID_S50.RXRFID);				//读卡
+//							if(status == MI_OK)
+//							{
+//								RFID_S50.RFID_Read_Ok=1;
+//								status = MI_ERR;
+//								LED4 = 1;							//读卡成功
+//								MP_SPK = 0;	
+//								
+//								RFID_Funition();
+//								
+//								Send_InfoData_To_Fifo(RFID_S50.RXRFID,16);
+//								Send_InfoData_To_Fifo((u8*)"\n",2);
+//							}								
+//						}	
+//						else if(RFID_S50.RFID_Mode == WRITE)
+//						{
+//							status = PcdWrite(s,TXRFID);			//写卡
+//							if(status == MI_OK)
+//							{
+//								status = MI_ERR;
+//								RFID_S50.RFID_Write_Ok=1;
+//							}							
+//						}
+//					}
+//				}
+//			}
+//	}
 }
 
 
@@ -146,11 +155,14 @@ char InitRc522(void)
 	  return MI_OK;
 }
 
-void Readcard_daivce_Init(void)
+void Readcard_daivce_Init(void)//RFID初始化
 {
 	RC522_Uart_init(9600);	// 串口初始化为9600
 	delay_ms(500);
 	InitRc522();			//读卡器初始化
+//	RFID_S50.RFID_Mode = SLEEP;	//设置不寻卡
+//	RFID_S50.RFID_Read_Ok=0;
+//	RFID_S50.RFID_Write_Ok=0;
 }
 
 void Reset_RC522(void)
@@ -165,7 +177,7 @@ void Reset_RC522(void)
 //参数说明: req_code[IN]:寻卡方式
 //                0x52 = 寻感应区内所有符合14443A标准的卡
 //                0x26 = 寻未进入休眠状态的卡
-//          	  pTagType[OUT]：卡片类型代码
+//			pTagType[OUT]：卡片类型代码
 //                0x4400 = Mifare_UltraLight
 //                0x0400 = Mifare_One(S50)
 //                0x0200 = Mifare_One(S70)
@@ -190,7 +202,7 @@ char PcdRequest(unsigned char req_code,unsigned char *pTagType)
  
    ucComMF522Buf[0] = req_code;
 
-   status = PcdComMF522(PCD_TRANSCEIVE,ucComMF522Buf,1,ucComMF522Buf,&unLen);
+   status = PcdComMF522(PCD_TRANSCEIVE,ucComMF522Buf,1,ucComMF522Buf,&unLen); //读取并发送
 //     if(status  == MI_OK )
 //   { LED_GREEN  =0 ;}
 //   else {LED_GREEN =1 ;}

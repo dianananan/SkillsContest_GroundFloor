@@ -148,7 +148,7 @@ void Zig_Send_Dispose(u8 taskchoose)
     if(taskchoose == CMD_ZG_SEG && getTaskState() == 0)
     {
         startTask();
-       send_SEG_data(isRunTask.TaskVaule); //发送数码管开启命令，计时开始
+		send_SEG_data(CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]); //发送数码管开启命令，计时开始
         delay_ms(20);
         endTask();
         return ;
@@ -166,15 +166,15 @@ void Zig_Send_Dispose(u8 taskchoose)
     //*********************发送车牌到道闸*********************************/
     if(taskchoose == CMD_ZG_DOORCP && getTaskState() == 0)
     {
-				DZ_CPF[3] = 65;
-				DZ_CPF[4] = 65;
-				DZ_CPF[5] = 65;
-				DZ_CPF[6] = (DZ_CPF[2]+DZ_CPF[3]+DZ_CPF[4]+DZ_CPF[5])%255;
-				DZ_CPB[3] = 65;
-				DZ_CPB[4] = 65;
-				DZ_CPB[5] = 65;
-				DZ_CPB[6] =  (DZ_CPB[2]+DZ_CPB[3]+DZ_CPB[4]+DZ_CPB[5])%255;
-				Send_InfoData_To_Fifo((u8 *)"sendcp\n",sizeof("snedcp\n"));delay_ms(500);
+		DZ_CPF[3] = 65;
+		DZ_CPF[4] = 65;
+		DZ_CPF[5] = 65;
+		DZ_CPF[6] = (DZ_CPF[2]+DZ_CPF[3]+DZ_CPF[4]+DZ_CPF[5])%255;
+		DZ_CPB[3] = 65;
+		DZ_CPB[4] = 65;
+		DZ_CPB[5] = 65;
+		DZ_CPB[6] =  (DZ_CPB[2]+DZ_CPB[3]+DZ_CPB[4]+DZ_CPB[5])%255;
+		Send_InfoData_To_Fifo((u8 *)"sendcp\n",sizeof("snedcp\n"));delay_ms(500);
 			
         startTask();
         Send_ZigbeeData_To_Fifo(DZ_CPF, 8);
@@ -197,7 +197,7 @@ void Zig_Send_Dispose(u8 taskchoose)
     if(taskchoose == CMD_TFT_SHOW && getTaskState() == 0)
     {
         startTask();
-        send_TFT_data(isRunTask.TaskVaule);
+        send_TFT_data(CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]);
         endTask();
         return ;
     }

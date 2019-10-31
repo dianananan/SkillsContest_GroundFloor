@@ -2,6 +2,18 @@
 //º¯ÊýÔ­ÐÍ
 /////////////////////////////////////////////////////////////////////
 #include "stm32f4xx.h"
+#include "sys.h"
+
+
+//extern struct RFID_Card
+//{
+//	u8 RFID_Mode;   //RFID¶ÁÐ´Ä£Ê½
+//	u8 RFID_Read_Ok; 
+//	u8 RFID_Write_Ok;
+//	u8 RXRFID[16];
+//}RFID_S50;
+
+//extern struct RFID_Card RFID_S50;
 
 extern char PcdReset(void);
 extern void PcdAntennaOn(void);
@@ -41,6 +53,13 @@ extern void Send_data(unsigned char ch);
 extern int8_t Rc522_ToSRst(void);
 extern int8_t Rc522_OutSRst(void);		
 extern void Read_Card(void);
+
+//********¶Á¿¨Ä£Ê½********//
+#define SLEEP 0			//ÐÝÃß
+#define READ  1			//¶Á
+#define WRITE 2			//Ð´
+
+
 /////////////////////////////////////////////////////////////////////
 //MF522ÃüÁî×Ö
 /////////////////////////////////////////////////////////////////////
@@ -159,4 +178,10 @@ extern void Read_Card(void);
 #define    STATUS_SUCCESS                0
 #define    STATUS_IO_TIMEOUT             1
 #define	   STARUS_ADDR_RERR				 2
+
+
+
+
+
+
 

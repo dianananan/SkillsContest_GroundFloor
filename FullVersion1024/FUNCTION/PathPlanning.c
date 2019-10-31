@@ -525,7 +525,7 @@ u8 getStep(u8 *x,u8 *y,u8 type) //十字路口判断，因为MP值是到十字路口清零
 void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //小车的实际坐标
 {
     //    char data[10];
-    u8 tx = car_x, ty = car_y;
+//    u8 tx = car_x, ty = car_y;
     if(type == 0)//
     {
         switch(*currentdirection)

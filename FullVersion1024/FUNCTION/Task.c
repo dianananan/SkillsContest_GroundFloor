@@ -19,8 +19,10 @@ extern u8 flash;
 extern u8 S_Tab[];
 extern u8 C_Tab[];
 xyd TaskPot;
-TaskOption isRunTask;
+TaskOption CarRunTask;
 DataBase dynamicInfo;
+
+struct Mailbox MailboxRe; //收信邮箱
 
 //u8 CP_SHOW1[6] = {0xFF, 0x20, 65, 66, 67, 68};
 //u8 CP_SHOW2[6] = {0xFF, 0x10, 69, 70, 71, 72}; //车牌显示
@@ -34,15 +36,16 @@ void RunTaskControl()//标志物数据收发控制
 
     if(getActionState() == 0 && getNowPathVaule() == NOW_TASK && getRunState())
     {
-        STOP();
         if(isrun.TaskCarryOut == 1)
         {
             setNowTask(TaskCar, DELAY, 1000);
         }
         TaskMenu();
-        if(getTaskState() == 0)		//如果任务完成则 +1
+        if((CarRunTask.TaskBegPoint) >= CarRunTask.TaskEndPoint || CarRunTask.TaskBegPoint >=4 )	//如果任务完成则 +1
         {
             ++isRunControl.NowPot;
+			CarRunTask.TaskBegPoint=0;
+			CarRunTask.TaskEndPoint=0;
         }
     }
     else if(getActionState() == 0 && getRunState())
@@ -146,7 +149,7 @@ u8 Task_Chooce(u8 taskchoose)
 			Set_tba_WheelLED(R_LED,0);
 			break;
 		case BEEP_OPEN://打开蜂鸣器
-			Set_tba_Beep(1);
+			Set_tba_Beep(1);DelayTimerMS(600);Set_tba_Beep(0);
 			break;
 		case BEEP_CLOSE://关闭蜂鸣器
 			Set_tba_Beep(0);
@@ -158,7 +161,7 @@ u8 Task_Chooce(u8 taskchoose)
 			break;
 		case UPRIGHT:  //矫正当前点
 			delay_ms(50);
-			 for(Temp=0;Temp<2;Temp++)
+			for(Temp=0;Temp<2;Temp++)
 			{
 				ExtendArray(isRunControl.PathGather,isRunControl.PathCount ,isRunControl.NowPot,BACK); //  BACK   DEBUG
 				++isRunControl.PathCount;
@@ -194,26 +197,28 @@ u16 getCsbDis()//超声波探测距离
 
 void setNowTask(u8 NowTask, u8 cmd, u16 Vaule)
 {
-    isRunTask.option = NowTask;
-    isRunTask.task.data = cmd;
-    isRunTask.TaskVaule = Vaule;
+    CarRunTask.option[CarRunTask.TaskEndPoint] = NowTask;
+	CarRunTask.TaskContent[CarRunTask.TaskEndPoint] = cmd;
+    CarRunTask.TaskVaule[CarRunTask.TaskEndPoint] = Vaule;
+	CarRunTask.TaskEndPoint++;
 }
 
 u8 getTaskCmd(void)
 {
-    return isRunTask.option;
+    return CarRunTask.option[CarRunTask.TaskBegPoint];
 }
 u8 getNowTask(void)
 {
-    return isRunTask.task.data;
+    return CarRunTask.TaskContent[CarRunTask.TaskBegPoint];
 }
 
 
 void InitDataBase()  //默认值
 {
-    dynamicInfo.distance = 220;			//超声波
-    dynamicInfo.LightTransmission = 2; 	//光源几档
-    dynamicInfo.carport = 3; 			//车库几层
+    MailboxRe.ConfigInfo.distance = 220;			//超声波
+	MailboxRe.ConfigInfo.LightLevelNow =1;
+    MailboxRe.ConfigInfo.LightLevelTask = 2; 	//光源几档
+    MailboxRe.ConfigInfo.carport = 3; 			//车库几层
 }
 
 
@@ -231,9 +236,9 @@ u8 Compute(u8 *array, u8 len, u8 object) //计数
 u8 getNowLight(void)  //返回光源挡位
 {
     u8 error[8] = {0xff, 0x03, 0x02, 0x02, 0x00, 0x00, 0x07, 0xf0}; //光源挡位错误信息
-    if(dynamicInfo.LightTransmission <= 4 && dynamicInfo.LightTransmission != 0)
+    if(MailboxRe.ConfigInfo.LightLevelTask <= 4 && MailboxRe.ConfigInfo.LightLevelTask != 0)
     {
-        return dynamicInfo.LightTransmission ;
+        return MailboxRe.ConfigInfo.LightLevelTask ;
     }
     else //计算有错误，报错，并返回1
     {
@@ -246,16 +251,16 @@ u8 getNowLight(void)  //返回光源挡位
 
 void setNowlight(u8 Vaule)
 {
-    dynamicInfo.LightTransmission = Vaule;
+    dynamicInfo.LightLevelTask = Vaule;
 }
 
 
 u8 getNowGarage()//返回车库层数
 {
     u8 error[8] = {0xff, 0x03, 0x02, 0x03, 0x00, 0x00, 0x08, 0xf0}; //车库信息错误
-    if(dynamicInfo.carport <= 4 && dynamicInfo.carport != 0)
+    if(MailboxRe.ConfigInfo.carport <= 4 && MailboxRe.ConfigInfo.carport != 0)
     {
-        return dynamicInfo.carport;		//对应数组的下标
+        return MailboxRe.ConfigInfo.carport;		//对应数组的下标
     }
     else //计算有错误，报错，并返回1
     {

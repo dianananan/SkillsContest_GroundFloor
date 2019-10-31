@@ -398,7 +398,8 @@ void startTask(void)	//开始任务
 }
 void endTask(void)	//结束任务
 {
-		isrun.taskflag = 0;
+	isrun.taskflag = 0;
+	CarRunTask.TaskBegPoint++;
 }
 u8 getTaskState(void)	//获取任务状态
 {

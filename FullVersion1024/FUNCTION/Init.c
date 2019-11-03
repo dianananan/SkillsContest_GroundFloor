@@ -47,6 +47,7 @@ void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont)  //扩展数组内容
 		array[i+1]=array[i];
 	}
 	array[adr+1]=cont;
+	
 }
 
 void bubble_sort(u16 arr[], u8 len)  //冒泡排序

@@ -10,6 +10,7 @@
 #include "Task.h"
 #include "canp_hostcom.h"
 #include "bh1750.h"
+#include "Init.h"
 
 void Infrared_Init()
 {
@@ -112,14 +113,21 @@ void light_Self_Tes() //路灯的挡位检测
     while(i < 20)
     {
 		++i;
+		DelayTimerMS(1200);
         light2 = Get_Bh_Value();		//测试光照强度 	Get_Bh_Value
         if(light1 > light2)
 		{
-//			MailboxRe.ConfigInfo.LightLevelNow =(3-(i%4))+1; //读出现在的任务点
+			if((i%4) == 0)
+				MailboxRe.ConfigInfo.LightLevelNow =1; //读出现在的任务点
+			else if((i%4) == 3)
+				MailboxRe.ConfigInfo.LightLevelNow =2; //读出现在的任务点
+			else if((i%4) == 2)
+				MailboxRe.ConfigInfo.LightLevelNow =3; //读出现在的任务点
+			else 
+				MailboxRe.ConfigInfo.LightLevelNow =4;
 			break;
 		}
         Infrared_Send(H_N[0], 4);
-        delay_ms(1200);
         light1 = light2;
 //		Send_InfoData_To_Fifo((u8 *)"ts",sizeof("ts"));
     }
@@ -210,13 +218,13 @@ u8 HW_Send_Choose(u8 choose_task)
 			break;
 		
 		case HW_TYPESHOW://图形显示HW_TYPESHOW
-			
-			for(i = 0;i<5;i++)
+			CP_G1[3] =CarRunTask.TaskVaule[CarRunTask.TaskEndPoint];
+			for(i = 0;i<3;i++)
 			{
 				delay_ms(500);
 				Infrared_Send(CP_G1,6);
 			}
-			delay_ms(2000);
+			delay_ms(1500);
 		   break;
 		
 		case HW_HUESHOW ://颜色显示

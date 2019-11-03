@@ -36,7 +36,7 @@ struct LineNode
     xyd sexy[MAXLIMIT];     //任务必经点
     u8 TaskDir;     //任务方向 主要设置 45度 为了减少歧义 这里只能设置转45度 方向由前面的 xyd 控制
     u8 LastLineOption;  //最后一步的操作  是否走mp 前进还是后退
-		//u8 mpvaule 这里改为直接调用 run.c 里面的接口
+	//u8 mpvaule 这里改为直接调用 run.c 里面的接口
     u8 isback;	
 };
 extern struct LineNode TaskControl;
@@ -58,6 +58,7 @@ extern u8 Carx,Cary,Cardirection;
 extern u8 car_x,car_y,cardirection;	
 extern short int rotate;//小车左转45
 extern u8 NowTaskPot;		//当前的任务点
+extern u8 ForwardMPFlag;	//是否转弯前一小段距离
 
 void setMap(u8 x,u8 y,u8 s);
 void initStartCoord(u8 x,u8 y,u8 dir);

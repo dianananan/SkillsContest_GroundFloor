@@ -5,29 +5,29 @@
 #include "roadway_check.h"
 #include "data_base.h"
 
-#define ROW           3  				//二维数组行
+#define ROW           3				//二维数组行
 #define COLUMN		  100    		//二维数组列
-#define PATHROW   	  0					//行0
-#define PATHLENGTH    1         //行走数组长度
+#define PATHROW   	  0				//行0
+#define PATHLENGTH    1				//行走数组长度
 
-#define LEFT 		0x01				//左转										case
-#define RIGHT 		0x02  				//右转										case
-#define GO			0x03				//前进										case
-#define BACK	    0x04				//后退										case
-#define CNTONE   	0x05				//循迹一个十字路口    		case
-#define CNTTWO		0x06  				//循迹两个十字路口   			case
-#define CNTTHREE    0x07				//循迹三个十字路口    		case
-#define TRACKLENTH	0x08				//循迹距离						 		case
-#define MIDHALF		0x09				//循迹中等长度的一半			case
-#define LEFTSMALL	0x0A				//左转前循迹的一小段距离	case //******************************
-#define TRACKBLACK	0x0B 				//循迹一个路口黑线准确停  case
-#define CARSTOP     0x0C				//停车										case
-#define TRAMP		0x0D				//自定义循迹走码盘值			case
-#define LEFT45		0x0E				//左转45度								case
-#define RIGHT45		0x0F				//右转45度								case
-#define LEFT180		0x10				//左转180度								case
-#define RIGHT180	0x11				//右转180度								case
-#define RIGHTSMALL	0x12				//右转前循迹的一小段距离	case//*********************************
+#define LEFT 		0x01				//左转											
+#define RIGHT 		0x02  				//右转											
+#define GO			0x03				//前进											
+#define BACK	    0x04				//后退											
+#define CNTONE   	0x05				//循迹一个十字路口    			
+#define CNTTWO		0x06  				//循迹两个十字路口				
+#define CNTTHREE    0x07				//循迹三个十字路口    			
+#define TRACKLENTH	0x08				//循迹距离						
+#define MIDHALF		0x09				//循迹中等长度的一半			
+#define LEFTSMALL	0x0A				//左转前循迹的一小段距离			
+#define TRACKBLACK	0x0B 				//循迹一个路口黑线准确停		
+#define CARSTOP     0x0C				//停车										
+#define TRAMP		0x0D				//自定义循迹走码盘值			
+#define LEFT45		0x0E				//左转45度								
+#define RIGHT45		0x0F				//右转45度								
+#define LEFT180		0x10				//左转180度								
+#define RIGHT180	0x11				//右转180度								
+#define RIGHTSMALL	0x12				//右转前循迹的一小段距离
 #define GOCARBOYLEN	0x13				//走一个车身距离
 #define CNTFOUR		0x14				//循迹四个路口
 #define CNTFIVE 	0x15				//循迹五个路口
@@ -50,9 +50,9 @@
 
 #define MAXHALFLEN 	1150				//到达最长线一半的MP值
 #define MIDHALFLEN	1400				//到达中等长度一半的MP值
-#define LSMALLLEN	255				//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
+#define LSMALLLEN	265				//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
 #define BACKLEN		40					//倒退的MP值
-#define RSMALLLEN	255			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
+#define RSMALLLEN	250			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
 #define CARBODYLEN	  600			//走一个车身距离
 #define MP_LINE_SHORT 1150			//走一条边d的码盘值（短边）
 #define MP_LINE_LANG  1400			//(走一条边的码盘值) （长边）

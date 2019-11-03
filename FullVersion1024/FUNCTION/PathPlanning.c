@@ -19,7 +19,7 @@ u8 CrossingCount = 0; //路口个数
 u8 tasklinecount = 0;
 u8 NowTaskPot;		//当前的任务点
 
-u8 Carx, Cary, Cardirection;
+u8 Carx, Cary, Cardirection;	//小车中点的坐标方向
 struct passivityGather passivity;  //障碍点出现的位置
 
 u8 trackpath[MAXPATH];
@@ -67,7 +67,6 @@ void setLimitPot(u8 sxy, u8 exy)
 
 void setTaskLimitPot()  //设置路线数组
 {
-//    u8 data[10];
     u8 i = 0;
     for(; i < MAXLIMIT; i++)
     {
@@ -94,8 +93,6 @@ void setTaskLimitGather(u8 *arr, u8  len)  //接收一段路径作为必经点
 
 u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
 {
-    u8 data[10];
-    u8 i;
     Carx = car_x;
     Cary = car_y;
 
@@ -124,9 +121,9 @@ u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
     {
         if(min == 1)		//路线规划为当前位置
         {
-            lastLine();
+			lastLine();
             InitRunPathContorl(trackpath, tasklinecount);
-            ForwardMPFlag = 0;//将补全没有走的一小段距离的flag改为0 //***********************************************************************
+//			ForwardMPFlag = 0;			
         }
         else
         {
@@ -137,27 +134,15 @@ u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
             lastLine();
             //send_data_wifi(Find,min);
             InitRunPathContorl(trackpath, tasklinecount);
-            Send_WifiData_To_Fifo(trackpath,tasklinecount);
+            Send_WifiData_To_Fifo(trackpath,tasklinecount);	//打印路径
         }
 
         return 1;
     }
-    else
-    {
-        data[0] = 0xff;
-        data[1] = 0x03;
-        data[2] = 0x01;
-        data[3] = NowTaskPot;  //当前任务点
-        data[4] = 0x00;
-        data[5] = 0x00;
-        data[6] = 0x00;
-        for(i = 1; i < 6; i++)
-            data[6] += data[i];
-        data[6] %= 255;
-        data[7] = 0x0f;
-        delay_ms(500);
-        return 0;
-    }
+	else
+	{
+		Send_InfoData_To_Fifo((u8 *)"path planning error",sizeof("path planning error"));
+	}
 }
 
 u8 judge[MAXLIMIT] = {0};
@@ -330,25 +315,25 @@ void lastLine()
     tasklinecount--;//之前用的是++导致多一个0
     Dirflag = taskDirectionDeal();//方向不同先转弯
     if(min > 1)
-        ForwardMPFlag = (Dirflag == 1 ? 0 : 1);
+		ForwardMPFlag = (Dirflag == 0 ? 1 : 0); //不需要前进一段距离ForwardMPFlag为零
     //	//最后一小段路
     //先拐弯再走
     if(TaskControl.TaskDir != 0)
     {
-        if(TaskControl.TaskDir == LEFT45)
-        {
-            if(Dirflag == 0 && min > 1)
-                trackpath[++tasklinecount] = LEFTSMALL;
-            trackpath[++tasklinecount] = LEFT45;
-            ForwardMPFlag = 0;
-        }
-        else if(TaskControl.TaskDir == RIGHT45)
-        {
-            if(Dirflag == 0 && min > 1)
-                trackpath[++tasklinecount] = RIGHTSMALL;
-            trackpath[++tasklinecount] = RIGHT45;
-            ForwardMPFlag = 0;
-        }
+		if(TaskControl.TaskDir == LEFT45)
+		{
+			if(Dirflag == 0 && min > 1)
+					trackpath[++tasklinecount] = LEFTSMALL;
+			trackpath[++tasklinecount] = LEFT45;   
+			ForwardMPFlag = 0;
+		}
+		else if(TaskControl.TaskDir == RIGHT45)
+		{
+			if(Dirflag == 0 && min > 1)
+					trackpath[++tasklinecount] = RIGHTSMALL;  
+			trackpath[++tasklinecount] = RIGHT45;
+			ForwardMPFlag = 0;
+		}
     }
 
     if(TaskControl.LastLineOption == BACK || TaskControl.LastLineOption == GO || TaskControl.LastLineOption == TRACKLENTH)
@@ -374,6 +359,7 @@ void lastLine()
         {
             //	trackpath[++tasklinecount]=LEFTSMALL;
             trackpath[++tasklinecount] = LEFT45;
+			
         }
         else if(TaskControl.TaskDir ==  LEFT45)
         {
@@ -381,7 +367,7 @@ void lastLine()
             trackpath[++tasklinecount] = RIGHT45;
         }
     }
-    else
+    else		//不会退会继续转向直到90度
     {
         if(TaskControl.TaskDir == RIGHT45)
         {
@@ -392,9 +378,7 @@ void lastLine()
             trackpath[++tasklinecount] = LEFT45;
         }
     }
-
     tasklinecount++;//现在 tasklinecount是下标值为了同步后面的++
-
 }
 
 u8 taskDirectionDeal()
@@ -430,7 +414,7 @@ u8 taskDirectionDeal()
 }
 void addCarLine()
 {
-    u8 i;
+    u8 i;	
     for(i = 0; i < min - 1; i++)
     {
         if(getDirection(Find[i + 1]) != Cardirection)
@@ -444,24 +428,22 @@ void addCarLine()
             {
                 //printf("右转90"); //只有是起点的时候，转弯才不需要往前走一段距离，其它情况是路口转弯所以需要往前走一小段
                 //if(i!=0||(task == 0||Task[task-1].mpvalue!=0))//只有在路口的时候不需要前进一点
-                if(i != 0 || ForwardMPFlag == 1)
+                 if((i > 0) || ForwardMPFlag == 1)
                     trackpath[tasklinecount++] = LEFTSMALL; //数组初始化全为0，所以只有不为0时才添加值
                 trackpath[tasklinecount++] = LEFT;
             }
             else if((Cardirection - 1 == getDirection(Find[i + 1]) || Cardirection + 3 == getDirection(Find[i + 1])))
             {
-
                 //if(i!=0||(task == 0||Task[task-1].mpvalue!=0))//只有在路口的时候不需要前进一点
-                if(i != 0 || ForwardMPFlag == 1)
+                 if((i > 0) || ForwardMPFlag == 1)
                     trackpath[tasklinecount++] = RIGHTSMALL; //数组初始化全为0，所以只有不为0时才添加值
                 trackpath[tasklinecount++] = RIGHT;
-
             }
             else
             {
                 //根据左转和右转的情况，那种转动更准确，则选择哪一种转动
                 //	if(i!=0||(task == 0||Task[task-1].mpvalue!=0))//只有在路口的时候不需要前进一点 (这里认为码盘值为0的时候在路口上)
-                if(i != 0 || ForwardMPFlag == 1)
+                if((i > 0)|| ForwardMPFlag == 1)
                     trackpath[tasklinecount++] = LEFTSMALL; //数组初始化全为0，所以只有不为0时才添加值
                 //trackpath[0][tasklinecount++]=LEFT180;
                 trackpath[tasklinecount++] = LEFT;
@@ -469,8 +451,6 @@ void addCarLine()
             }
 
             Cardirection =  getDirection(Find[i + 1]);		//更新当前的方向
-
-
         }
         else     //行走的点的个数
         {
@@ -496,10 +476,7 @@ void addCarLine()
         }
         else    //	Send_Debug_Info("de1\n",sizeof("de1\n"));
             walkIntersection();//将走过的路口添加到行走数组中
-
     }
-
-
 }
 
 

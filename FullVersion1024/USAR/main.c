@@ -65,9 +65,9 @@ void Hardware_Init()
 }
 
 
-uint8_t open_road_buf[] = {0x55,0x03,0x01,0x01,0x00,0x00,0x02,0xBB};			//道闸测试
-uint8_t test_buf[] = {0xFD,0x00,0x06,0x01,0x01,0xC4,0xFA,0xBA,0xC3};			//语音播报“您好”
-uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
+//uint8_t open_road_buf[] = {0x55,0x03,0x01,0x01,0x00,0x00,0x02,0xBB};			//道闸测试
+//uint8_t test_buf[] = {0xFD,0x00,0x06,0x01,0x01,0xC4,0xFA,0xBA,0xC3};			//语音播报“您好”
+//uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
 
 	
 /**
@@ -75,24 +75,26 @@ uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
 参    数：无
 返 回 值：无
 */
-uint16_t Light_Value = 4564;	
+//uint16_t Light_Value = 4564;	
 void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
-//		startRun();
+		startRun();
 //		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
-		TaskBoardTest(1);
+//		TaskBoardTest(1);
 	}
 	if(S2==0){
 		while(S2==0);
-//		Send_WifiData_To_Fifo(QRCode, 8);
-		TaskBoardTest(2);
+		Send_ZigbeeData_To_Fifo(SMG_JSG, 8);
+//		TaskBoardTest(2);
+//		Set_tba_Beep(1);DelayTimerMS(1200);Set_tba_Beep(0);
 	}
 	if(S3==0){
 		while(S3==0);
+		PrintfDebug(Get_Bh_Value());
 //		Send_WifiData_To_Fifo(ShapeRead, 8);
-		TaskBoardTest(3);
+//		TaskBoardTest(3);
 	}
 	if(S4==0){
 		while(S4==0);
@@ -139,7 +141,7 @@ int main(void)
 	initStartCoord(1, 0, 1); //设置起始位置
 //    xydInit(&passivity.TerrainPot, 5, 3, 1); //设置地形标物位置
 //    xydInit(&passivity.TrafficPot, 5, 4, 3); //设置交通灯标物位置G4
-//    xydInit(&passivity.ETCPot, 4, 1, 0); //设置ETC标物位置  E2
+//    xydInit(&passivity.ETCPot, 4, 3, 0); //设置ETC标物位置  E2
 //    xydInit(&passivity.BarrierszPot, 2, 5, 0); //设置道闸位置
 //    xydInit(&passivity.RFIDCard, 4, 5, 0); //设置RFID位置
 	InitDataBase();   //初始化默认的数据//超声波//光源挡位//车库几层

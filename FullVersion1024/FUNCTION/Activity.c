@@ -142,12 +142,12 @@ u8 Car_Run(u8 order)//行走函数
     switch(order)
     {
     case LEFT://左转
-		delay_ms(50);
+		delay_ms(80);
         if(L_Flag == 0)
             Left_Test(TURNSPEED,NAV90);//左转
         break;
     case RIGHT://右转
-		delay_ms(50);
+		delay_ms(80);
         if(R_Flag == 0)
             Right_Test(TURNSPEED,NAV90);//右转
         break;
@@ -232,25 +232,25 @@ u8 Car_Run(u8 order)//行走函数
         break;
 		
     case LEFT45://左转45度
-		delay_ms(50);
+		delay_ms(80);
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV45);
         break;
 		
     case RIGHT45://右转45度
-		delay_ms(50);
+		delay_ms(80);
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV45);
         break;
 		
     case LEFT180://左转180度
-		delay_ms(50);
+		delay_ms(100);
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV180);
         break;
 		
     case RIGHT180://右转180度
-		delay_ms(50);
+		delay_ms(100);
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV180);
         break;
@@ -398,8 +398,11 @@ void startTask(void)	//开始任务
 }
 void endTask(void)	//结束任务
 {
-	isrun.taskflag = 0;
-	CarRunTask.TaskBegPoint++;
+	if(isrun.taskflag == 1)
+	{
+		isrun.taskflag = 0;
+		++CarRunTask.TaskBegPoint;
+	}
 }
 u8 getTaskState(void)	//获取任务状态
 {

@@ -334,7 +334,7 @@ void Wifi_Remote_Control () //wifi信号接收
 //					if(Wifi_Rx_Buf[3]==Wifi_Rx_Buf[4]) //所有点接收完成
 //					 {
 //						 initTask(Wifi_Rx_Buf[5],0,0,0,0); //将最后一个点设置为要到达的点 //00方向000（x）000（y）
-//						 wifi_send_QR_flag=1;
+						 wifi_send_QR_flag=1;
 //					 }
 //					else if(Wifi_Rx_Buf[3]>Wifi_Rx_Buf[4])//没接收完就继续设置必进点
 //					{
@@ -415,7 +415,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 ++WaitTimer_const;
                 if(WaitTimer_const > 2)	//如果发送三次都没有收到则取消发送 强制结束任务     在中间可以加上处理失败以后的处理方法
                 {
-                    endTask();
+                    wifi_send_QR_flag=1;
                 }
                 else
                 {
@@ -424,7 +424,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 }
             }
         }
-        else	if( (wifi_send_QR_flag == 1 || wifi_send_QR_flag == 2))         //已经完成了任务
+        else if( (wifi_send_QR_flag == 1 || wifi_send_QR_flag == 2))         //已经完成了任务
         {
             wifi_send_QR_flag = 0; //wifi发送标志初始化
             con_num = 0;
@@ -453,7 +453,8 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 ++WaitTimer_const;
                 if(WaitTimer_const > 2)	//如果发送三次都没有收到则取消发送 强制结束任务
                 {
-                    endTask();
+                    wifi_send_PLATE_flag = 1 ;
+					wifi_rev_card_flag_1 = 2 ;
                 }
                 else
                 {
@@ -485,7 +486,6 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
     }
     if(Wifi_signal == CMD_SHAPE_READ ) //pad=>car read qr finished小车识别图片结束
     {
-
         if(wifi_send_SHAPE_flag == 0)
         {
             if(gt_get_sub(WaitTimer_ms) == 0)

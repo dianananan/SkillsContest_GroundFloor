@@ -109,7 +109,6 @@ void Roadway_Flag_clean(void)
 */
 void Go_and_Back_Check(void)
 {	
-
 	if(G_Flag == 1 && Track_Flag==0)
 	{
 		if(MP >= temp_MP)

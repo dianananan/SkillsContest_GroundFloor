@@ -14,10 +14,10 @@ u16 getCsbDis(void);//超声波探测距离
 typedef struct 
 {
 	u8 TaskBegPoint;  //任务现在点 
-	u8 TaskEndPoint;  //任务现在点 
-	u8 option[5];		//任务选择
-	u8 TaskContent[5];	//内容
-	u16 TaskVaule[5];	//任务值
+	u8 TaskEndPoint;  //任务结束点
+	u8 option[6];		//任务选择
+	u8 TaskContent[6];	//内容
+	u16 TaskVaule[6];	//任务值
 }TaskOption;
 
 typedef struct

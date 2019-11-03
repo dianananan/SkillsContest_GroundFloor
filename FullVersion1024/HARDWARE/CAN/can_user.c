@@ -124,7 +124,8 @@ u8 Normal_data(u8 mode, u8 *buff)	 	  // 正常接收8字节控制指令
         {
             Rx_Flag = mode;
         }
-        else Rx_Flag = 0;
+        else 
+			Rx_Flag = 0;
     }	 
 	else if(buff[0] == 0xff && buff[7] == 0xf0)
     {
@@ -134,11 +135,10 @@ u8 Normal_data(u8 mode, u8 *buff)	 	  // 正常接收8字节控制指令
             Rx_Flag = mode;
         }
         else
-        {
             Rx_Flag = 0;
-        }
+        
     }
-	return Rx_Flag==0?0:1;
+	return Rx_Flag;
 }
 
 void Abnormal_data(void)	  //数据异常处理

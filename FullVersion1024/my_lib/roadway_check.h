@@ -7,8 +7,8 @@
 #if CARSWITCH   //老车
 	#define LeftMP1 750
 	#define RightMP1 950
-	#define Left_45_MP 400
-	#define Right_45_MP 510
+	#define Left_45_MP 380
+	#define Right_45_MP 480
 	#define LSWERVEMP180 1700
 	#define RSWERVEMP180 2100
 #else  //新车1

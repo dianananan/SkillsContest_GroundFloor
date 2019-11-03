@@ -43,23 +43,20 @@ void Zigbee_Rev_Control(void)
         memset(Zigb_Rx_Buf, 0, sizeof(Zigb_Rx_Buf));
         Zigbee_Rx_flag = 0;
 
-        if( (buf[1] == 0x03) || (buf[1] == 0x0c)) // 道闸 或 ETC
+        if(((buf[1] == 0x03) || (buf[1] == 0x0c)) && (buf[2] == 0x01)) // 道闸 或 ETC
         {
-            if(buf[2] == 0x01)
-            {
-                if(buf[3] == 0x01 || (buf[3] == 0x00))
-                {
-                    if(buf[4] == 0x05) //道闸
-                    {
-                        zig_send_door_Rev_flag = 1;
-                    }
-                    else if(buf[4] == 0x06) //ETC
-                    {
-                        zig_send_etc_flag = 1;
-						ECCTimer_ms = gt_get()+6000;
-                    }
-                }
-            }
+			if(buf[3] == 0x01 || (buf[3] == 0x00))
+			{
+				if(buf[4] == 0x05) //道闸
+				{
+					zig_send_door_Rev_flag = 1;
+				}
+				else if(buf[4] == 0x06) //ETC
+				{
+					zig_send_etc_flag = 1;
+					ECCTimer_ms = gt_get()+6000;
+				}
+			}
         }
         else if(buf[1] == 0x0D && buf[2] == 0x03) //车库返回信息
         {
@@ -137,6 +134,7 @@ void Zig_Send_Dispose(u8 taskchoose)
 			WaitTimer_ms=gt_get()+3000;	
 		}
 		if((zig_send_etc_flag == 1 &&  gt_get_sub(ECCTimer_ms)) || gt_get_sub(WaitTimer_ms)== 0)
+//		if((zig_send_etc_flag == 1) || (gt_get_sub(WaitTimer_ms)== 0))
 		{
 			endTask();
 			EndWaitTim();

@@ -38,57 +38,60 @@ void RunTaskControl()//标志物数据收发控制
     {
         if(isrun.TaskCarryOut == 1)
         {
-            setNowTask(TaskCar, DELAY, 1000);
+            setNowTask(TaskCar, DELAY, 1);
         }
-        TaskMenu();
-        if((CarRunTask.TaskBegPoint) >= CarRunTask.TaskEndPoint || CarRunTask.TaskBegPoint >=4 )	//如果任务完成则 +1
-        {
+		TaskMenu();
+        if(((CarRunTask.TaskBegPoint) >= CarRunTask.TaskEndPoint) && (getTaskState() == 0))	//如果任务完成则 +1	(getTaskState() == 0)     CarRunTask.TaskEndPoint!=0
+//        if(getTaskState() == 0)
+		{
             ++isRunControl.NowPot;
+//			PrintfDebug(CarRunTask.TaskBegPoint);
+//			PrintfDebug(CarRunTask.TaskEndPoint);
 			CarRunTask.TaskBegPoint=0;
 			CarRunTask.TaskEndPoint=0;
         }
     }
     else if(getActionState() == 0 && getRunState())
     {
-        if(NOW_TRAFFIC == getNowPathVaule()) //交通灯
-        {
-            if(isrun.TaskCarryOut == 0)
-            {
-                STOP();
-                Send_InfoData_To_Fifo((u8 *)"Taskis\n", sizeof("Taskis\n"));
+//        if(NOW_TRAFFIC == getNowPathVaule()) //交通灯
+//        {
+//            if(isrun.TaskCarryOut == 0)
+//            {
+//                STOP();
+//                Send_InfoData_To_Fifo((u8 *)"Taskis\n", sizeof("Taskis\n"));
 
-                Wifi_Send_Dispose(CMD_LIGHT_READ);
-            }
-            if(getTaskState() == 0)		//如果任务完成则 +1
-            {
-                ++isRunControl.NowPot;
-            }
-            xydInit(&passivity.TrafficPot, 0, 0, 0); //解除识别交通灯
-        }
-        else if (NOW_ETC == getNowPathVaule())
-        {
-            if(isrun.TaskCarryOut == 0)
-            {
-                if(zig_send_etc_flag == 0)STOP();
-                Zig_Send_Dispose(CMD_ETC);
-            }
-            if(getTaskState() == 0)		//如果任务完成则 +1
-            {
-                ++isRunControl.NowPot;
-            }
-        }
-        else if (NOW_BARRIERSZ == getNowPathVaule())
-        {
-            if(isrun.TaskCarryOut == 0)
-            {
-                STOP();
-                Zig_Send_Dispose(CMD_ZG_DOOR);
-            }
-            if(getTaskState() == 0)		//如果任务完成则 +1
-            {
-                ++isRunControl.NowPot;
-            }
-        }
+//                Wifi_Send_Dispose(CMD_LIGHT_READ);
+//            }
+//            if(getTaskState() == 0)		//如果任务完成则 +1
+//            {
+//                ++isRunControl.NowPot;
+//            }
+//            xydInit(&passivity.TrafficPot, 0, 0, 0); //解除识别交通灯
+//        }
+//        else if (NOW_ETC == getNowPathVaule())
+//        {
+//            if(isrun.TaskCarryOut == 0)
+//            {
+//                if(zig_send_etc_flag == 0)STOP();
+//                Zig_Send_Dispose(CMD_ETC);
+//            }
+//            if(getTaskState() == 0)		//如果任务完成则 +1
+//            {
+//                ++isRunControl.NowPot;
+//            }
+//        }
+//        else if (NOW_BARRIERSZ == getNowPathVaule())
+//        {
+//            if(isrun.TaskCarryOut == 0)
+//            {
+//                STOP();
+//                Zig_Send_Dispose(CMD_ZG_DOOR);
+//            }
+//            if(getTaskState() == 0)		//如果任务完成则 +1
+//            {
+//                ++isRunControl.NowPot;
+//            }
+//        }
     }
 
 }
@@ -125,8 +128,9 @@ u8 Task_Chooce(u8 taskchoose)
     switch(taskchoose)
     {
 		case DELAY://延时
-//			delay_ms(isRunTask.TaskVaule );//延时1秒钟
-			delay_ms(500);
+			DelayTimerMS(CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]);//延时1秒钟
+//			delay_ms(500);
+//			++isRunControl.NowPot;
 			break;
 		case LED_L_OPEN://打开左转向灯
 			Set_tba_WheelLED(L_LED,1);
@@ -148,8 +152,10 @@ u8 Task_Chooce(u8 taskchoose)
 			Set_tba_WheelLED(L_LED,0);
 			Set_tba_WheelLED(R_LED,0);
 			break;
-		case BEEP_OPEN://打开蜂鸣器
-			Set_tba_Beep(1);DelayTimerMS(600);Set_tba_Beep(0);
+		case BEEP_OPEN://打开蜂鸣器 //600ms 一次
+			Set_tba_Beep(1);
+			DelayTimerMS(CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]); //延时时间
+			Set_tba_Beep(0);
 			break;
 		case BEEP_CLOSE://关闭蜂鸣器
 			Set_tba_Beep(0);
@@ -168,7 +174,7 @@ u8 Task_Chooce(u8 taskchoose)
 				ExtendArray(isRunControl.PathGather,isRunControl.PathCount ,isRunControl.NowPot,TRACKLENTH);  //TRACKLENTH
 				++isRunControl.PathCount;
 			}
-			Send_WifiData_To_Fifo(isRunControl.PathGather,isRunControl.PathCount );delay_ms(50);
+			Send_WifiData_To_Fifo(isRunControl.PathGather,isRunControl.PathCount);delay_ms(50);
 			break;
 		default:
 			return 0;
@@ -200,7 +206,7 @@ void setNowTask(u8 NowTask, u8 cmd, u16 Vaule)
     CarRunTask.option[CarRunTask.TaskEndPoint] = NowTask;
 	CarRunTask.TaskContent[CarRunTask.TaskEndPoint] = cmd;
     CarRunTask.TaskVaule[CarRunTask.TaskEndPoint] = Vaule;
-	CarRunTask.TaskEndPoint++;
+	++CarRunTask.TaskEndPoint;
 }
 
 u8 getTaskCmd(void)

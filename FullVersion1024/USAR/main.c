@@ -80,21 +80,23 @@ void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
-		startRun();
+//		startRun();
+		RFID_S50.RFID_Mode = READ;
 //		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
 //		TaskBoardTest(1);
 	}
 	if(S2==0){
 		while(S2==0);
-		Send_ZigbeeData_To_Fifo(SMG_JSG, 8);
+		RFID_S50.RFID_Mode = SLEEP;
+//		Send_ZigbeeData_To_Fifo(SMG_JSG, 8);
 //		TaskBoardTest(2);
 //		Set_tba_Beep(1);DelayTimerMS(1200);Set_tba_Beep(0);
 	}
 	if(S3==0){
 		while(S3==0);
-		PrintfDebug(Get_Bh_Value());
+//		PrintfDebug(Get_Bh_Value());
 //		Send_WifiData_To_Fifo(ShapeRead, 8);
-//		TaskBoardTest(3);
+		TaskBoardTest(3);
 	}
 	if(S4==0){
 		while(S4==0);
@@ -117,20 +119,13 @@ int main(void)
 	uint16_t Nav_Value = 0;					//角度
 	u8 sum=31;
 	
-	Hardware_Init();						//硬件初始化
+	Hardware_Init();						//硬件初始化	
+	Power_check_times =  gt_get() + 1000;	
+//	LED_twinkle_times =  gt_get() + 50;     
+//	WIFI_Upload_data_times = gt_get() + 200;
+//	RFID_Init_Check_times = gt_get()+200;
 	
-	LED_twinkle_times =  gt_get() + 50;     
-	Power_check_times =  gt_get() + 1000;
-	WIFI_Upload_data_times = gt_get() + 200;
-	RFID_Init_Check_times = gt_get()+200;
-	
-	Principal_Tab[0] = 0x55;
-	Principal_Tab[1] = 0xAA;	
-	
-	Follower_Tab[0] = 0x55;
-	Follower_Tab[1] = 0x02;
-	
-	Send_UpMotor(0 ,0);
+//	Send_UpMotor(0 ,0);
 //*******************************************************************
 	WifiSignal_Rx_Init();
 	NowTaskPot=0;
@@ -145,29 +140,33 @@ int main(void)
 //    xydInit(&passivity.BarrierszPot, 2, 5, 0); //设置道闸位置
 //    xydInit(&passivity.RFIDCard, 4, 5, 0); //设置RFID位置
 	InitDataBase();   //初始化默认的数据//超声波//光源挡位//车库几层
-//	Host_Set_UpTrack(50);  //更新数据上传时间
+	Host_Set_UpTrack(50);  //更新数据上传时间
 //******************************************************************	
 	while(1)
 	{
 		KEY_Check();//按键检测
-//		Zigbee_Rev_Control();//zigbee接收控制
-//		Wifi_Remote_Control ();//WIFI接收控制
         runControl();//路线行驶控制
+//=============================================22点注释
+		if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
+		{
+			Read_Card();
+			if((RFID_S50.RFID_Read_Ok == 1 && RFID_S50.RFID_Mode == READ)
+				|| (RFID_S50.RFID_Write_Ok == 1 && RFID_S50.RFID_Mode == WRITE))
+			{
+				RFID_S50.RFID_Read_Ok=0;
+				RFID_S50.RFID_Mode = SLEEP;
+			}
+		}
         RunTaskControl();
 		
 		Can_WifiRx_Check();
 		Can_ZigBeeRx_Check();
-//=============================================22点注释
-//		if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
-//		{
-//			Read_Card();
-//		}
+
 		if(gt_get_sub(Power_check_times) == 0) 			
 		{
 			Power_check_times =  gt_get() + 1000;		//电池电量检测
 			Power_Check();		
 		} 
-		
 //		
 //		#if 0
 //		if(gt_get_sub(LED_twinkle_times) == 0) 			
@@ -193,7 +192,7 @@ int main(void)
 //			}
 //		} 
 //		#endif
-//		if()
+//		
 //		
 //
 //		if(gt_get_sub(WIFI_Upload_data_times) == 0)  //看门狗？？？

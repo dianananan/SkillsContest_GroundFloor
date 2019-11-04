@@ -488,16 +488,16 @@ void Yu_Yin_Asr(void)  // 语音识别处理函数
 				}
 				case 0x14:
 				{
-					Infrared_Send(H_SD,4);
-					SYN_TTS("隧道排风系统已打开，等待下一步指令");
-					SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别
-					break;
+//					Infrared_Send(H_SD,4);
+//					SYN_TTS("隧道排风系统已打开，等待下一步指令");
+//					SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别
+//					break;
 				}
 				case 0x15:
 				{
-					Infrared_Send(H_S,4);
-					SYN_TTS("图片翻页完成，等待下一步指令");
-					SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别
+//					Infrared_Send(H_S,4);
+//					SYN_TTS("图片翻页完成，等待下一步指令");
+//					SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别
 					break;
 				}
 				case 0x16:

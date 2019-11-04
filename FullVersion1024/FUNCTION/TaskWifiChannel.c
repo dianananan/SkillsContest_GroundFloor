@@ -15,8 +15,6 @@
 #include "Init.h"
 
 
-//u32 counttime = 0;   //定时器计数值
-
 //************************************
 //道闸//Etc//
 //发送车牌，图片识别，红绿灯，交通灯//特殊处理
@@ -30,8 +28,6 @@ u8 wifi_send_SHAPE_flag = 0;//图形识别点已到达
 u8 wifi_send_GARAGE_flag = 0;//得到计算的入库点
 u8 wifi_send_HLLIGHT_flag = 0; //红绿灯识别点已到达
 
-u8 light_xxx=2;
-
 //u8 shapedata[3] = {0};//图形识别数据
 u8 HW_SEND_SHAPE[10] = {0};//形状
 u8 GETPONT[3] = {0};//wifi接收坐标
@@ -44,11 +40,8 @@ u8 wifi_rev_card_flag_1 = 0;//车牌的前三位接收标志
 u8 wifitask = 0;
 u8 Timeout;
 
-
-//u8 Light_Rank = 0; //光源挡位
 u8 Dispose_Data_array[20];//用来解析来自WiFi中的信号
 u8 Dispose_array_num = 1; //数组中信息的个数 //默认为1
-//u8 fulfill_flag = 0; //wifi命令执行成功标志位
 u8 con_num = 0;
 
 u8 TempArray[8]={0x55,0x0e,0x02,0x00,0x00,0x00,0x00,0xbb};
@@ -105,11 +98,11 @@ void Wifi_Send_Dispose_hw(u8 *Wifi_signal)  //处理红外信息
         light_control(Wifi_signal[4]);
         break;
 
-    case 0x04 :
-        if(Wifi_signal[4] == 0x01) //照片上翻
-            Infrared_Send(H_S, 4);
-        else if(Wifi_signal[4] == 0x00) //照片下翻
-            Infrared_Send(H_X, 4);
+//    case 0x04 :
+//        if(Wifi_signal[4] == 0x01) //照片上翻
+//            Infrared_Send(H_S, 4);
+//        else if(Wifi_signal[4] == 0x00) //照片下翻
+//            Infrared_Send(H_X, 4);
         break;
     default  :
         return ;
@@ -297,7 +290,6 @@ void Wifi_Remote_Control () //wifi信号接收
 					Wifi_Send_Dispose_Car(readBuf); //元件命令
 					break;
 				case 0x07 ://二维码任务点命令
-					light_xxx=readBuf[3];
 					Send_ZigbeeData_To_Fifo(readBuf,8);
 					wifi_send_QR_flag = 2;
 					break;

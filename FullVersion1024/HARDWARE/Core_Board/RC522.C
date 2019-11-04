@@ -30,9 +30,10 @@ void delay_ns(u32 ns)
   }
 }
 
-uint32_t Rs522_cmd_cnt;
 //struct RFID_Card RFID_S50;
+uint32_t Rs522_cmd_cnt;
 uint8_t TXRFID[16] = {0x41,0x31,0x42,0x32,0x43,0x33,0x44,0x34,0x46,0x31,0x42,0x32,0x43,0x33,0x44,0x34};
+
 
 /*
 函数功能：全自动读卡函数
@@ -41,68 +42,66 @@ uint8_t TXRFID[16] = {0x41,0x31,0x42,0x32,0x43,0x33,0x44,0x34,0x46,0x31,0x42,0x3
 **/
 void Read_Card(void)
 {
-//	char status = MI_ERR;
-//	uint8_t CT[2];									//卡类型
-//	uint8_t SN[4]; 									//卡号
-//	uint8_t KEY[6]={0xff,0xff,0xff,0xff,0xff,0xff}; //密钥
-//	uint8_t s = 0x01;       						//读取的块区	
+	char status = MI_ERR;
+	uint8_t CT[2];									//卡类型
+	uint8_t SN[4]; 									//卡号
+	uint8_t KEY[6]={0xff,0xff,0xff,0xff,0xff,0xff}; //密钥
+	uint8_t s = 0x01;       						//读取的块区	
 //	uint8_t RXRFIDH[8];
-//	#define  DATA_LEN    16                     	//定义数据字节长度	
+	#define  DATA_LEN    16                     	//定义数据字节长度	
 
-//	LED1 = 0;
-//	LED2 = 0;
-//	LED3 = 0;
-//	LED4 = 0;
-//	
-//		status = PcdRequest(PICC_REQALL,CT);		//寻卡，并填充型号
-//		if(status == MI_OK)							//寻卡成功
-//		{
-//			status=MI_ERR;
-//			LED1 = 1;
-//			status = PcdAnticoll(SN);				//防冲撞
-//			if(status == MI_OK)
-//			{
-//				status=MI_ERR;
-//				LED2 = 1;				
-//				status =PcdSelect(SN);				//选定此卡
-//				if(status == MI_OK)					//选定成功
-//				{
-//					status=MI_ERR;	
-//					LED3 = 1;
-//					MP_SPK = 1;					
-//					status =PcdAuthState(0x60,0x03,KEY,SN);		//验证密钥
-//					if(status == MI_OK)
-//					{
-//						status = MI_ERR;
-//						if(RFID_S50.RFID_Mode == READ)
-//						{
-//							status=PcdRead(s,RFID_S50.RXRFID);				//读卡
-//							if(status == MI_OK)
-//							{
-//								RFID_S50.RFID_Read_Ok=1;
-//								status = MI_ERR;
-//								LED4 = 1;							//读卡成功
-//								MP_SPK = 0;	
-//								
-//								RFID_Funition();
-//								
-//								Send_InfoData_To_Fifo(RFID_S50.RXRFID,16);
-//								Send_InfoData_To_Fifo((u8*)"\n",2);
-//							}								
-//						}	
-//						else if(RFID_S50.RFID_Mode == WRITE)
-//						{
-//							status = PcdWrite(s,TXRFID);			//写卡
-//							if(status == MI_OK)
-//							{
-//								status = MI_ERR;
-//								RFID_S50.RFID_Write_Ok=1;
-//							}							
-//						}
-//					}
-//				}
-//			}
-//	}
+	LED1 = 0;
+	LED2 = 0;
+	LED3 = 0;
+	LED4 = 0;
+	
+		status = PcdRequest(PICC_REQALL,CT);		//寻卡，并填充型号
+		if(status == MI_OK)							//寻卡成功
+		{
+			status=MI_ERR;
+			TIM_Cmd(TIM9,DISABLE);
+			Send_UpMotor(0 , 0);
+			Set_tba_Beep(1);
+			status = PcdAnticoll(SN);				//防冲撞
+			if(status == MI_OK)
+			{
+				status=MI_ERR;			
+				status =PcdSelect(SN);				//选定此卡
+				if(status == MI_OK)					//选定成功
+				{
+					status=MI_ERR;	
+					MP_SPK = 1;					
+					status =PcdAuthState(0x60,0x03,KEY,SN);		//验证密钥
+					if(status == MI_OK)
+					{
+						status = MI_ERR;
+						if(RFID_S50.RFID_Mode == READ)
+						{
+							status=PcdRead(s,RFID_S50.RXRFID);				//读卡
+							if(status == MI_OK)
+							{
+								RFID_S50.RFID_Read_Ok=1;	//读卡成功
+								status = MI_ERR;					
+								MP_SPK = 0;	
+								RFID_Funition();
+							}								
+						}	
+						else if(RFID_S50.RFID_Mode == WRITE)
+						{
+							status = PcdWrite(s,TXRFID);			//写卡
+							if(status == MI_OK)
+							{
+								status = MI_ERR;
+								RFID_S50.RFID_Write_Ok=1;
+							}							
+						}
+					}
+				}
+			}
+			TIM_Cmd(TIM9,ENABLE);	//重新启动
+//			Send_UpMotor(L_Speed ,R_Speed);						
+			Set_tba_Beep(0);
+	}
 }
 
 
@@ -160,9 +159,9 @@ void Readcard_daivce_Init(void)//RFID初始化
 	RC522_Uart_init(9600);	// 串口初始化为9600
 	delay_ms(500);
 	InitRc522();			//读卡器初始化
-//	RFID_S50.RFID_Mode = SLEEP;	//设置不寻卡
-//	RFID_S50.RFID_Read_Ok=0;
-//	RFID_S50.RFID_Write_Ok=0;
+	RFID_S50.RFID_Mode = SLEEP;	//设置不寻卡
+	RFID_S50.RFID_Read_Ok=0;
+	RFID_S50.RFID_Write_Ok=0;
 }
 
 void Reset_RC522(void)

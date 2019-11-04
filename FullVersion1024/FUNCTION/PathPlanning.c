@@ -314,8 +314,8 @@ void lastLine()
     u8 Dirflag;
     tasklinecount--;//之前用的是++导致多一个0
     Dirflag = taskDirectionDeal();//方向不同先转弯
-    if(min > 1)
-		ForwardMPFlag = (Dirflag == 0 ? 1 : 0); //不需要前进一段距离ForwardMPFlag为零
+//    if(min > 1)
+//		ForwardMPFlag = (Dirflag == 0 ? 1 : 0); //不需要前进一段距离ForwardMPFlag为零
     //	//最后一小段路
     //先拐弯再走
     if(TaskControl.TaskDir != 0)

@@ -22,8 +22,6 @@ extern u8 wifi_send_QR_flag;//wifi·¢ËÍ¶þÎ¬Âë¶ÁÃüÁî¸øÆ½°å  0:init 1:car->pad 2:pa
 extern u8 wifi_send_SHAPE_flag;
 extern u8 wifi_rev_card_flag_1;
 
-extern u8 light_xxx;
-
 extern u8 Timeout;
 extern u8 wifitask;
 

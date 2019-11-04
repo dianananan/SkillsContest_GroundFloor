@@ -9,11 +9,12 @@
 #include "Init.h"
 
 
-uint8_t Principal_Tab[Principal_Length];
-uint8_t Follower_Tab[Follower_Length];
+//uint8_t Principal_Tab[Principal_Length];
+//uint8_t Follower_Tab[Follower_Length];
 u8 C_Tab[10];	//返回状态数组
 u8 zig_send_door_Rev_flag = 0;	  //道闸打开标志位
 u8 zig_send_voice_Rev_flag = 0;   // 语音芯片状态返回
+struct RFID_Card RFID_S50;
 
 u8 getNEWTask() //设置多项任务
 {
@@ -27,7 +28,7 @@ u8 getNEWTask() //设置多项任务
 //        setNowTask(TaskCar, DELAY, 0);
 //		break;
 //	case 2 :
-//		initTask(setVaule(1, 3, 1 ), LEFT45, 0, 0, 0 );  //道闸
+//		initTask(setVaule(1, 3, 2 ), LEFT45, 0, 0, 0 );  //道闸
 //		setNowTask(TaskCar, DELAY, 0);
 //		break;	
 //    case 3 :

@@ -3,17 +3,7 @@
 /////////////////////////////////////////////////////////////////////
 #include "stm32f4xx.h"
 #include "sys.h"
-
-
-//extern struct RFID_Card
-//{
-//	u8 RFID_Mode;   //RFID读写模式
-//	u8 RFID_Read_Ok; 
-//	u8 RFID_Write_Ok;
-//	u8 RXRFID[16];
-//}RFID_S50;
-
-//extern struct RFID_Card RFID_S50;
+#include <stdio.h>
 
 extern char PcdReset(void);
 extern void PcdAntennaOn(void);
@@ -53,6 +43,15 @@ extern void Send_data(unsigned char ch);
 extern int8_t Rc522_ToSRst(void);
 extern int8_t Rc522_OutSRst(void);		
 extern void Read_Card(void);
+
+//struct RFID_Card
+//{
+//u8 RFID_Mode;
+//u8 RFID_Read_Ok;
+//u8 RFID_Write_Ok;
+//u8 RXRFID[16];
+//};
+//extern struct RFID_Card RFID_S50;
 
 //********读卡模式********//
 #define SLEEP 0			//休眠

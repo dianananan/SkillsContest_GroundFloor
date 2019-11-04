@@ -185,7 +185,7 @@ void wheel_Track_ANGLE(u8 angle,u16 min)
 	}
 	else if(angle==NAV90)
 	{
-		if(((!(gd &0X18))&& MP>=min && (!(gd &0X18)))|| MP>min+50)
+		if(((!(gd &0X18))&& MP>=min-50 && (!(gd &0X18)))|| MP>min+50)
 		{
 			if(Wheel_flag) 
 			{	
@@ -205,7 +205,7 @@ void wheel_Track_ANGLE(u8 angle,u16 min)
 			}			
 		}
 	}
-	else if((angle==NAV180 && MP>=min && (!(gd &0X18))) || MP>=min+100)
+	else if((angle==NAV180 && MP>=min-50 && (!(gd &0X18))) || MP>=min+50)
 	{
 		if(Wheel_flag)
 		{	

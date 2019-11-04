@@ -26,7 +26,7 @@ void Send_USART_To_Fifo(u8 *array,u8 len);//发送串口信息
 void RFID_Funition(void);	//RFID触发函数
 
 void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont);  //扩展数组内容
-void bubble_sort(u16 arr[], u8 len);  //冒泡
+void bubble_sort(u16 *arr, u8 len,u8 mode);   //冒泡排序  mode=1从小到大  mode=2从大到小
 //路况检测时间设置
 u8 Set_Time_Content(u8 Timex,u16 arr,u16 psc);
 
@@ -38,6 +38,7 @@ void TaskBoardTest(u8 mode); //打印关照强度的信息到debug面板  mode=0 =1dis
 //void Send_A72Data_To_Fifo(u8 *p ,u8 len);	//发送串口信息
 void DelayTimerMS(u16 time);//设置高延时函数
 u8 CheckSum(u8 *array,u8 orig); //计算校验和
+void RevisalProtocol(u8 *array,u8 dis,u8 content);	//协议数组，更改的位置，更改的内容
 
 #endif
 

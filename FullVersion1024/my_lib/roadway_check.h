@@ -6,7 +6,7 @@
 #define CARSWITCH  1
 #if CARSWITCH   //¿œ≥µ
 	#define LeftMP1 750
-	#define RightMP1 950
+	#define RightMP1 850
 	#define Left_45_MP 380
 	#define Right_45_MP 480
 	#define LSWERVEMP180 1700

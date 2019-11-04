@@ -18,13 +18,17 @@ void RFID_Funition(void)	//读卡时要执行的任务函数
 {
 	u8 i=0;
 	u16 sum=0;
-	SendVoice((u8 *)"卡片位置为",sizeof("卡片位置为"));	//发送语音播报
-	if(Carx==4)
-		SendVoice((u8 *)"C2",sizeof("C2"));	//发送语音播报
-	if(Carx==3)
-		SendVoice((u8 *)"D2",sizeof("D2"));	//发送语音播报
-	if(Carx==2)
-		SendVoice((u8 *)"F2",sizeof("F2"));	//发送语音播报
+	Send_InfoData_To_Fifo(RFID_S50.RXRFID,16);
+	delay_ms(100);
+	Send_InfoData_To_Fifo((u8*)"\n",2);
+	
+	SendVoice((u8 *)"读卡成功",sizeof("读卡成功"));	//发送语音播报
+//	if(Carx==4)
+//		SendVoice((u8 *)"C2",sizeof("C2"));	//发送语音播报
+//	if(Carx==3)
+//		SendVoice((u8 *)"D2",sizeof("D2"));	//发送语音播报
+//	if(Carx==2)
+//		SendVoice((u8 *)"F2",sizeof("F2"));	//发送语音播报
 	
 //	for(i=0;i<16;i++)
 //	{
@@ -38,7 +42,13 @@ void RFID_Funition(void)	//读卡时要执行的任务函数
 
 
 //******************************math***********************/Upright_Flag
-void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont)  //扩展数组内容
+
+/**********扩展数组内容******************
+	array:数组的首地址
+	len:数组的最大长度
+	adr:添加进数组的位置
+	cont:添加进的内容*/
+void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont)  
 {
 	u8 i=0;
 	if(Len+1>=MAXPATH)return ;
@@ -50,18 +60,19 @@ void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont)  //扩展数组内容
 	
 }
 
-void bubble_sort(u16 arr[], u8 len)  //冒泡排序
+void bubble_sort(u16 *arr, u8 len,u8 mode)  //冒泡排序  mode=1从小到大  mode=2从大到小
 {
     u8 i, j;
     u16 temp;
-    for (i = 0; i < len - 1; i++)
-        for (j = i; j < len - 1 - i; j++)
-            if (arr[j] > arr[j + 1])
-            {
-                temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
+
+	for (i = 0; i < len - 1; i++)
+		for (j = i; j < len - 1 - i; j++){
+				if((mode ==1 && (arr[j] > arr[j + 1])) ||(mode ==2 && (arr[j] < arr[j + 1]))){
+					temp = arr[j];
+					arr[j] = arr[j + 1];
+					arr[j + 1] = temp;
+				}
+			}
 }
 
 
@@ -81,7 +92,7 @@ void RepeatedlySend_WI(u8 *array,u8 sum,u8 delay) //反复发送
 	u8 i=0;
 	for(i=0;i<sum;i++)
 	{
-		Send_ZigbeeData_To_Fifo(array,8);
+		Send_WifiData_To_Fifo(array,8);
 		delay_ms(delay);
 	}
 }
@@ -91,13 +102,13 @@ void RepeatedlySend_HW(u8 *array,u8 sum,u8 delay) //反复发送
 	u8 i=0;
 	for(i=0;i<sum;i++)
 	{
-		Send_ZigbeeData_To_Fifo(array,8);
+		Infrared_Send(array,6);
 		delay_ms(delay);
 	}
 }
 
 
-void PrintfDebug(u16 sum)  //debug发送单个数据到Debug
+void PrintfDebug(u16 sum)  //debug发送单个数据到Debug面板上来
 {
 	u8 Array[6],Temp[6];
 	u8 len=0;
@@ -157,12 +168,6 @@ void DelayTimerMS(u16 time)		//设置高延时函数
 	delay_ms(sum2);
 }
 
-//void Send_A72Data_To_Fifo(u8 *p ,u8 len)	//发送串口信息
-//{
-//	UartA72_TxAddStr(JTD_READ,16);
-//	UartA72_TxStart();
-//}
-
 u8 CheckSum(u8 *array,u8 orig)	//计算校验和
 {
 	u8 i=0;
@@ -170,7 +175,15 @@ u8 CheckSum(u8 *array,u8 orig)	//计算校验和
 	for(i=orig;i<6;i++)
 		result=(result+array[i])%256;
 	return result;
-	
+}
+
+void RevisalProtocol(u8 *array,u8 dis,u8 content)	//协议数组，更改的位置，更改的内容
+{
+	if(dis <1 || dis>6)	//包头包尾校验和，主控位不能做修改
+		return;
+	array[6] =(array[6]-array[dis])%256;
+	array[dis]=content;
+	array[6] =(array[6]+array[dis])%256;
 }
 
 

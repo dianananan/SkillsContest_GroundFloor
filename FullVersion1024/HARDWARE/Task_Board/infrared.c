@@ -117,14 +117,8 @@ void light_Self_Tes() //路灯的挡位检测
         light2 = Get_Bh_Value();		//测试光照强度 	Get_Bh_Value
         if(light1 > light2)
 		{
-			if((i%4) == 0)
-				MailboxRe.ConfigInfo.LightLevelNow =1; //读出现在的任务点
-			else if((i%4) == 3)
-				MailboxRe.ConfigInfo.LightLevelNow =2; //读出现在的任务点
-			else if((i%4) == 2)
-				MailboxRe.ConfigInfo.LightLevelNow =3; //读出现在的任务点
-			else 
-				MailboxRe.ConfigInfo.LightLevelNow =4;
+//			if((i%4) == 0)
+			MailboxRe.ConfigInfo.LightLevelNow =(5-(i%4))%4; //读出现在的任务点
 			break;
 		}
         Infrared_Send(H_N[0], 4);
@@ -243,13 +237,13 @@ u8 HW_Send_Choose(u8 choose_task)
 //			Infrared_Send(H_SD,4);delay_ms(5);
 //			break;
 			
-		case HW_PICUP://图片上翻
-			Infrared_Send(H_S,4);delay_ms(5);
-			break;
-			
-		case HW_PICDOWN://图片下翻
-			Infrared_Send(H_X,4);delay_ms(5);
-			break;
+//		case HW_PICUP://图片上翻
+//			Infrared_Send(H_S,4);delay_ms(5);
+//			break;
+//			
+//		case HW_PICDOWN://图片下翻
+//			Infrared_Send(H_X,4);delay_ms(5);
+//			break;
 			
 		case HW_OPENBJQ://打开报警器
 			Infrared_Send( HW_K,6);delay_ms(100);

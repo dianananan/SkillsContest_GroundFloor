@@ -187,7 +187,7 @@ I_ERR;   }
 ..\HARDWARE\Core_Board\RC522.C(761): warning:  #68-D: integer conversion resulted in a change of sign
      
 riteRawRC(CommandReg,PCD_IDLE); 
-..\HARDWARE\Core_Board\RC522.C(835): warning:  #68-D: integer conversion resulted in a change of sign
+..\HARDWARE\Core_Board\RC522.C(834): warning:  #68-D: integer conversion resulted in a change of sign
   	uint8_t Rt = 
 I_ERR;
 ..\HARDWARE\Core_Board\RC522.C: 48 warnings, 0 errors
@@ -265,32 +265,37 @@ compiling CanP_HostCom.c...
 compiling Hard_Can.c...
 compiling my_lib.c...
 compiling data_base.c...
+..\my_lib\data_base.c(21): warning:  #177-D: variable "M05"  was declared but never referenced
+  	u16 M05;
+..\my_lib\data_base.c: 1 warning, 0 errors
 compiling roadway_check.c...
 compiling data_filtering.c...
 compiling Activity.c...
-compiling PathPlanning.c...
-..\FUNCTION\PathPlanning.c(146): warning:  #940-D: missing return statement at end of non-void function "initTask" 
-  }
-..\FUNCTION\PathPlanning.c: 1 warning, 0 errors
 compiling Task.c...
 ..\FUNCTION\Task.c(181): warning:  #111-D: statement is unreachable
   			break;
 ..\FUNCTION\Task.c: 1 warning, 0 errors
+compiling PathPlanning.c...
+..\FUNCTION\PathPlanning.c(145): warning:  #940-D: missing return statement at end of non-void function "initTask" 
+  }
+..\FUNCTION\PathPlanning.c(311): warning:  #177-D: variable "Dirflag"  was declared but never referenced
+      u8 Dirflag;
+..\FUNCTION\PathPlanning.c: 2 warnings, 0 errors
 compiling TaskWifiChannel.c...
 ..\FUNCTION\TaskWifiChannel.c(106): warning:  #111-D: statement is unreachable
           break;
 ..\FUNCTION\TaskWifiChannel.c: 1 warning, 0 errors
-compiling TaskZigbeeChannel.c...
 compiling Init.c...
 ..\FUNCTION\Init.c(19): warning:  #177-D: variable "i"  was declared but never referenced
   	u8 i=0;
 ..\FUNCTION\Init.c(20): warning:  #177-D: variable "sum"  was declared but never referenced
   	u16 sum=0;
 ..\FUNCTION\Init.c: 2 warnings, 0 errors
+compiling TaskZigbeeChannel.c...
 linking...
-Program Size: Code=30448 RO-data=696 RW-data=6572 ZI-data=2572  
+Program Size: Code=29856 RO-data=696 RW-data=6572 ZI-data=2572  
 FromELF: creating hex file...
-"..\OUTPUT\test.axf" - 0 Error(s), 64 Warning(s).
+"..\OUTPUT\test.axf" - 0 Error(s), 66 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_Target_1

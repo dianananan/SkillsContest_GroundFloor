@@ -42,7 +42,7 @@ extern void Rc522_LinkTest(void);
 extern void Send_data(unsigned char ch);	
 extern int8_t Rc522_ToSRst(void);
 extern int8_t Rc522_OutSRst(void);		
-extern void Read_Card(void);
+extern void Read_Card(u8 Chunk);
 
 //struct RFID_Card
 //{

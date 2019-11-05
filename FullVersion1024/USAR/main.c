@@ -80,8 +80,8 @@ void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
-//		startRun();
-		RFID_S50.RFID_Mode = READ;
+		startRun();
+//		RFID_S50.RFID_Mode = READ;
 //		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
 //		TaskBoardTest(1);
 	}
@@ -146,10 +146,10 @@ int main(void)
 	{
 		KEY_Check();//按键检测
         runControl();//路线行驶控制
-//=============================================22点注释
+//============================================路线结束后会优先识别RFID卡再执行任务
 		if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
 		{
-			Read_Card();
+			Read_Card(RFID_S50.s);
 			if((RFID_S50.RFID_Read_Ok == 1 && RFID_S50.RFID_Mode == READ)
 				|| (RFID_S50.RFID_Write_Ok == 1 && RFID_S50.RFID_Mode == WRITE))
 			{
@@ -157,6 +157,7 @@ int main(void)
 				RFID_S50.RFID_Mode = SLEEP;
 			}
 		}
+//==========================================		
         RunTaskControl();
 		
 		Can_WifiRx_Check();

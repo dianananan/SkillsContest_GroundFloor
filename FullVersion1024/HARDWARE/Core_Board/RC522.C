@@ -37,16 +37,16 @@ uint8_t TXRFID[16] = {0x41,0x31,0x42,0x32,0x43,0x33,0x44,0x34,0x46,0x31,0x42,0x3
 
 /*
 函数功能：全自动读卡函数
-参    数：无
+参    数：Chunk  块地址
 返 回 值：无
 **/
-void Read_Card(void)
+void Read_Card(u8 Chunk)
 {
 	char status = MI_ERR;
 	uint8_t CT[2];									//卡类型
 	uint8_t SN[4]; 									//卡号
 	uint8_t KEY[6]={0xff,0xff,0xff,0xff,0xff,0xff}; //密钥
-	uint8_t s = 0x01;       						//读取的块区	
+
 //	uint8_t RXRFIDH[8];
 	#define  DATA_LEN    16                     	//定义数据字节长度	
 
@@ -77,7 +77,7 @@ void Read_Card(void)
 						status = MI_ERR;
 						if(RFID_S50.RFID_Mode == READ)
 						{
-							status=PcdRead(s,RFID_S50.RXRFID);				//读卡
+							status=PcdRead(Chunk,RFID_S50.RXRFID);				//读卡
 							if(status == MI_OK)
 							{
 								RFID_S50.RFID_Read_Ok=1;	//读卡成功
@@ -88,7 +88,7 @@ void Read_Card(void)
 						}	
 						else if(RFID_S50.RFID_Mode == WRITE)
 						{
-							status = PcdWrite(s,TXRFID);			//写卡
+							status = PcdWrite(Chunk,TXRFID);			//写卡
 							if(status == MI_OK)
 							{
 								status = MI_ERR;
@@ -820,7 +820,6 @@ void WaitCardOff(void)
 uint8_t Rc522_GetLinkFlag(void)
 {
 	return Rc522_LinkFlag;
-	
 }
 
 void Rc522_LinkTest(void)

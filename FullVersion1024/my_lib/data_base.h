@@ -164,10 +164,11 @@ extern u8 AVG[8];
 
 struct RFID_Card  //定义在data_base.h里面
 {
-u8 RFID_Mode;
-u8 RFID_Read_Ok;
-u8 RFID_Write_Ok;
-u8 RXRFID[16];
+	u8 RFID_Mode;
+	u8 s;		//读取的块区		
+	u8 RFID_Read_Ok;
+	u8 RFID_Write_Ok;
+	u8 RXRFID[16];
 };
 extern struct RFID_Card RFID_S50;
 

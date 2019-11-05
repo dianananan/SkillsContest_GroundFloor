@@ -157,6 +157,7 @@ void TaskBoardTest(u8 mode) //打印关照强度的信息到debug面板  mode=0 =1dis
 
 void DelayTimerMS(u16 time)		//设置高延时函数
 {
+	if(time==0)return ;
 	u16 sum1=0,sum2=0;
 	u8 i=0;
 	sum1=time/700;

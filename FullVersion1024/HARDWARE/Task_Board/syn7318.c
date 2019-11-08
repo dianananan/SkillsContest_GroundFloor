@@ -17,8 +17,8 @@ uint8_t S[4] = {0};      //接收模块当前工作状态回传的数组
 uint8_t Wake_Up[] = {0xfd,0x00,0x02,0x51,0x1F};
 uint8_t Stop_Wake_Up[] = {0xFD,0x00,0x01,0x52};
 
-uint8_t Start_ASR_Buf[] = {0xFD,0x00,0x02,0x10,0x03};
-uint8_t Stop_ASR_Buf[] = {0xFD,0x00,0x01,0x11};
+uint8_t Start_ASR_Buf[] = {0xFD,0x00,0x02,0x10,0x03};	//开始命令
+uint8_t Stop_ASR_Buf[] = {0xFD,0x00,0x01,0x11};	//停止命令
 
 uint8_t Play_MP3[] ={ 0xFD,0x00,0x1E,0x01,0x01,0xC6,0xF4,0xB6,0xAF,0xD3, 0xEF ,0xD2, 0xF4,
                             	0xBF, 0xD8, 0xD6 ,0xC6 ,0xBC ,0xDD ,0xCA ,0xBB ,0xA3 ,0xAC, 0xC7, 0xEB,
@@ -586,7 +586,11 @@ void Yu_Yin_Asr(void)  // 语音识别处理函数
 }
 
 
-uint8_t Start_ASR_One_Buf[] = {0xFD,0x00,0x02,0x10,0x04};//  单次测试 使用用户词典2
+uint8_t Start_ASR_One_Buf[3][5] = {		//  进入识别模式   [0]->用户词典1  [1]->用户词典2  [2]->用户词典3
+				{0xFD,0x00,0x02,0x10,0x03},
+				{0xFD,0x00,0x02,0x10,0x04},
+				{0xFD,0x00,0x02,0x10,0x05}
+				};
 //static uint8_t YY_HXC[8]={0x55 ,0x06 ,0x10 ,0x01 ,0x00 ,0x00 ,0x11 ,0xbb};  // 唤醒词
 static uint8_t YY_ZZW[8]={0x55 ,0x06 ,0x10 ,0x04 ,0x00 ,0x00 ,0x14 ,0xbb};  // 左转弯
 static uint8_t YY_SJ [8]={0x55 ,0x06 ,0x20 ,0x01 ,0x00 ,0x00 ,0x21 ,0xbb};  // 左转弯
@@ -603,13 +607,13 @@ void SYN_7318_One_test(uint8_t mode,uint8_t num)  // mode 模式测试 1 随机指令 0 
 	Ysn7813_flag = 1;
 	uint32_t max_tim = 0;
 	SYN7318_Init();
-	
+
+	SYN7318_Rst();	//复位语音模块	
 	while(Ysn7813_flag)
 	{
-		SYN7318_Rst();
 		Status_Query();  //查询模块当前的工作状态
         sprintf(str_test,"%d",S[3]);
-		Send_InfoData_To_Fifo(str_test,5);		
+//		Send_InfoData_To_Fifo(str_test,5);		
 		if(S[3] != 0x4F)  //模块空闲即开启唤醒  
 		{
 			SYN_TTS("模块忙碌");
@@ -618,7 +622,7 @@ void SYN_7318_One_test(uint8_t mode,uint8_t num)  // mode 模式测试 1 随机指令 0 
 			SYN_TTS("模块复位成功！");
 		}
 		delay_ms(100);
-		SYN7318_Put_String(Start_ASR_One_Buf,5);//发语音识别命令  // 用户词典 2  Start_ASR_One_Buf
+		SYN7318_Put_String(Start_ASR_One_Buf[0],5);//发语音识别命令  // 用户词典 1  
 		SYN7318_Get_String(Back,4);     //接收反馈信息
 		if(Back[3] == 0x41)           //接收成功
 		{
@@ -626,57 +630,61 @@ void SYN_7318_One_test(uint8_t mode,uint8_t num)  // mode 模式测试 1 随机指令 0 
 			if(mode)
 			{
 				YY_ZZW[3] = num;
-				//Send_ZigBee_Info( YY_SJ,8); // 随机语音
-				Send_ZigbeeData_To_Fifo( YY_SJ,8);
+				Send_ZigbeeData_To_Fifo( YY_SJ,8); // 随机语音
 			}
 			else  
 			{
 				YY_ZZW[3] = num;
-				//Send_ZigBee_Info( YY_ZZW,8); // 指定语音
-				Send_ZigbeeData_To_Fifo( YY_ZZW,8);
+				Send_ZigbeeData_To_Fifo( YY_ZZW,8); // 指定语音
 			}
-
 			SYN7318_Get_String(Back,3);  //语音识别命令回传结果
 			if(Back[0] == 0xfc)        //帧头判断
 			{
 				LED2 = ~LED2;
 				SYN7318_Get_String(ASR,Back[2]);//接收回传数据
-
+				Send_WifiData_To_Fifo(ASR,6);
 				if(ASR[0] ==0x01)
 				{
+					extern u8 M08;
+					M08 =ASR[5];
 					switch(ASR[5]) // 命令ID
 					{
-						case 0x02:   //  原地掉头
+						case 0x01:   //  原地掉头
 						{
-							SYN_TTS("识别成功美好生活");
+//							SYN_TTS("识别成功美好生活");
+							SYN_TTS("向右转弯");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别							 
 							Ysn7813_flag =0;
 							break;
 						}														
-						case 0x03:   //  向右转弯
+						case 0x02:   //  向右转弯
 						{								 
-							SYN_TTS("识别成功秀丽山河");						  
+//							SYN_TTS("识别成功秀丽山河");						
+							SYN_TTS("禁止右转");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别							 
 							Ysn7813_flag =0;
 							break;
 						}														
-						case 0x04:   //  禁止右转
+						case 0x03:   //  禁止右转
 						{														  															
-							SYN_TTS("识别成功追逐梦想");
+//							SYN_TTS("识别成功追逐梦想");						
+							SYN_TTS("左侧行驶");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别							
 							Ysn7813_flag =0;
 							break;
 						}
-						case 0x05:   //  左侧行驶
+						case 0x04:   //  左侧行驶
 						{
-							SYN_TTS("识别成功扬帆起航");
+//							SYN_TTS("识别成功扬帆起航");
+							SYN_TTS(" 左行被禁");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别							
 							Ysn7813_flag =0;
 							break;
 						}														
-						case 0x06:   //  左行被禁
+						case 0x05:   //  左行被禁
 						{														  	
-							SYN_TTS("识别成功齐头并进");
+//							SYN_TTS("识别成功齐头并进");
+							SYN_TTS("原地掉头");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别							
 							Ysn7813_flag =0;
 							break;													
@@ -685,7 +693,7 @@ void SYN_7318_One_test(uint8_t mode,uint8_t num)  // mode 模式测试 1 随机指令 0 
 						{														  
 							SYN_TTS("对不起，我没听清,再发一次");
 							SYN7318_Put_String(Stop_ASR_Buf,4); //停止语音识别
-							//Ysn7813_flag =0;
+							M08=0;
 							break;
 						}
 					}

@@ -10,27 +10,27 @@
 #define PATHROW   	  0				//行0
 #define PATHLENGTH    1				//行走数组长度
 
-#define LEFT 		0x01				//左转											
-#define RIGHT 		0x02  				//右转											
-#define GO			0x03				//前进											
-#define BACK	    0x04				//后退											
-#define CNTONE   	0x05				//循迹一个十字路口    			
-#define CNTTWO		0x06  				//循迹两个十字路口				
-#define CNTTHREE    0x07				//循迹三个十字路口 
-#define TRACKLENTH	0x08				//循迹距离						
-#define MIDHALF		0x09				//循迹中等长度的一半			
-#define LEFTSMALL	0x0A				//左转前循迹的一小段距离			
-#define TRACKBLACK	0x0B 				//循迹一个路口黑线准确停		
-#define CARSTOP     0x0C				//停车										
-#define TRAMP		0x0D				//自定义循迹走码盘值			
-#define LEFT45		0x0E				//左转45度								
-#define RIGHT45		0x0F				//右转45度								
-#define LEFT180		0x10				//左转180度								
-#define RIGHT180	0x11				//右转180度								
-#define RIGHTSMALL	0x12				//右转前循迹的一小段距离
-#define GOCARBOYLEN	0x13				//走一个车身距离
-#define CNTFOUR		0x14				//循迹四个路口
-#define CNTFIVE 	0x15				//循迹五个路口
+#define LEFT45		0x01				//左转45度	
+#define LEFT 		0x02				//左转
+#define LEFT180		0x03				//左转180度	
+#define RIGHT45		0x04				//右转45度	
+#define RIGHT 		0x05  				//右转	
+#define RIGHT180	0x06				//右转180度								
+#define GO			0x07				//前进											
+#define BACK	    0x08				//后退	
+#define CARSTOP     0x09				//停车										
+#define CNTONE   	0x0A				//循迹一个十字路口    			
+#define CNTTWO		0x0B  				//循迹两个十字路口				
+#define CNTTHREE    0x0C				//循迹三个十字路口
+#define CNTFOUR		0x0D				//循迹四个路口
+#define CNTFIVE 	0x0E				//循迹五个路口
+#define TRACKBLACK	0x0F 				//循迹一个路口黑线准确停
+#define TRACKLENTH	0x10				//循迹距离						
+#define MIDHALF		0x11				//循迹中等长度的一半	
+#define GOCARBOYLEN	0x12				//走一个车身距离
+#define LEFTSMALL	0x13				//左转前循迹的一小段距离												
+#define RIGHTSMALL	0x14				//右转前循迹的一小段距离
+#define TRAMP		0x15				//自定义循迹走码盘值	
 #define STOPCAR		0x16				//小车停止
 #define MIDDLE_LONGISH 0x17				//走到中间（较长的那边）
 #define MIDDLE_SHORTE  0x18				//走到中间（较短的边）
@@ -45,14 +45,15 @@
 #define NOW_ETC	0xf2				//ETC出现
 #define NOW_TRAFFIC	0xf3			//交通灯出现
 #define NOW_TASK  0xff    			//设置一个出现任务点
-#define TURNSPEED 	80        		//转弯速度
-#define CARSPEED   	50				//跑的速度
-
+//***************************************************************************
+#define TURNSPEED 	((80-Wheel_Speed_Cut)+Wheel_Speed_Up)	//转弯速度
+#define CARSPEED   	((50-Walk_Speed_Cut)+Walk_Speed_Up)	//跑的速度
+//***************************************************************************
 #define MAXHALFLEN 	1150				//到达最长线一半的MP值
 #define MIDHALFLEN	1400				//到达中等长度一半的MP值
-#define LSMALLLEN	265				//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
+
 #define BACKLEN		40					//倒退的MP值
-#define RSMALLLEN	250			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
+
 #define CARBODYLEN	  600			//走一个车身距离
 #define MP_LINE_SHORT 1150			//走一条边d的码盘值（短边）
 #define MP_LINE_LANG  1400			//(走一条边的码盘值) （长边）
@@ -76,6 +77,11 @@
 #define NAV180 3
 
 //extern u8 intocorner,RodCnt; //路口判断标志，路口计数
+
+extern u8 Walk_Speed_Cut;		//行走减速
+extern u8 Walk_Speed_Up;		//行走加速
+extern u8 Wheel_Speed_Cut;		//转弯减速
+extern u8 Wheel_Speed_Up;		//转弯加速
 
 typedef struct
 {

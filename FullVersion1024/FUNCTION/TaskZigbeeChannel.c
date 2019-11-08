@@ -134,7 +134,6 @@ void Zig_Send_Dispose(u8 taskchoose)
 			WaitTimer_ms=gt_get()+3000;	
 		}
 		if((zig_send_etc_flag == 1 &&  gt_get_sub(ECCTimer_ms)) || gt_get_sub(WaitTimer_ms)== 0)
-//		if((zig_send_etc_flag == 1) || (gt_get_sub(WaitTimer_ms)== 0))
 		{
 			endTask();
 			EndWaitTim();
@@ -155,13 +154,11 @@ void Zig_Send_Dispose(u8 taskchoose)
     if(taskchoose == CMD_VOICE && getTaskState() == 0)
     {
         startTask();
-//        SYN7318_Open();  //语音开
-//        SYN7318_Test();   //语音识别开启
-		SYN_7318_One_test(1,0);	 //语音识别开启
+		SYN_7318_One_test(1,0);	 //语音识别开启//随机
         endTask();
         return ;
     }
-    //*********************发送车牌到道闸*********************************/
+//*********************发送车牌到道闸*********************************/
     if(taskchoose == CMD_ZG_DOORCP && getTaskState() == 0)
     {
 		DZ_CPF[3] = 65;
@@ -210,7 +207,7 @@ void Zig_Send_Dispose(u8 taskchoose)
 		}
 		else if(zig_send_CK_flag == 1 ) //倒退
 		{
-			Back_Test(30,1100);
+			Back_Test(30,CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]);
 			TACKZERO();
 			zig_send_CK_flag=2;	
 			RepeatedlySend_ZG(LTCK_K[getNowGarage()-1],4,10);
@@ -301,6 +298,10 @@ void send_SEG_data(u8 mode)
 			Send_ZigbeeData_To_Fifo(SMG_SHOW,8);
 			break;
 		case SHOW2_SEG ://显示第二排
+			SMG_SHOWTWO[3] = MailboxRe.Graph_Sum_Shape[0];
+			SMG_SHOWTWO[4] = MailboxRe.Graph_Sum_Shape[1];
+			SMG_SHOWTWO[5] = MailboxRe.Graph_Sum_Shape[2];
+			SMG_SHOWTWO[6] =(SMG_SHOWTWO[2]+SMG_SHOWTWO[3]+SMG_SHOWTWO[4]+SMG_SHOWTWO[5])%256;
 			Send_ZigbeeData_To_Fifo(SMG_SHOWTWO,8);
 			break;
 		case DIS_SEG:	//显示距离

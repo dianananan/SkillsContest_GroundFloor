@@ -55,8 +55,9 @@ extern void Read_Card(u8 Chunk);
 
 //********读卡模式********//
 #define SLEEP 0			//休眠
-#define READ  1			//读
-#define WRITE 2			//写
+#define READ1 1			//读第一张卡
+#define READ2 2			//读第二张卡
+#define WRITE 3			//写
 
 
 /////////////////////////////////////////////////////////////////////

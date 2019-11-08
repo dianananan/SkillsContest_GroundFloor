@@ -9,6 +9,7 @@
 #include "can_user.h"
 #include "Timer.h"
 #include "uart_a72.h"
+#include "Init.h"
 
 #define __CANP_HostCOM_C__
 #include "canp_hostcom.h"
@@ -643,6 +644,7 @@ void Send_ZigbeeData_To_Fifo( u8 *p ,u8 len)
 void Send_WifiData_To_Fifo( u8 *p ,u8 len)   
 {
 	FifoDrv_BufWrite( &Fifo_WifiTx , p , len);
+	Send_USART_To_Fifo(p ,len);
 }
 
 void Send_InfoData_To_Fifo( u8 *p ,u8 len)   

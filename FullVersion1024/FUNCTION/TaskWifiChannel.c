@@ -27,6 +27,7 @@ u8 wifi_send_PLATE_flag = 0;//车牌识别点已到达
 u8 wifi_send_SHAPE_flag = 0;//图形识别点已到达
 u8 wifi_send_GARAGE_flag = 0;//得到计算的入库点
 u8 wifi_send_HLLIGHT_flag = 0; //红绿灯识别点已到达
+u8 GraphChoose_Flag =0;		//图片选择
 
 //u8 shapedata[3] = {0};//图形识别数据
 u8 HW_SEND_SHAPE[10] = {0};//形状
@@ -86,100 +87,83 @@ void Wifi_Send_Dispose_hw(u8 *Wifi_signal)  //处理红外信息
 {
     switch(Wifi_signal[3])
     {
-    case 0x01 :
-        Infrared_Send(HW_K, 6); //报警台开
-        break;
+		case 0x0A :
+			if(Wifi_signal[4] == 0x01)
+				 setNowTask(TaskHW, HW_OPENBJQ, 0);//报警台开
+			else 
+				 setNowTask(TaskHW, HW_CLOSEBJQ, 0);//报警台关
+			break;
+			
+		case 0x0B :  //立体显示
+			hw_Data_Dispose(Wifi_signal);
+			break;
 
-    case 0x02 :  //立体显示
-        hw_Data_Dispose(Wifi_signal);
-        break;
+		case 0x0C ://光源几档
+			light_control(Wifi_signal[4]);
+			break;
 
-    case 0x03 ://光源几档
-        light_control(Wifi_signal[4]);
-        break;
-
-//    case 0x04 :
-//        if(Wifi_signal[4] == 0x01) //照片上翻
-//            Infrared_Send(H_S, 4);
-//        else if(Wifi_signal[4] == 0x00) //照片下翻
-//            Infrared_Send(H_X, 4);
-        break;
-    default  :
-        return ;
+		default  :
+			return ;
     }
-    //send_data_wifi(Wifi_signal, 8);	//发送完成信号
+    TaskMenu(); //执行命令
 }
 
 
 void Wifi_Send_Dispose_run(u8 *Wifi_signal)//处理行走命令
 {
-    switch(Wifi_signal[3])
+	u16 sum;
+    switch((Wifi_signal[3] & 0x0F))	//取后四位
     {
-    case 0x01 :
-        Dispose_Data_array[0] = CNTONE;
-        break;
-    case 0x02 :
-        Dispose_Data_array[0] = CNTTWO;
-        break;
-    case 0x03 :
-        Dispose_Data_array[0] = CNTTHREE;
-        break;
-    case 0x04 :
-        Dispose_Data_array[0] = CNTFOUR;
-        break;
-    case 0x05 :
-        Dispose_Data_array[0] = CNTFIVE;
-        break;
-    case 0x06 :  //前进走码盘值
-        if(Wifi_signal[4] == 0x01) //循迹
-        {
-            setMPVaule(Wifi_signal[5]);
-            Dispose_Data_array[0] = TRACKLENTH;
-        }
-        else if(Wifi_signal[4] == 0x02) //不循迹
-        {
-            setMPVaule(Wifi_signal[5]);
-            Dispose_Data_array[0] = GO;
-        }
-        break;
-    case 0x07 :  //倒退
-        setMPVaule(Wifi_signal[5]);
-        Dispose_Data_array[0] = BACK;
-        break;
-    default  :
-        return ;
+		case 0x01 :
+			Dispose_Data_array[0] = (Wifi_signal[4]+CNTONE)-1;
+			break;
+		case 0x07 :  //前进走码盘值
+			if((Wifi_signal[3] & 0xF0) == 0x01) //循迹
+			{
+				sum = (Wifi_signal[4]*256+Wifi_signal[5]);
+				setMPVaule(sum);
+				Dispose_Data_array[0] = TRACKLENTH;
+			}
+			else if((Wifi_signal[3] & 0xF0) == 0x00) //不循迹
+			{
+				sum = (Wifi_signal[4]*256+Wifi_signal[5]);
+				setMPVaule(sum);
+				Dispose_Data_array[0] = GO;
+			}
+			break;
+		case 0x08 :  //倒退
+			sum = (Wifi_signal[4]*256+Wifi_signal[5]);
+			setMPVaule(sum);
+			Dispose_Data_array[0] = BACK;
+			break;
+		case 0x09:	//循迹压线
+			Dispose_Data_array[0]=TRACKBLACK;
+			break;
+		default  :
+			return ;
     }
     InitRunPathContorl(Dispose_Data_array, 1); //组建数组,执行
 }
 
 void Wifi_Send_Dispose_action(u8 *Wifi_signal)//处理动作
 {
+	u16 sum;
     switch(Wifi_signal[3])
     {
-    case 0x01 :
-        Dispose_Data_array[0] = LEFT45;
-        break;
-    case 0x02 :
-        Dispose_Data_array[0] = LEFT;
-        break;
-    case 0x03 :
-        Dispose_Data_array[0] = LEFT180;
-        break;
-    case 0x04 :
-        Dispose_Data_array[0] = RIGHT45;
-        break;
-    case 0x05 :
-        Dispose_Data_array[0] = RIGHT;
-        break;
-    case 0x06 :
-        Dispose_Data_array[0] = RIGHT180;
-        break;
-    case 0x07 :
-        Go_Test(CARSPEED, 15);
-    case 0x08 :
-        Go_Test(CARSPEED, 14);
-    default  :
-        return ;
+		case 0x03:	//左转
+			Dispose_Data_array[0] = (Wifi_signal[4]+LEFT45-1);
+			break;
+		case 0x04:	//右转
+			Dispose_Data_array[0] = (Wifi_signal[4]+RIGHT45-1);
+			break;
+		case 0x05:	//左转距离
+			Dispose_Data_array[0] =LEFTSMALL;
+			break;
+		case 0x06:	//右转距离
+			Dispose_Data_array[0] =RIGHTSMALL;
+			break;
+		default  :
+			return ;
     }
     InitRunPathContorl(Dispose_Data_array, 1); //组建数组,执行
     //setNowTask(TaskWifi,CMD_TRAFFIC_READ);
@@ -189,58 +173,58 @@ void Wifi_Send_Dispose_Car(u8 *Wifi_signal)  //小车电原件
 {
     switch(Wifi_signal[3])
     {
-    case 0x01 : //蜂鸣器
-        if(Wifi_signal[4]==0x00)  //关
-            Set_tba_Beep(0);
-        else if(Wifi_signal[4]==0x01) //开
-            Set_tba_Beep(1);
-        break;
+		case 0x10 : //蜂鸣器
+			if(Wifi_signal[4]==0x00)  //关
+				Set_tba_Beep(0);
+			else if(Wifi_signal[4]==0x01) //开
+				Set_tba_Beep(1);
+			break;
 
-    case 0x02 : //左灯
-        if(Wifi_signal[4]==0x00)
-            Set_tba_WheelLED(L_LED,1);
-        else if(Wifi_signal[4]==0x01)
-            Set_tba_WheelLED(L_LED,0);
-        break;
+		case 0x11 : //左灯
+			if(Wifi_signal[4]==0x00)
+				Set_tba_WheelLED(L_LED,0);
+			else if(Wifi_signal[4]==0x01)
+				Set_tba_WheelLED(L_LED,0);
+			break;
 
-    case 0x03 : //右灯
-        if(Wifi_signal[4]==0x00)
-            Set_tba_WheelLED(R_LED,1);
-        else if(Wifi_signal[4]==0x01)
-            Set_tba_WheelLED(R_LED,1);
-        break;
+		case 0x12 : //右灯
+			if(Wifi_signal[4]==0x00)
+				Set_tba_WheelLED(R_LED,0);
+			else if(Wifi_signal[4]==0x01)
+				Set_tba_WheelLED(R_LED,1);
+			break;
 
-    default :
-        break;
+		default :
+			break;
     }
 }
+
 //判断上层返回信息 如果返回了 则将对应的标志位设置为 0xff
-void switchBackinfo(u8 vaule)
-{
-    switch (vaule)
-    {
-    case 0x01:
-        wifi_send_QR_flag = 0xff;
-        break;
-    case 0x02:
-        wifi_send_PLATE_flag = 0xff;
-        break;
-    case 0x03:
-        wifi_send_SHAPE_flag = 0xff;
-        break;
-//    case 0x04:
-//        wifi_send_TRAFFIC_flag = 0xff;
+//void switchBackinfo(u8 vaule)
+//{
+//    switch (vaule)
+//    {
+//    case 0x01:
+//        wifi_send_QR_flag = 0xff;
 //        break;
-    case 0x05:
-        wifi_send_HLLIGHT_flag = 0xff;
-        break;
-    default:
-        break;
-    }
-}
+//    case 0x02:
+//        wifi_send_PLATE_flag = 0xff;
+//        break;
+//    case 0x03:
+//        wifi_send_SHAPE_flag = 0xff;
+//        break;
+////    case 0x04:
+////        wifi_send_TRAFFIC_flag = 0xff;
+////        break;
+//    case 0x05:
+//        wifi_send_HLLIGHT_flag = 0xff;
+//        break;
+//    default:
+//        break;
+//    }	
+//}
 void Wifi_Remote_Control () //wifi信号接收
 {
-//    u8 data[30];
     u8 readBuf[8];
     u8 i;
     if(Wifi_Rx_flag > 0) //有接收到WiFi信号
@@ -262,11 +246,11 @@ void Wifi_Remote_Control () //wifi信号接收
     {
         Rx_Flag = 0;
 		Send_ZigbeeData_To_Fifo(readBuf,8); //打印数据
-        if(readBuf[0] == 0x55 && readBuf[7] == 0xbb && readBuf[1] != 0xAA) //ZigBee信息直接转发
-        {
-            //Wifi_Send_Dispose_zigbee(Wifi_Rx_Buf);
-        }
-        else if(readBuf[0] == 0xff && readBuf[7] == 0xf0 && readBuf[1] == 0x01)//遥控
+//        if(readBuf[0] == 0x55 && readBuf[7] == 0xbb && readBuf[1] != 0xAA) //ZigBee信息直接转发
+//        {
+//            //Wifi_Send_Dispose_zigbee(Wifi_Rx_Buf);
+//        }
+        if(readBuf[0] == 0xff && readBuf[7] == 0xf0 && readBuf[1] == 0xAB)//遥控
         {
             switch(readBuf[2])
             {
@@ -276,30 +260,29 @@ void Wifi_Remote_Control () //wifi信号接收
 				case 0x02:
 					Wifi_Send_Dispose_action(readBuf);//动作命令
 					break;
-				case 0x03 ://二维码任务点命令
-					wifi_send_QR_flag = 1;
+				case 0x03 ://自动路线
+//					wifi_send_QR_flag = 1;
 					break;
-				case 0x04:
-					STOP();
-					break;
+//				case 0x04:
+//					STOP();
+//					break;
 				case 0x05 :
 					Wifi_Send_Dispose_hw(readBuf);		//接收红外信号
-					TaskMenu(); //执行命令
 					break;
 				case 0x06 :
 					Wifi_Send_Dispose_Car(readBuf); //元件命令
 					break;
-				case 0x07 ://二维码任务点命令
-					Send_ZigbeeData_To_Fifo(readBuf,8);
-					wifi_send_QR_flag = 2;
-					break;
-				case 0x08 : //红绿灯
-					TempArray[3] = (readBuf[3] + 1);	 //00/01/02
-//					JTD_END[6] =CheckSum(JTD_END,3);
-					TempArray[6] =TempArray[3];
-					PrintfDebug(TempArray[3]);
-					wifi_send_HLLIGHT_flag = 1; //接收到信息
-					break;
+//				case 0x07 ://二维码任务点命令
+//					Send_ZigbeeData_To_Fifo(readBuf,8);
+//					wifi_send_QR_flag = 2;
+//					break;
+//				case 0x08 : //红绿灯
+//					TempArray[3] = (readBuf[3] + 1);	 //00/01/02
+////					JTD_END[6] =CheckSum(JTD_END,3);
+//					TempArray[6] =TempArray[3];
+//					PrintfDebug(TempArray[3]);
+//					wifi_send_HLLIGHT_flag = 1; //接收到信息
+//					break;
 //				case 0x09:
 //					switchBackinfo(readBuf[3]);
 //					break;
@@ -312,7 +295,7 @@ void Wifi_Remote_Control () //wifi信号接收
 		{
 			switch(readBuf[2])//主车
 			{
-				case RUNSTART:
+				case 0x01:	//启动命令
 					Send_InfoData_To_Fifo((u8 *)"RUN\n",sizeof("RUM\n"));
 					if(getRunState() == 0)
 //					xydInit(&passivity.RFIDCard, getVauleX(readBuf[3]), getVauleY(readBuf[3]), 0);		//初始化RFID位置//不可删除
@@ -322,62 +305,52 @@ void Wifi_Remote_Control () //wifi信号接收
 					isrun.TaskCarryOut = readBuf[4];//选择启动方式
 					break;
 
-				case QRCODE : //二维码识别
-//					if(Wifi_Rx_Buf[3]==Wifi_Rx_Buf[4]) //所有点接收完成
-//					 {
-//						 initTask(Wifi_Rx_Buf[5],0,0,0,0); //将最后一个点设置为要到达的点 //00方向000（x）000（y）
-						 wifi_send_QR_flag=1;
-//					 }
-//					else if(Wifi_Rx_Buf[3]>Wifi_Rx_Buf[4])//没接收完就继续设置必进点
-//					{
-//						setLimitPot(Wifi_Rx_Buf[5],Wifi_Rx_Buf[4]);
-//						setTaskLimitPot();
-//						send_data_wifi(Wifi_Rx_Buf,8);
-//					}
+				case 0x02 : //二维码识别
+					MailboxRe.ConfigInfo.LightLevelTask = (readBuf[3] %4)+1;//数量  (N%4)+1
+					MailboxRe.ConfigInfo.carport =((readBuf[5] *5)%4)+1;	//车库  ((D*5)%4)+1
+					wifi_send_QR_flag=1;
 					break;
-			case PLATEREV1://车牌1
-				if(readBuf[3] == 0x01 && readBuf[4] == 0x01 && readBuf[5] == 0x01)
-				{
-					delay_ms(3000);
-					Send_WifiData_To_Fifo(PlateRead, 8);
-				}
-				else
-				{
+				case 0x03:	//图形选择
+					if(((readBuf[3] & 0x0F)==0x01) && (GraphChoose_Flag == (readBuf[3] & 0xF0)) )//成功
+						GraphChoose_Flag=readBuf[3];
+					else if((readBuf[3] & 0xF0) == 0x00)	//失败
+					{
+						GraphChoose_Flag=0;
+						Send_ZigbeeData_To_Fifo(TFT_XS,8);	//向上翻页
+						delay_ms(2000); //等待图片翻页
+						Send_WifiData_To_Fifo(Pictures_Chose, 8); 	//发送二次请求
+					}
+					break;
+				case 0x04://图形识别
+					wifi_send_SHAPE_flag = 1;
+					MailboxRe.Graph_Sum_Shape[0] = readBuf[3];//矩形个数
+					MailboxRe.Graph_Sum_Shape[1] = readBuf[4];//圆形个数
+					MailboxRe.Graph_Sum_Shape[2] = readBuf[5];//三角形个数
+					break;
+				
+				case 0x08 :	//红绿灯
+					TempArray[3] = readBuf[3];
+					wifi_send_HLLIGHT_flag = 1; //接收到信息				
+					break;	
+				
+				case 0x10://车牌1
 					for(i = 0; i < 3; i++)
 					{
-						MailboxRe.PlateNumber[0][i]=readBuf[3+i];
+						MailboxRe.PlateNumber[i]=readBuf[3+i];
 					}
 					wifi_rev_card_flag_1 = 1;
-				}
-				wifi_send_PLATE_flag = 1;
-				break;
-				
-			case PLATEREV2://车牌2
-				for(i = 0; i < 3; i++)
-					MailboxRe.PlateNumber[0][i+3]=readBuf[3 + i];
-//                CP_SHOW2[4] = 'A' + car_x;
-//                CP_SHOW2[5] = '1' + car_y;
-				// HW_Send_Choose(HW_PICUP);  //TFT图片上翻**************************************
-				wifi_rev_card_flag_1 = 2;
-				break;
-			
-			case SHAPE://图形识别
-				if(readBuf[3] == 0x01 && readBuf[4] == 0x01 && readBuf[5] == 0x01) //如果数据不为这个则识别成功
-				{
-					//HW_Send_Choose(HW_PICUP);
-					//send_data_zigbee(SMG_SHOWTWO,8);
-					delay_ms(3000);
-					Send_WifiData_To_Fifo(ShapeRead, 8);
-				}
-				else
-				{
-					// HW_Send_Choose(HW_PICUP);//******************************************
-					wifi_send_SHAPE_flag = 1;
-				}
-				break;
+					break;
+					
+				case 0x11://车牌2
+					for(i = 0; i < 3; i++)
+						MailboxRe.PlateNumber[i+3]=readBuf[3 + i];
+//	                 CP_SHOW2[4] = 'A' + car_x;
+//	                 CP_SHOW2[5] = '1' + car_y;
+					// HW_Send_Choose(HW_PICUP);  //TFT图片上翻**************************************
+					wifi_rev_card_flag_1 = 2;
+					break;
 			}
 		}
-        //memset(Wifi_Rx_Buf,0,sizeof(Wifi_Rx_Buf));//执行完后清空数组
     }
 }
 
@@ -404,8 +377,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         {
             if(gt_get_sub(WaitTimer_ms) == 0)
             {
-                ++WaitTimer_const;
-                if(WaitTimer_const > 2)	//如果发送三次都没有收到则取消发送 强制结束任务     在中间可以加上处理失败以后的处理方法
+                if(WaitTimer_const > 3)	//如果时间结束，强制结束任务  
                 {
                     wifi_send_QR_flag=1;
                 }
@@ -414,6 +386,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                     Send_WifiData_To_Fifo(QRCode, 8); //重新发送
                     WaitTimer_ms=gt_get()+1000;//重新计时
                 }
+				 ++WaitTimer_const; //累加
             }
         }
         else if( (wifi_send_QR_flag == 1 || wifi_send_QR_flag == 2))         //已经完成了任务
@@ -442,7 +415,6 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         {
             if(gt_get_sub(WaitTimer_ms) == 0)
             {
-                ++WaitTimer_const;
                 if(WaitTimer_const > 2)	//如果发送三次都没有收到则取消发送 强制结束任务
                 {
                     wifi_send_PLATE_flag = 1 ;
@@ -453,6 +425,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                     Send_WifiData_To_Fifo(PlateRead, 8);
                     WaitTimer_ms=gt_get()+1000;
                 }
+				++WaitTimer_const;
             }
         }
         else  if( wifi_send_PLATE_flag == 1 && wifi_rev_card_flag_1 == 2)      //任务已完成
@@ -482,7 +455,6 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         {
             if(gt_get_sub(WaitTimer_ms) == 0)
             {
-                ++WaitTimer_const;
                 if(WaitTimer_const > 2)	//如果发送三次都没有收到则取消发送 强制结束任务
                 {
                     endTask();
@@ -492,6 +464,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                     Send_WifiData_To_Fifo(PlateRead, 8);
                     WaitTimer_ms=gt_get()+1000;
                 }
+				++WaitTimer_const;
             }
         }
         else if(wifi_send_SHAPE_flag == 1)
@@ -521,7 +494,6 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         {
             if(gt_get_sub(WaitTimer_ms) == 0)
             {
-                ++WaitTimer_const;
                 if(WaitTimer_const > 4)	//如果发送三次都没有收到则取消发送 强制结束任务
                 {
                     wifi_send_HLLIGHT_flag=1;
@@ -531,9 +503,10 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                     Send_WifiData_To_Fifo(TrafficLight, 8);
 					WaitTimer_ms=gt_get()+2000;
                 }
+				++WaitTimer_const;
             }
         }
-        else if(  wifi_send_HLLIGHT_flag == 1)
+        else if(wifi_send_HLLIGHT_flag == 1)
         {
             RepeatedlySend_ZG(TempArray, 4,50); //发送识别结果
             wifi_send_HLLIGHT_flag = 0;
@@ -542,6 +515,38 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         }
         return ;
     }
+//**********************************图形选择*****************************//	
+	if(Wifi_signal == PICTURES_CHOOSE && (getTaskState() == 0))	
+	{
+		startTask();//有任务了
+		DelayTimerMS(3000);
+		WaitTimer_ms=gt_get()+2000;
+		RevisalProtocol(Pictures_Chose,3,CarRunTask.TaskVaule[CarRunTask.TaskEndPoint]);	//更改数组内容
+		Send_WifiData_To_Fifo(Pictures_Chose, 8); 
+		GraphChoose_Flag=((Pictures_Chose[3]<<4)&0xF0);
+	}
+	else if(Wifi_signal == PICTURES_CHOOSE )
+	{
+		if(((GraphChoose_Flag & 0x0F)==0))
+		{
+			if(gt_get_sub(WaitTimer_ms) == 0)
+			{
+                if(WaitTimer_const > 10)	//如果发送三次都没有收到则取消发送 强制结束任务
+                {
+                    GraphChoose_Flag=1;
+                }
+                else
+					WaitTimer_ms=gt_get()+2000;	
+				++WaitTimer_const;
+			}
+		}
+		else if(GraphChoose_Flag & 0x0F)
+		{	
+            endTask();
+			EndWaitTim();	
+			GraphChoose_Flag=0;	
+		}
+	}
 //----------------------------------------寻找入库点--------------------------------------------
     //		if((*(q+taskindex)==CMD_REV_POINT) && (taskflag==0))//任务为寻找入库任务
     //		{
@@ -557,3 +562,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
     //			 wifi_send_GARAGE_flag =0;//wifi发送标志初始化
     //		}
 }
+
+
+
+

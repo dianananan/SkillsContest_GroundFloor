@@ -3,26 +3,29 @@
 
 #include "stm32f4xx.h"
 
-#define CARSWITCH  1
-#if CARSWITCH   //老车
-	#define LeftMP1 750
-	#define RightMP1 850
+#define CARSWITCH  0
+#if CARSWITCH   //带A72平板
+	#define LeftMP1 800
+	#define RightMP1 900
 	#define Left_45_MP 380
 	#define Right_45_MP 480
 	#define LSWERVEMP180 1700
 	#define RSWERVEMP180 2100
-#else  //新车1
-	#define LeftMP1 45
-	#define RightMP1 56
-	#define Left_45_MP 30
-	#define Right_45_MP 25
-	#define LSWERVEMP180 109
-	#define RSWERVEMP180 109
+	#define LSMALLLEN	400			//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
+	#define RSMALLLEN	400			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
+#else  	//不带A72平板
+	#define LeftMP1 800
+	#define RightMP1 900
+	#define Left_45_MP 380
+	#define Right_45_MP 480
+	#define LSWERVEMP180 1700
+	#define RSWERVEMP180 2100
+	#define LSMALLLEN	250			
+	#define RSMALLLEN	250	
 #endif // car==0
 
 #define ANODE 7 //正极向
 #define CATHODE 9 //负极向
-
 
 extern uint8_t L_Flag,R_Flag;
 extern uint8_t G_Flag,B_Flag;

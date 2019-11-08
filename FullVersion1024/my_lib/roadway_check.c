@@ -13,12 +13,10 @@ uint8_t G_Flag = 0,B_Flag = 0;
 u8 Upright_Flag=0;
 uint8_t Track_Flag = 0;
 uint8_t wheel_Nav_Flag = 0; 
-u8 TrackingLamp_Flag =0; //循迹的标志位，=8
-
+u8 TrackingLamp_Flag =0; //循迹的标志位
 
 uint8_t Line_Flag = 0;
 uint16_t count = 0;
-
 uint8_t Stop_Flag = 0;
 int LSpeed = 0,RSpeed = 0;
 int Car_Spend = 0;
@@ -89,7 +87,7 @@ uint16_t Roadway_nav_Get(void)
 
 //_______________________________________________________________
 
-void Roadway_Flag_clean(void)
+void Roadway_Flag_clean(void)	//标志位清除
 {
 	L_Flag =0;R_Flag = 0;
 	G_Flag = 0;B_Flag = 0;
@@ -163,7 +161,7 @@ void wheel_Track_check(void)
 	}
 }
 
-void wheel_Track_ANGLE(u8 angle,u16 min)
+void wheel_Track_ANGLE(u8 angle,u16 min)	//转弯角度
 {
 	gd=Get_Host_UpTrack(TRACK_H8);
 	if(angle==NAV45 && MP>=min)
@@ -174,12 +172,10 @@ void wheel_Track_ANGLE(u8 angle,u16 min)
 		{
 			cardirection = getNewDirection(3,&cardirection);
 		}
-			
 		else if(R_Flag)
 		{
 			cardirection = getNewDirection(4,&cardirection);
 		}
-			
 		STOP();
 		endAction();
 	}
@@ -245,7 +241,7 @@ void Set_UpTrack_Value(u8 mode)	//设置取正取反
 	light_flagB=Countbits(~gd);		
 }
 
-void Track_Check(u16 tracklen, u8 roadSum, u8 state)
+void Track_Check(u16 tracklen, u8 roadSum, u8 state)	//循迹检测
 {
 	if(state==ROADMODE)//检测十字路口
 	{
@@ -254,7 +250,7 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)
 			intocorner=1;
 		}
 		else if(((light_flagB >= 5) || (((gd & 0x18) != 0x18) && (light_flagB >3) )) && (intocorner == 1)) //||((gdg&0x18)!=0x18)  )
-		{
+		{   
 			intocorner = 2;
 		}
 		else if((light_flagF < 3) && (intocorner == 2)) ////前排出去了
@@ -276,25 +272,23 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)
 				endAction();   //结束动作
 				STOP();
 			}			
-		}		
+		}
 	}
     else if(state == BLACKMODE)//停在循迹线上
     {
         if(light_flagF >= 3)//
         {
+			getCarPosition(&cardirection, &car_x, &car_y, 0);
 			endAction();
 			STOP();
         }
     }
-	else if((state == LENMODE )  && (MP >= tracklen))
-	{	
-		if(tracklen>3000)
+	else if((state == LENMODE )  && (MP >= tracklen))	//循迹长度
+	{	if(tracklen > 2500)
 			getCarPosition(&cardirection, &car_x, &car_y, 0);
-//			else
-//				getCarPosition(&cardirection, &car_x, &car_y, 1);
+		else 
+			getCarPosition(&cardirection, &car_x, &car_y, 1);
 		STOP();
-//		Host_Close_UpTrack();
-		MP = 0;
 		endAction();
 	}	
 
@@ -422,17 +416,18 @@ void Track_Correct()
         {
             LSpeed = Car_Spend + 50;
             RSpeed = Car_Spend - 90;
+
             Line_Flag = 0;
         }
         else if(gd == 0XFC) //4、中间2、1传感器检测到黑线，强右拐    1111 1100
         {
-            LSpeed = Car_Spend + 50;
+            LSpeed = Car_Spend + 90;
             RSpeed = Car_Spend - 120;
             Line_Flag = 0;
         }
         else if(gd == 0XFE) //5、最右边1传感器检测到黑线，再强右拐   1111 1110
         {
-            LSpeed = Car_Spend + 50;
+            LSpeed = Car_Spend + 120;
             RSpeed = Car_Spend - 150;
             Line_Flag = 1;
         }

@@ -1,4 +1,6 @@
 #include "task.h"
+#include "stdio.h"
+#include "string.h"
 #include "activity.h"
 #include "stm32f4xx.h"
 #include "delay.h"
@@ -14,45 +16,32 @@
 #include "ultrasonic.h"
 
 
-extern u8 G_Tab[6];	   //定义红外发射数组
-extern u8 flash;
-extern u8 S_Tab[];
 extern u8 C_Tab[];
 xyd TaskPot;
 TaskOption CarRunTask;
 DataBase dynamicInfo;
-
 struct Mailbox MailboxRe; //收信邮箱
-
-//u8 CP_SHOW1[6] = {0xFF, 0x20, 65, 66, 67, 68};
-//u8 CP_SHOW2[6] = {0xFF, 0x10, 69, 70, 71, 72}; //车牌显示
-//u8 DZ_CPF[8] = {0x55, 0x03, 0x10, 0x00, 0x00, 0x00, 0x10, 0xBB}; //车牌前三位（自己计算校验和发送）
-//u8 DZ_CPB[8] = {0x55, 0x03, 0x11, 0x00, 0x00, 0x00, 0x11, 0xBB}; //车牌后三位
-
 
 void RunTaskControl()//标志物数据收发控制
 {
-//    char data[10];
-
-    if(getActionState() == 0 && getNowPathVaule() == NOW_TASK && getRunState())
+    if(getActionState() == 0 && (getNowPathVaule() == NOW_TASK) && getRunState() && (CarRunTask.TaskEndPoint != 0))
     {
         if(isrun.TaskCarryOut == 1)
         {
-            setNowTask(TaskCar, DELAY, 1);
+            setNowTask(TaskCar, DELAY, 500);
         }
 		TaskMenu();
-        if(((CarRunTask.TaskBegPoint) >= CarRunTask.TaskEndPoint) && (getTaskState() == 0))	//如果任务完成则 +1	(getTaskState() == 0)     CarRunTask.TaskEndPoint!=0
-//        if(getTaskState() == 0)
+        if(((CarRunTask.TaskEndPoint) <= CarRunTask.TaskBegPoint) && (getTaskState() == 0) && (CarRunTask.TaskEndPoint != 0))	//如果任务完成则 +1	(getTaskState() == 0)     CarRunTask.TaskEndPoint!=0
 		{
             ++isRunControl.NowPot;
-//			PrintfDebug(CarRunTask.TaskBegPoint);
-//			PrintfDebug(CarRunTask.TaskEndPoint);
-			CarRunTask.TaskBegPoint=0;
-			CarRunTask.TaskEndPoint=0;
+//			Send_InfoData_To_Fifo((u8 *)"now pot is",sizeof("now pot is"));
+//			PrintfDebug(isRunControl.NowPot);
+			CarRunTask.TaskBegPoint = 0;
+			CarRunTask.TaskEndPoint = 0;
         }
     }
-    else if(getActionState() == 0 && getRunState())
-    {
+//    else if(getActionState() == 0 && getRunState())
+//    {
 //        if(NOW_TRAFFIC == getNowPathVaule()) //交通灯
 //        {
 //            if(isrun.TaskCarryOut == 0)
@@ -92,8 +81,7 @@ void RunTaskControl()//标志物数据收发控制
 //                ++isRunControl.NowPot;
 //            }
 //        }
-    }
-
+//    }
 }
 
 void TaskMenu()
@@ -120,7 +108,6 @@ void TaskMenu()
 
 u8 Task_Chooce(u8 taskchoose)
 {
-//    char data[30];
 	u16 Temp=0;
     if(getTaskState() == 1)return 0;
 	
@@ -129,8 +116,6 @@ u8 Task_Chooce(u8 taskchoose)
     {
 		case DELAY://延时
 			DelayTimerMS(CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]);//延时1秒钟
-//			delay_ms(500);
-//			++isRunControl.NowPot;
 			break;
 		case LED_L_OPEN://打开左转向灯
 			Set_tba_WheelLED(L_LED,1);
@@ -163,7 +148,7 @@ u8 Task_Chooce(u8 taskchoose)
 		case CMD_GETPOINT: //超声波测距
 			Temp=getCsbDis();
 			if(Temp<3000 || Temp<100)//设置小车距离检测位
-				dynamicInfo.distance=Temp; 
+				MailboxRe.ConfigInfo.distance = Temp; //dynamicInfo.distance=Temp; 
 			break;
 		case UPRIGHT:  //矫正当前点
 			delay_ms(50);
@@ -183,7 +168,7 @@ u8 Task_Chooce(u8 taskchoose)
     endTask();
     return 1;
 }
-#define CSBMAXTESTSUM 10   //最大的测试次数//用于超声波等最大20次
+#define CSBMAXTESTSUM 3   //最大的测试次数//用于超声波等最大20次
 
 u16 getCsbDis()//超声波探测距离
 {
@@ -221,10 +206,22 @@ u8 getNowTask(void)
 
 void InitDataBase()  //默认值
 {
+	u8 i=0;
     MailboxRe.ConfigInfo.distance = 220;			//超声波
-	MailboxRe.ConfigInfo.LightLevelNow =1;
-    MailboxRe.ConfigInfo.LightLevelTask = 2; 	//光源几档
+	MailboxRe.ConfigInfo.LightLevelNow =1;		//光源当前位置
+    MailboxRe.ConfigInfo.LightLevelTask = 3; 	//光源几档
     MailboxRe.ConfigInfo.carport = 3; 			//车库几层
+	
+	strcpy((char *)MailboxRe.PlateNumber, "ABCDEF");	//初始化车牌
+	MailboxRe.Graph_Sum_Shape[0] =0x01;   		//初始化颜色 
+	MailboxRe.Graph_Sum_Shape[1] =0X01; 		//初始化图形
+	MailboxRe.Graph_Sum_Shape[2] =0x03; 		//初始化个数
+	
+	
+	RFID_S50.RFID_Mode = SLEEP;	//设置不寻卡
+	RFID_S50.RFID_Read_Ok=0;
+	RFID_S50.RFID_Write_Ok=0;
+	RFID_S50.Area =1;	
 }
 
 

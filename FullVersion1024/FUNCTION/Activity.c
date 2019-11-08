@@ -10,7 +10,10 @@
 //寻卡时，卡有时候会摆设在中间挡住循迹
 //记录上一次的小车动作，进行二次判断
 //设置小车行走模式
-
+u8 Walk_Speed_Cut=0;
+u8 Walk_Speed_Up=0;
+u8 Wheel_Speed_Cut=0;
+u8 Wheel_Speed_Up=0;
 
 void Go_Test( u8 sp , u16 len) // 以50的速度前进
 {
@@ -83,8 +86,6 @@ void TrackingLamp_Test(u8 sp)
 
 void STOP(void)
 {
-	Roadway_Flag_clean();  //清除标志位
-	
 	TIM1->CCR1 = 100;
     TIM1->CCR2 = 100;
     TIM1->CCR3 = 100;
@@ -94,7 +95,9 @@ void STOP(void)
 	
 	TIM_Cmd(TIM9,DISABLE);
 	Send_UpMotor(0 , 0);
-	Roadway_mp_syn(); 	//同步码盘
+	delay_ms(50);				//消除惯性
+	Roadway_mp_syn(); 			//同步码盘
+	Roadway_Flag_clean(); 	 	//清除标志位
 }
 
 void Stop_Test(void)    //停止动作
@@ -125,6 +128,7 @@ void runControl(void)
     {	
         startAction();
         Car_Run(getNowPathVaule());
+//		Car_Run(DEBUG);
         isRunControl.NowPot++;
     }
     else 			//路线走完了
@@ -142,58 +146,48 @@ u8 Car_Run(u8 order)//行走函数
     switch(order)
     {
     case LEFT://左转
-		delay_ms(80);
         if(L_Flag == 0)
             Left_Test(TURNSPEED,NAV90);//左转
         break;
     case RIGHT://右转
-		delay_ms(80);
         if(R_Flag == 0)
             Right_Test(TURNSPEED,NAV90);//右转
         break;
     case GO://前进
-		delay_ms(50);
         if(G_Flag == 0)
             Go_Test(CARSPEED, getMPVaule());
         break;
     case BACK://后退
-		delay_ms(50);
         if(B_Flag == 0)
             Back_Test(CARSPEED, getMPVaule()); //后退
         break;
     case CNTONE://循迹第一个十字路口
         //如果有障碍 重新生成路线，break;
-		delay_ms(50);
         if(Track_Flag == 0){
             Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); //循迹一个路口
 				}
         break;
     case CNTTWO:
         //如果有障碍 重新生成路线，break;
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADTWO, ROADMODE); //循迹路循迹第二个十字路口
         break;
     case CNTTHREE:
         //如果有障碍 重新生成路线，break;
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADTHREE, ROADMODE); //循迹三个十字路口
         break;
     case CNTFOUR:
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADFOUR, ROADMODE); 
         break;
     case CNTFIVE:
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADFIVE, ROADMODE); 
         break;
 		
     case TRACKLENTH://循迹走mp
         //如果有障碍 重新生成路线，break;
-		delay_ms(50);
         if(Track_Flag == 0)
 //			 Track_Test(CARSPEED,*(t+taskindex),ZERO,LENMODE);
             Track_Test(CARSPEED, getMPVaule(), ZERO, LENMODE); 
@@ -201,62 +195,52 @@ u8 Car_Run(u8 order)//行走函数
 		
 //***********************************************************************************************//		
     case MIDHALF://循迹中等长度的一半
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, 70, ZERO, LENMODE); //循迹中等长度的一半
         break;
 		
 //***********************************************************************************************//			
     case TRACKBLACK://循迹循迹到一个路口准确停在黑线上
-		delay_ms(50);
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ZERO, BLACKMODE); //循迹循迹到一个路口准确停在黑线上
         break;
 		
     case TRAMP://自定义循迹走码盘值
-		delay_ms(50);
         if(Track_Flag == 0)
             trackLength(getRunMpValue(0, 0.5, 0, 0.5));
         break;
 		
     case MIDDLE_LONGISH: //循迹一半的长度x轴
-		delay_ms(50);
         if(Track_Flag == 0)
             trackLength(MAXHALFLEN);
         break;
 		
     case MIDDLE_SHORTE://循迹一半的长度y轴
-		delay_ms(50);
         if(Track_Flag == 0)
             trackLength(MIDHALFLEN);
         break;
 		
     case LEFT45://左转45度
-		delay_ms(80);
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV45);
         break;
 		
     case RIGHT45://右转45度
-		delay_ms(80);
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV45);
         break;
 		
     case LEFT180://左转180度
-		delay_ms(100);
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV180);
         break;
 		
     case RIGHT180://右转180度
-		delay_ms(100);
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV180);
         break;
 
     case RIGHTSMALL://右转前循迹一小段距离
-		delay_ms(50);
         if(G_Flag == 0)
 			Go_Test(50,RSMALLLEN);//右转前循迹一小段距离//老车18
 //            Track_Test(CARSPEED, RSMALLLEN, ZERO, LENMODE);
@@ -264,14 +248,12 @@ u8 Car_Run(u8 order)//行走函数
         break;
 
     case LEFTSMALL://左转前循迹一小段距离
-		delay_ms(50);
         if(G_Flag == 0)
 				 Go_Test(50,LSMALLLEN);//左转前的一小段距离//老车18
 //            Track_Test(CARSPEED, LSMALLLEN, ZERO, LENMODE);
         break;
 //***********************************************************************************************//		
     case GOCARBOYLEN:
-		delay_ms(100);
         if(G_Flag == 0)
             Go_Test(CARSPEED, getRunMpValue(2, 1, 0.5, 1.5)); //前进一小段
         break;
@@ -366,7 +348,6 @@ void runtimeInit() //初始化设置
 }
 void startAction(void) //启动一个动作
 {
-    Track_Flag = 0;
     isrun.actionsign = 1;
 }
 u8 getActionState(void)	//获取当前动作

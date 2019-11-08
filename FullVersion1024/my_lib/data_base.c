@@ -15,6 +15,7 @@ u8 C_Tab[10];	//返回状态数组
 u8 zig_send_door_Rev_flag = 0;	  //道闸打开标志位
 u8 zig_send_voice_Rev_flag = 0;   // 语音芯片状态返回
 struct RFID_Card RFID_S50;
+u8 M08;
 
 u8 getNEWTask() //设置多项任务
 {
@@ -23,23 +24,100 @@ u8 getNEWTask() //设置多项任务
 
     switch(NowTaskPot)  //2西，1北，0东，3南
     {
-    case 1 :
-		initTask(setVaule(1, 3, 1 ),  LEFT45, 0, 0, 1 );  //数码管开始计时
-        setNowTask(TaskCar, DELAY, 500);
+//    case 1 :
+//		initTask(setVaule(1, 3, 1 ),  LEFT45, 0, 0, 1 );  //数码管开始计时
+//        setNowTask(TaskCar, DELAY, 500);
+//		break;
+//	case 2 :
+//		initTask(setVaule(3, 3, 2 ), 0, 0, 0, 0 );  //道闸
+//		setNowTask(TaskCar, DELAY, 500);
+//		break;	
+//    case 3 :
+//		initTask(setVaule(3, 3, 1 ),  0, 0, 0, 0 );  //数码管开始计时
+//        setNowTask(TaskCar, DELAY, 500);
+//		break;
+//    case 4 :
+//		initTask(setVaule(3, 5, 2 ),  0, 0, 0, 0 );  //数码管开始计时
+//        setNowTask(TaskCar, DELAY, 500);
+//		break;	
+		
+		
+	case 1 :
+		RFID_S50.RFID_Mode=READ1;
+		RFID_S50.Area=1;
+		Walk_Speed_Cut=20;
+		SYN_TTS((u8 *)"任务开始");
+		initTask(setVaule(6, 5, 0 ),  0, 0, 0, 0 );  //数码管计时
+		setNowTask(TaskZigbee, CMD_ZG_SEG, OPEN_SEG);
 		break;
+	
 	case 2 :
-		initTask(setVaule(3, 3, 2 ), 0, 0, 0, 0 );  //道闸
-		setNowTask(TaskCar, DELAY, 500);
-		break;	
-    case 3 :
-		initTask(setVaule(3, 3, 1 ),  0, 0, 0, 0 );  //数码管开始计时
-        setNowTask(TaskCar, DELAY, 500);
+		initTask(setVaule(5, 3, 2 ), 0 , GO, 150, 1 );  //语音交互
+		setNowTask(TaskZigbee, CMD_VOICE, 0);
+//		setNowTask(TaskCar, DELAY, 500);
 		break;
-    case 4 :
-		initTask(setVaule(3, 5, 2 ),  0, 0, 0, 0 );  //数码管开始计时
-        setNowTask(TaskCar, DELAY, 500);
+	
+	case 3 :
+		initTask(setVaule(5, 1, 0 ), LEFT45 , 0, 0, 1 );  //二维码
+		setNowTask(TaskWifi, CMD_QR_READ, 0);
+//		setNowTask(TaskCar, DELAY, 500);
 		break;	
-//		
+
+	case 4 :
+		RFID_S50.RFID_Mode = SLEEP;//关闭寻卡
+		Walk_Speed_Cut=0;
+		initTask(setVaule(3, 1, 3 ), 0 , 0,0,0);  //车牌识别
+		setNowTask(TaskWifi, CMD_PLATE_READ, 0);
+		break;	
+
+	case 5 :
+		RFID_S50.RFID_Mode=READ1;
+		RFID_S50.Area=1;
+		Walk_Speed_Cut=20;		
+		initTask(setVaule(3, 1, 0 ), LEFT45 , GO, 150, 1 );  //立体显示
+		setNowTask(TaskHW, HW_PLATESHOW, RFID_S50.RFID_XYD);
+		break;
+
+	case 6 :
+		initTask(setVaule(3, 3, 1 ), RIGHT45 , 0, 0, 1 );  //烽火台 
+		setNowTask(TaskZigbee, CMD_ZG_SEG, SHOW2_SEG);
+		setNowTask(TaskHW, HW_OPENBJQ, 0);
+		break;
+
+	case 7 :
+		initTask(setVaule(3, 5, 1 ), 0 , GO, 200, 1 );  //路灯
+		setNowTask(TaskHW, HW_LIGHT, 3);
+		break;	
+	
+	case 8 :
+		RFID_S50.RFID_Mode = SLEEP;//关闭寻卡
+		Walk_Speed_Cut=0;
+		initTask(setVaule(3, 5, 0 ), 0 ,0 , 0, 0 ); // 道闸
+		setNowTask(TaskZigbee, CMD_ZG_DOOR, 0);				
+		break;
+	
+	case 9 :
+		initTask(setVaule(1, 5, 2 ), 0 ,0 , 500, 0 ); // 矫正
+		setNowTask(TaskCar, UPRIGHT, 0);
+		break;	
+	
+	case 10 :
+		initTask(setVaule(1, 5, 2 ), 0 ,0 ,0, 0 ); // 入库
+		setNowTask(TaskZigbee, CMD_GETPOINT1, 500);		
+		setNowTask(TaskZigbee, CMD_ZG_SEG, CLOSE_SEG);
+		break;
+
+    default :
+        NowTaskPot = 255;
+        break;
+    }
+	
+	return 1;
+}
+
+
+
+
 //    case 1 :
 //		initTask(setVaule(1, 0, 1 ),  0, 0, 0, 0 );  //数码管计时
 //		setNowTask(TaskZigbee, CMD_ZG_SEG, OPEN_SEG);
@@ -138,13 +216,5 @@ u8 getNEWTask() //设置多项任务
 //		RepeatedlySend_ZG(MAGLEV, 4, 10);
 //		send_SEG_data(CLOSE_SEG);	//关闭数码管
 //		break;
-	
-    default :
-        NowTaskPot = 255;
-        break;
-    }
-	
-	return 1;
-}
 
 

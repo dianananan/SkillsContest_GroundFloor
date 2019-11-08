@@ -117,7 +117,6 @@ void light_Self_Tes() //路灯的挡位检测
         light2 = Get_Bh_Value();		//测试光照强度 	Get_Bh_Value
         if(light1 > light2)
 		{
-//			if((i%4) == 0)
 			MailboxRe.ConfigInfo.LightLevelNow =(5-(i%4))%4; //读出现在的任务点
 			break;
 		}
@@ -147,8 +146,6 @@ u8 HW_Send_Dispose(u8 taskChoose)
 u8 HW_Send_Choose(u8 choose_task)
 {
 	u8 i;
-	u8 x=0;
-	u8 ll[6]={0,0,0,0,0,0};
 	startTask();
 	switch(choose_task)
 	{
@@ -174,55 +171,44 @@ u8 HW_Send_Choose(u8 choose_task)
 //						PrintValue(y);
 //			}
 ////--------------------------------------------------------//
-		
-		//按照题目调节挡位，手动给
-//			if(light >= ONE_SMALL && light <= ONE_BIG)
-//			{
-//				//判定为一档
-//				
-//				Infrared_Send(H_2,4);  //加2档
-//			}else
-//			if(light >= TWO_SMALL && light <= TWO_BIG)
-//			{
-//				//判定为二档
-//				
-//				Infrared_Send(H_1,4);//加1档
-//			}else
-//			if(light >= THREE_SMALL && (light <= THREE_BIG))
-//			{
-//				//Infrared_Send(H_1,4);
-//			}else
-//			if(light >= FOUR_SMALL && light <= FOUR_BIG)
-//			{
-
-//				Infrared_Send(H_3,4);//加3档
-//			}
-
-//			light_get();
-//		  break;
 		case HW_PLATESHOW://立体显示车牌
 			delay_ms(500);
-			for(x=0;x<2;x++)
-			{		
+			for(i=0;i<4;i++)	
+				CP_SHOW1[i+2]=MailboxRe.PlateNumber[i];
+			for(i=0;i<2;i++)
+				CP_SHOW2[i+2]=MailboxRe.PlateNumber[i+4];
+			if(CarRunTask.TaskVaule[CarRunTask.TaskEndPoint] > 0)	//有值时
+			{
+				CP_SHOW2[4]= getVauleX(CarRunTask.TaskVaule[CarRunTask.TaskEndPoint])+'A';	//坐标点
+				CP_SHOW2[5]= getVauleY(CarRunTask.TaskVaule[CarRunTask.TaskEndPoint])+'0';			
+			}
+			for(i=0;i<7;i++)
+			{
+				delay_ms(500);	//放置在前头也是为了等待车身稳定
 				Infrared_Send(CP_SHOW1,6);
-				delay_ms(400);
+				delay_ms(500);
 				Infrared_Send(CP_SHOW2,6);
-				delay_ms(400);
 			}
 			break;
 		
 		case HW_TYPESHOW://图形显示HW_TYPESHOW
-			CP_G1[3] =CarRunTask.TaskVaule[CarRunTask.TaskEndPoint];
+			CP_G1[3] = MailboxRe.Graph_Sum_Shape[1];
 			for(i = 0;i<3;i++)
 			{
 				delay_ms(500);
 				Infrared_Send(CP_G1,6);
 			}
-			delay_ms(1500);
+			delay_ms(500);
 		   break;
 		
 		case HW_HUESHOW ://颜色显示
-			Infrared_Send(CP_G1,6); delay_ms(5); 
+			CP_G2[3]= MailboxRe.Graph_Sum_Shape[0];
+			for(i=0;i<3;i++)
+			{
+				delay_ms(500);
+				Infrared_Send(CP_G2,6); 
+			}
+			delay_ms(500);
 		    break;
 		
 		case HW_LKSHOW ://路况显示
@@ -233,10 +219,6 @@ u8 HW_Send_Choose(u8 choose_task)
 			Infrared_Send(SD_MRXX,6);delay_ms(5);
 			break;	
 			
-//		case HW_TENNEL://隧道排风
-//			Infrared_Send(H_SD,4);delay_ms(5);
-//			break;
-			
 //		case HW_PICUP://图片上翻
 //			Infrared_Send(H_S,4);delay_ms(5);
 //			break;
@@ -246,11 +228,15 @@ u8 HW_Send_Choose(u8 choose_task)
 //			break;
 			
 		case HW_OPENBJQ://打开报警器
-			Infrared_Send( HW_K,6);delay_ms(100);
+			delay_ms(500);
+			Infrared_Send( HW_K,6);
+			delay_ms(500);
 			break;
 			
 		case HW_CLOSEBJQ://关闭报警器
-			Infrared_Send(HW_G,6);delay_ms(5);
+			delay_ms(500);
+			Infrared_Send(HW_G,6);
+			delay_ms(500);
 			break;
 			
 		case HW_DISSHOW :  //立体显示距离  cm厘米制
@@ -270,10 +256,6 @@ u8 HW_Send_Choose(u8 choose_task)
 	    endTask();	
 	return 1; 
 }
-
-
-
-
 
 
 u8 HD_BCDSwitch(u16 object)  //十六进制的BCD转码

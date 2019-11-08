@@ -3,12 +3,12 @@
 #include "Activity.h"
 #include "data_base.h"
 #include "canp_hostcom.h"
+#include "Init.h"
 
 #define MAXPOT 30
 
 const u8 inf = 0x3f;
 void *memset(void *, int, unsigned int);
-void delay_ms(u32);
 
 int min;
 u8 TempFind[MAXPOT];
@@ -92,6 +92,7 @@ void setTaskLimitGather(u8 *arr, u8  len)  //½ÓÊÕÒ»¶ÎÂ·¾¶×÷Îª±Ø¾­µã
 
 u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
 {
+	u8 i=0;
     Carx = car_x;
     Cary = car_y;
 
@@ -109,6 +110,9 @@ u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
 //    }
     TaskControl.isback = runback;   //ÊÇ·ñ»ØÍË
 
+    for(i = 0; i < MAXPATH; i++)			//Çå³ýÂ·ÏßÊý×é
+        isRunControl.PathGather[i] =0;
+	
     tasklinecount = 0;
     min = inf;  //inf=x03f
 
@@ -308,19 +312,12 @@ u8 JudgeIntersection(int i )   //ÅÐ¶ÏÕâ¸öµãÊÇ²»ÊÇÂ·¿Ú
 
 void lastLine()
 {
-    u8 Dirflag;
-//    tasklinecount--;//Ö®Ç°ÓÃµÄÊÇ++µ¼ÖÂ¶àÒ»¸ö0
-	taskDirectionDeal();
-//    Dirflag = taskDirectionDeal();//·½Ïò²»Í¬ÏÈ×ªÍä
-//    if(min > 1)
-//		ForwardMPFlag = (Dirflag == 0 ? 1 : 0); //²»ÐèÒªÇ°½øÒ»¶Î¾àÀëForwardMPFlagÎªÁã
-    //	//×îºóÒ»Ð¡¶ÎÂ·
-    //ÏÈ¹ÕÍäÔÙ×ß
+	taskDirectionDeal();	//·½Ïò²»Í¬ÏÈ×ªÍä
     if(TaskControl.TaskDir != 0)
     {
 		if(TaskControl.TaskDir == LEFT45)
 		{
-			if( ForwardMPFlag == 1)
+			if( ForwardMPFlag == 1)	//×îºóÒ»µãµÄ·½ÏòÇ°½øÓ°ÏìÏÂÒ»´ÎÂ·Ïß¹æ»®¿ªÊ¼
 			{
 				ForwardMPFlag = 0;
 				trackpath[tasklinecount++] = LEFTSMALL;
@@ -368,7 +365,7 @@ void lastLine()
             trackpath[tasklinecount++] = RIGHT45;
         }
     }
-    else		//²»»áÍË»á¼ÌÐø×ªÏòÖ±µ½90¶È
+    else		//²»»ØÍËÔò
     {
         if(TaskControl.TaskDir == RIGHT45)
         {
@@ -379,7 +376,6 @@ void lastLine()
             trackpath[tasklinecount++] = LEFT45;
         }
     }
-//    tasklinecount++;//ÏÖÔÚ tasklinecountÊÇÏÂ±êÖµÎªÁËÍ¬²½ºóÃæµÄ++
 }
 
 u8 taskDirectionDeal() //ÓÃ¸ø×îºóÒ»¸öÂ·¿ÚµÄÅÐ¶Ï
@@ -501,16 +497,17 @@ u8 getStep(u8 *x,u8 *y,u8 type) //Ê®×ÖÂ·¿ÚÅÐ¶Ï£¬ÒòÎªMPÖµÊÇµ½Ê®×ÖÂ·¿ÚÇåÁã
         step = 1;
     return step;
 }
-#define MINMP 3000
+#define MINMPS 500
+#define MINMPL 700
 void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ð¡³µµÄÊµ¼Ê×ø±ê
 {
     //    char data[10];
 //    u8 tx = car_x, ty = car_y;
     if(type == 0)//
     {
-        switch(*currentdirection)
+        switch(*currentdirection)//Ê®×ÖÂ·¿Ú
         {
-        case 0://Ê®×ÖÂ·¿Ú
+        case 0:
             car_x -= getStep(&car_x, &car_y, type);
             break;
         case 1:
@@ -533,42 +530,42 @@ void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ð¡³µµÄÊµ¼Ê×ø±
     }
     else if(type == 1) //Ñ­¼£×ßÂëÅÌÖµ
     {
-        switch(*currentdirection)
+        switch(*currentdirection)	//×óÓÒÎª³¤  ÉÏÏÂÎª¶Ì
         {
-        case 0:
-            if(MP > MINMP)car_x -= getStep(&car_x, &car_y, type);
-            break;
-        case 1:
-            if(MP > MINMP)car_y += getStep(&car_x, &car_y, type);
-            break;
-        case 2:
-            if(MP > MINMP)car_x += getStep(&car_x, &car_y, type);
-            break;
-        case 3:
-            if(MP > MINMP)car_y -= getStep(&car_x, &car_y, type);
-            break;
-        default:
-            break;
+			case 0:
+				if(MP > MINMPL)car_x -= getStep(&car_x, &car_y, type);
+				break;
+			case 1:
+				if(MP > MINMPS)car_y += getStep(&car_x, &car_y, type);
+				break;
+			case 2:
+				if(MP > MINMPL)car_x += getStep(&car_x, &car_y, type);
+				break;
+			case 3:
+				if(MP > MINMPS)car_y -= getStep(&car_x, &car_y, type);
+				break;
+			default:
+				break;
         }
     }
     else if(type == 3)//µ¹ÍË
     {
         switch(*currentdirection)
         {
-        case 0:
-            if(MP > MINMP)*x += 1;
-            break;
-        case 1:
-            if(MP > MINMP)*y -= 1;
-            break;
-        case 2:
-            if(MP > MINMP)*x -= 1;
-            break;
-        case 3:
-            if(MP > MINMP)*y += 1;
-            break;
-        default:
-            break;
+			case 0:
+				if(MP > MINMPL) *x += 1;
+				break;
+			case 1:
+				if(MP > MINMPS) *y -= 1;
+				break;
+			case 2:
+				if(MP > MINMPL) *x -= 1;
+				break;
+			case 3:
+				if(MP > MINMPS) *y += 1;
+				break;
+			default:
+				break;
         }
     }
 }

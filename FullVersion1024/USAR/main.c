@@ -58,7 +58,7 @@ void Hardware_Init()
 	UartA72_Init();
 	Can_check_Init(83,7);  //8us											//CAN总线定时器初始化
 	
-	roadway_check_TimInit(167,2000-1);//4ms 延时时间过短会妨碍can总线上的码盘和循迹灯	//路况检测
+	roadway_check_TimInit(167,1000-1);//4ms 延时时间过短会妨碍can总线上的码盘和循迹灯	//路况检测
 	
 	Timer_Init(167,999);										    //串行数据通讯时间帧
 	Readcard_daivce_Init();											//RFID初始化
@@ -66,8 +66,8 @@ void Hardware_Init()
 
 
 //uint8_t open_road_buf[] = {0x55,0x03,0x01,0x01,0x00,0x00,0x02,0xBB};			//道闸测试
-//uint8_t test_buf[] = {0xFD,0x00,0x06,0x01,0x01,0xC4,0xFA,0xBA,0xC3};			//语音播报“您好”
-//uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
+uint8_t test_buf[9] = {0xFD,0x00,0x06,0x01,0x00,0xBB,0xB6,0xD3,0xAD};			//语音播报“您好”   
+uint8_t repo_buf[] = {0x03,0x05,0x14,0x45,0xDE,0x92};							//打开红外报警
 
 	
 /**
@@ -76,36 +76,51 @@ void Hardware_Init()
 返 回 值：无
 */
 //uint16_t Light_Value = 4564;	
+u8 ASR_Buf[] ={0xFD,0x00,0x02,0x10,0x03};
+u8 R_ASR_Buf[9];
 void KEY_Check()
 {
 	if(S1==0){	
 		while(S1==0);
 		startRun();
-//		RFID_S50.RFID_Mode = READ;
+//		RFID_S50.RFID_Mode = READ1;
 //		Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); 
 //		TaskBoardTest(1);
 	}
 	if(S2==0){
 		while(S2==0);
-		RFID_S50.RFID_Mode = SLEEP;
-//		Send_ZigbeeData_To_Fifo(SMG_JSG, 8);
+		RFID_S50.RFID_Mode = READ1;
+//		PrintfDebug(isRunControl.NowPot);		//当前任务点
+//		RFID_S50.RFID_Mode = SLEEP;
 //		TaskBoardTest(2);
-//		Set_tba_Beep(1);DelayTimerMS(1200);Set_tba_Beep(0);
 	}
 	if(S3==0){
 		while(S3==0);
+		PrintfDebug(MailboxRe.PlateNumber[1]);
+//		SYN7318_Test();
 //		PrintfDebug(Get_Bh_Value());
 //		Send_WifiData_To_Fifo(ShapeRead, 8);
-		TaskBoardTest(3);
+//		TaskBoardTest(3);
 	}
 	if(S4==0){
 		while(S4==0);
 //		Send_WifiData_To_Fifo(TrafficLight, 8);
-		TaskBoardTest(4);
+//		TaskBoardTest(4);
 	}	
 }
 
-
+void RFID_Check()
+{
+	if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
+	{
+		Read_Card(RFID_S50.Area);
+		if(RFID_S50.RFID_Read_Ok == 1 && (RFID_S50.RFID_Mode == READ1 || RFID_S50.RFID_Mode == READ2))
+		{
+			RFID_S50.RFID_Read_Ok=0;
+			RFID_S50.RFID_Mode = SLEEP;
+		}
+	}
+}
 
 static uint32_t Power_check_times;		  //电量检测周期
 static uint32_t LED_twinkle_times;		  //LED闪烁周期
@@ -133,7 +148,7 @@ int main(void)
 	delay_ms(5);	//延时启动
 	STOP();
 	runtimeInit();  //初始化任务标志位
-	initStartCoord(1, 0, 1); //设置起始位置
+	initStartCoord(6, 5, 0); //设置起始位置
 //    xydInit(&passivity.TerrainPot, 5, 3, 1); //设置地形标物位置
 //    xydInit(&passivity.TrafficPot, 5, 4, 3); //设置交通灯标物位置G4
 //    xydInit(&passivity.ETCPot, 4, 3, 0); //设置ETC标物位置  E2
@@ -146,18 +161,7 @@ int main(void)
 	{
 		KEY_Check();//按键检测
         runControl();//路线行驶控制
-//============================================路线结束后会优先识别RFID卡再执行任务
-		if(RFID_S50.RFID_Mode != SLEEP)	//寻卡
-		{
-			Read_Card(RFID_S50.s);
-			if((RFID_S50.RFID_Read_Ok == 1 && RFID_S50.RFID_Mode == READ)
-				|| (RFID_S50.RFID_Write_Ok == 1 && RFID_S50.RFID_Mode == WRITE))
-			{
-				RFID_S50.RFID_Read_Ok=0;
-				RFID_S50.RFID_Mode = SLEEP;
-			}
-		}
-//==========================================		
+		RFID_Check();//RFID检测		
         RunTaskControl();
 		
 		Can_WifiRx_Check();
@@ -165,7 +169,7 @@ int main(void)
 
 		if(gt_get_sub(Power_check_times) == 0) 			
 		{
-			Power_check_times =  gt_get() + 1000;		//电池电量检测
+			Power_check_times =  gt_get() + 200;		//电池电量检测
 			Power_Check();		
 		} 
 //		

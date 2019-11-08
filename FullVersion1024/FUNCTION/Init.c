@@ -6,6 +6,8 @@
 #include "TaskZigbeeChannel.h"
 #include "task.h"
 
+
+u8 Sdata[6];
 //*************************kerlen******************************/
 void Send_USART_To_Fifo(u8 *array,u8 len) //发送串口信息
 {
@@ -17,29 +19,65 @@ void Send_USART_To_Fifo(u8 *array,u8 len) //发送串口信息
 void RFID_Funition(void)	//读卡时要执行的任务函数
 {
 	u8 i=0;
-	u16 sum=0;
+	int coding;
+	u8 Tdata[6],Cursor=0;
 	Send_InfoData_To_Fifo(RFID_S50.RXRFID,16);
 	delay_ms(100);
 	Send_InfoData_To_Fifo((u8*)"\n",2);
+	delay_ms(100);
 	
-	SendVoice((u8 *)"读卡成功",sizeof("读卡成功"));	//发送语音播报
-//	if(Carx==4)
-//		SendVoice((u8 *)"C2",sizeof("C2"));	//发送语音播报
-//	if(Carx==3)
-//		SendVoice((u8 *)"D2",sizeof("D2"));	//发送语音播报
-//	if(Carx==2)
-//		SendVoice((u8 *)"F2",sizeof("F2"));	//发送语音播报
-	
-//	for(i=0;i<16;i++)
-//	{
-//		if(RFIDCard_S50.RXRFID[i]%2 == 0)
-//		{
-//			sum+=RFIDCard_S50.RXRFID[i];
-//		}
-//	}
-//	MailboxRe.ConfigInfo.LightLevelTask=((sum)%4)+1;	//获取光源挡位的值
-}
+	if(RFID_S50.RFID_Mode == READ1)
+	{
+		MailboxRe.ConfigInfo.carport =(RFID_S50.RXRFID[0]%4)+1;
+	}
+	else if(RFID_S50.RFID_Mode == READ2)
+	{
+		getCarPosition(&cardirection, &car_x, &car_y, 1);				//更新坐标
+		PrintfDebug(car_x);
+		PrintfDebug(car_y);
+		RFID_S50.RFID_XYD = setVaule(car_x,car_y,cardirection)	;		//保存卡的位置
 
+		
+		//霍夫曼编码
+		for(i=0;i<4;i++)	//取值
+		{
+			coding = coding << 8;
+			coding = RFID_S50.RXRFID[i];
+		}
+		for(i=0;i<32;)	//取码
+		{
+			if(((coding<<i++) &0x8000) == 1)
+			{
+				if(((coding<<i++) &0x8000) == 1)
+					Tdata[Cursor++] ='B';		
+				else		
+					Tdata[Cursor++] ='H';
+			}
+			else 
+			{
+				if(((coding<<i++) &0x8000) == 1)
+				{
+					if(((coding<<i++) &0x8000) == 1)
+						Tdata[Cursor++] ='T';		
+					else		
+						Tdata[Cursor++] ='M';				
+				}
+				else		
+					Tdata[Cursor++] ='K';			
+			}
+			if(Cursor>=6)
+				break;
+		}
+		Sdata[0]=Tdata[0] + Tdata[1];
+		Sdata[1]=Tdata[2] - Tdata[3];
+		Sdata[2]=(Tdata[4] ^ Tdata[5]);
+		Sdata[5]=Tdata[5];
+		bubble_sort(Tdata,6,1);	//从小到大排序
+		Sdata[3]=Tdata[0];
+		Sdata[4]=Tdata[5];		
+	}	
+
+}
 
 //******************************math***********************/Upright_Flag
 
@@ -60,7 +98,7 @@ void ExtendArray(u8 *array, u8 Len ,u8 adr,u8 cont)
 	
 }
 
-void bubble_sort(u16 *arr, u8 len,u8 mode)  //冒泡排序  mode=1从小到大  mode=2从大到小
+void bubble_sort(u8 *arr, u8 len,u8 mode)  //冒泡排序  mode=1从小到大  mode=2从大到小
 {
     u8 i, j;
     u16 temp;
@@ -74,7 +112,8 @@ void bubble_sort(u16 *arr, u8 len,u8 mode)  //冒泡排序  mode=1从小到大  mode=2从
 				}
 			}
 }
-
+//取最大值/最小值
+//求同或/异或
 
 //**********************tool*********************************/
 void RepeatedlySend_ZG(u8 *array,u8 sum,u8 delay) //反复发送

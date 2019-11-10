@@ -263,26 +263,12 @@ void Wifi_Remote_Control () //wifi信号接收
 				case 0x03 ://自动路线
 //					wifi_send_QR_flag = 1;
 					break;
-//				case 0x04:
-//					STOP();
-//					break;
 				case 0x05 :
 					Wifi_Send_Dispose_hw(readBuf);		//接收红外信号
 					break;
 				case 0x06 :
 					Wifi_Send_Dispose_Car(readBuf); //元件命令
 					break;
-//				case 0x07 ://二维码任务点命令
-//					Send_ZigbeeData_To_Fifo(readBuf,8);
-//					wifi_send_QR_flag = 2;
-//					break;
-//				case 0x08 : //红绿灯
-//					TempArray[3] = (readBuf[3] + 1);	 //00/01/02
-////					JTD_END[6] =CheckSum(JTD_END,3);
-//					TempArray[6] =TempArray[3];
-//					PrintfDebug(TempArray[3]);
-//					wifi_send_HLLIGHT_flag = 1; //接收到信息
-//					break;
 //				case 0x09:
 //					switchBackinfo(readBuf[3]);
 //					break;
@@ -328,7 +314,7 @@ void Wifi_Remote_Control () //wifi信号接收
 					MailboxRe.Graph_Sum_Shape[2] = readBuf[5];//三角形个数
 					break;
 				
-				case 0x08 :	//红绿灯
+				case 0x05 :	//红绿灯
 					TempArray[3] = readBuf[3];
 					wifi_send_HLLIGHT_flag = 1; //接收到信息				
 					break;	
@@ -364,7 +350,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         startTask();
 		wifi_send_QR_flag = 0;
 		DelayTimerMS(3000); //等待摄像头矫正
-		WaitTimer_ms=gt_get()+1000;
+		WaitTimer_ms=gt_get()+3000;
         memset(Dispose_Data_array, 0, sizeof(Dispose_Data_array));
         Send_WifiData_To_Fifo(QRCode, 8); //trackpath[0]---》改为具体的缓冲区--数组 发送二维码指令
         return ;			//不执行其他任务的判断
@@ -372,7 +358,6 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
 
     if(Wifi_signal == CMD_QR_READ ) //pad=>car read qr finished小车识别二维码结束
     {
-
         if(wifi_send_QR_flag == 0)			//如果没有接收到上层发来的回传信息
         {
             if(gt_get_sub(WaitTimer_ms) == 0)
@@ -384,7 +369,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 else
                 {
                     Send_WifiData_To_Fifo(QRCode, 8); //重新发送
-                    WaitTimer_ms=gt_get()+1000;//重新计时
+                    WaitTimer_ms=gt_get()+3000;//重新计时
                 }
 				 ++WaitTimer_const; //累加
             }
@@ -405,7 +390,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         startTask();//有任务了
         wifi_send_PLATE_flag = 0; //wifi发送初始化
         DelayTimerMS(3000);
-		WaitTimer_ms=gt_get()+1000;
+		WaitTimer_ms=gt_get()+5000;
         Send_WifiData_To_Fifo(PlateRead, 8);
         return ;			//不执行其他任务的判断
     }
@@ -423,7 +408,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 else
                 {
                     Send_WifiData_To_Fifo(PlateRead, 8);
-                    WaitTimer_ms=gt_get()+1000;
+                    WaitTimer_ms=gt_get()+5000;
                 }
 				++WaitTimer_const;
             }
@@ -445,7 +430,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         startTask();//有任务了
 		wifi_send_SHAPE_flag = 0; //wifi发送初始化
         DelayTimerMS(3000);
-		WaitTimer_ms=gt_get()+1000;
+		WaitTimer_ms=gt_get()+5000;
         Send_WifiData_To_Fifo(ShapeRead, 8);
         return ;
     }
@@ -462,7 +447,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 else
                 {
                     Send_WifiData_To_Fifo(PlateRead, 8);
-                    WaitTimer_ms=gt_get()+1000;
+                    WaitTimer_ms=gt_get()+5000;
                 }
 				++WaitTimer_const;
             }
@@ -484,7 +469,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
         DelayTimerMS(3000);
         Send_ZigbeeData_To_Fifo(JTD_READ, 8); //发送红绿灯进入识别模式
 		delay_ms(600);
-		WaitTimer_ms=gt_get()+2000;
+		WaitTimer_ms=gt_get()+5000;
         Send_WifiData_To_Fifo(TrafficLight,8);//发送到达信号
         return ;
     }
@@ -501,7 +486,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                 else
                 {
                     Send_WifiData_To_Fifo(TrafficLight, 8);
-					WaitTimer_ms=gt_get()+2000;
+					WaitTimer_ms=gt_get()+5000;
                 }
 				++WaitTimer_const;
             }
@@ -520,7 +505,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
 	{
 		startTask();//有任务了
 		DelayTimerMS(3000);
-		WaitTimer_ms=gt_get()+2000;
+		WaitTimer_ms=gt_get()+5000;
 		RevisalProtocol(Pictures_Chose,3,CarRunTask.TaskVaule[CarRunTask.TaskEndPoint]);	//更改数组内容
 		Send_WifiData_To_Fifo(Pictures_Chose, 8); 
 		GraphChoose_Flag=((Pictures_Chose[3]<<4)&0xF0);
@@ -536,7 +521,7 @@ void Wifi_Send_Dispose(u8 Wifi_signal)
                     GraphChoose_Flag=1;
                 }
                 else
-					WaitTimer_ms=gt_get()+2000;	
+					WaitTimer_ms=gt_get()+5000;	
 				++WaitTimer_const;
 			}
 		}

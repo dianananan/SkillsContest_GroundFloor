@@ -90,7 +90,8 @@ void setTaskLimitGather(u8 *arr, u8  len)  //½ÓÊÕÒ»¶ÎÂ·¾¶×÷Îª±Ø¾­µã
     }
 }
 
-u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
+
+u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback, u8 Special)
 {
 	u8 i=0;
     Carx = car_x;
@@ -103,12 +104,10 @@ u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
     setTaskLimitPot();
 
     TaskControl.TaskDir = dir;
-    TaskControl.LastLineOption = LastOption;
-//    if(LastOption != 0)
-//    {
-        setMPVaule(mpvaule); //¸³Öµ¸øÁÙÊ±ÂëÅÌÖµ temp
-//    }
-    TaskControl.isback = runback;   //ÊÇ·ñ»ØÍË
+    TaskControl.LastLineOption = LastOption;	//ÊÇ·ñÇ°½ø
+	setMPVaule(mpvaule); 				//¸³Öµ¸øÁÙÊ±ÂëÅÌÖµ temp
+    TaskControl.isback = runback;		//ÊÇ·ñ»ØÍË
+	TaskControl.SpecialDispose =Special; //ÌØÊâ´¦Àíµã
 
     for(i = 0; i < MAXPATH; i++)			//Çå³ıÂ·ÏßÊı×é
         isRunControl.PathGather[i] =0;
@@ -143,9 +142,8 @@ u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback)
         return 1;
     }
 	else
-	{
 		Send_InfoData_To_Fifo((u8 *)"path planning error",sizeof("path planning error"));
-	}
+	
 }
 
 u8 judge[MAXLIMIT] = {0};
@@ -310,7 +308,7 @@ u8 JudgeIntersection(int i )   //ÅĞ¶ÏÕâ¸öµãÊÇ²»ÊÇÂ·¿Ú
     return 0;
 }
 
-void lastLine()
+void lastLine(void)		//×îºóÒ»µã´¦Àí
 {
 	taskDirectionDeal();	//·½Ïò²»Í¬ÏÈ×ªÍä
     if(TaskControl.TaskDir != 0)
@@ -410,7 +408,8 @@ u8 taskDirectionDeal() //ÓÃ¸ø×îºóÒ»¸öÂ·¿ÚµÄÅĞ¶Ï
             trackpath[tasklinecount++] = LEFT;
             trackpath[tasklinecount++] = LEFT;
         }
-		
+		if(TaskControl.SpecialDispose == REGRESSION)//×ªÍäµÄÊ±ºò£¬Èç¹ûÊ®ÌØÊâ´¦Àí½ÃÕıµÄ»°£¬½ÃÕı
+			trackpath[tasklinecount++] = REGRESSION;
         return 1;
     }
     else
@@ -486,22 +485,26 @@ u8 getStep(u8 *x,u8 *y,u8 type) //Ê®×ÖÂ·¿ÚÅĞ¶Ï£¬ÒòÎªMPÖµÊÇµ½Ê®×ÖÂ·¿ÚÇåÁã
     u8 step;
     if(type == 0)
     {
-        if((cardirection == 2 && (*y == 0 )) || (cardirection == 1 && (*y == 5))) //¾­¹ıÂ·¿ÚÎª¼ÓÒ»¸ö×ø±ê£¬·ñÔòÎª¼Ó2¸ö×ø±ê
-            step = 1;
-        else if(*x % 2 != 0 && *y % 2 != 0)
+//        if((cardirection == 2 && (*y == 0 )) || (cardirection == 1 && (*y == 5))) //¾­¹ıÂ·¿ÚÎª¼ÓÒ»¸ö×ø±ê£¬·ñÔòÎª¼Ó2¸ö×ø±ê
+//            step = 1;
+//        else if(*x % 2 != 0 && *y % 2 != 0)
+//            step = 2;
+//        else
+//            step = 1;
+        if(*x % 2 != 0 && *y % 2 != 0)		//Ç°Ò»µã²»ÎªÂ·¿ÚÔòÖ»¼ÓÒ»
             step = 2;
         else
-            step = 1;
+            step = 1;		
     }
     else
         step = 1;
     return step;
 }
-#define MINMPS 500
-#define MINMPL 700
+#define MINMPS 1000
+#define MINMPL 1400
 void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ğ¡³µµÄÊµ¼Ê×ø±ê
 {
-    //    char data[10];
+//    char data[10];
 //    u8 tx = car_x, ty = car_y;
     if(type == 0)//
     {
@@ -573,13 +576,11 @@ void getCarPosition(u8 *currentdirection, u8 *x, u8 *y, u8 type) //Ğ¡³µµÄÊµ¼Ê×ø±
 short int rotate = 0;//Ğ¡³µ×ó×ª45
 char getNewDirection(u8 type, u8 *current) //¼ÆËã×ª¶¯ºóµÄ·½Ïò
 {
-
     short  int  result = 0;
-
-    /*Á¬Ğø×ª¶¯µÄÊ±ºò²Å´¦Àí£¬Êµ¼Ê45¶ÈĞı×ªÓ¦¸ÃÒ²ÊÇÁ¬ĞøµÄ*/
-    //	Send_Debug_Info("re1\n",5);
-    //	PrintValue(rotate);
-    //	Send_Debug_Info("\n",2);
+/*Á¬Ğø×ª¶¯µÄÊ±ºò²Å´¦Àí£¬Êµ¼Ê45¶ÈĞı×ªÓ¦¸ÃÒ²ÊÇÁ¬ĞøµÄ*/
+//	Send_Debug_Info("re1\n",5);
+//	PrintValue(rotate);
+//	Send_Debug_Info("\n",2);
     switch(type)
     {
     case 0:

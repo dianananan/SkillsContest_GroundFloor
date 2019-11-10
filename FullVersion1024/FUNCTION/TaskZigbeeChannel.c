@@ -203,18 +203,34 @@ void Zig_Send_Dispose(u8 taskchoose)
 		{
 			startTask();
 			zig_send_CK_flag = 1;	
-			WaitTimer_ms=gt_get()+1000;
+			WaitTimer_ms=gt_get()+2000;
+			RepeatedlySend_ZG(LTCK_K[0],1,100);	//到第一层			
 		}
-		else if(zig_send_CK_flag == 1 ) //倒退
+		else if(zig_send_CK_flag == 1)//到第一层
+		{
+			if(Now_Plies == 1 && WaitTimer_const <= 12)
+			{
+//				endTask();
+				EndWaitTim();
+				zig_send_CK_flag = 2;
+			}
+			else if(gt_get_sub(WaitTimer_ms) == 0)
+			{
+				++WaitTimer_const;
+				WaitTimer_ms=gt_get()+2000;
+				Send_ZigbeeData_To_Fifo(LTCK_R,8);
+			}				
+		}
+		else if(zig_send_CK_flag == 2 ) //倒退
 		{
 			Back_Test(30,CarRunTask.TaskVaule[CarRunTask.TaskBegPoint]);
 			TACKZERO();
-			zig_send_CK_flag=2;	
+			zig_send_CK_flag=3;	
 			RepeatedlySend_ZG(LTCK_K[getNowGarage()-1],4,10);
 		}
-		if(zig_send_CK_flag == 2)	//入库
+		if(zig_send_CK_flag == 3)	//升库
 		{
-			if(Now_Plies ==getNowGarage() || WaitTimer_const>15)
+			if(Now_Plies ==getNowGarage() || WaitTimer_const>12)
 			{
 				endTask();
 				EndWaitTim();
@@ -223,8 +239,8 @@ void Zig_Send_Dispose(u8 taskchoose)
 			else if(gt_get_sub(WaitTimer_ms) == 0)
 			{
 				++WaitTimer_const;
-				WaitTimer_ms=gt_get()+1000;
-				RepeatedlySend_ZG(LTCK_R,4,10);
+				WaitTimer_ms=gt_get()+2000;
+				Send_ZigbeeData_To_Fifo(LTCK_R,8);
 			}			
 		}
     }

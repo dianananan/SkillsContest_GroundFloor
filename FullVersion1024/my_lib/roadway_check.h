@@ -3,7 +3,7 @@
 
 #include "stm32f4xx.h"
 
-#define CARSWITCH  0
+#define CARSWITCH  1
 #if CARSWITCH   //带A72平板
 	#define LeftMP1 800
 	#define RightMP1 900
@@ -11,8 +11,8 @@
 	#define Right_45_MP 480
 	#define LSWERVEMP180 1700
 	#define RSWERVEMP180 2100
-	#define LSMALLLEN	400			//向前走的一小段距离<当小车在空白处不能循迹走距离时>左
-	#define RSMALLLEN	400			//向前走的一小段距离<当小车在空白处不能循迹走距离时>右
+	#define LSMALLLEN	400			//左转前进码盘
+	#define RSMALLLEN	400			//右转前进码盘
 #else  	//不带A72平板
 	#define LeftMP1 800
 	#define RightMP1 900
@@ -33,6 +33,7 @@ extern u8 Upright_Flag;
 extern uint8_t wheel_Nav_Flag;
 extern uint8_t Track_Flag;	 
 extern u8 TrackingLamp_Flag; //地形标志物位置
+extern u8 Regression_Flag;		//矫正
 extern int Car_Spend;
 extern uint16_t temp_MP,MP,TraLen;  //行走长度
 extern uint16_t temp_Nav;
@@ -55,7 +56,9 @@ void wheel_Track_ANGLE(u8 angle,u16 max);
 void wheel_Track_check(void);
 void Go_and_Back_Check(void);
 void Set_UpTrack_Value(u8 mode); //设置红外灯返回值
+void Regression_check(void);
 
+void TrackingLamp_check(void);
 void Roadway_Check(void);
 void Roadway_Flag_clean(void);
 void Roadway_mp_syn(void);
@@ -64,7 +67,7 @@ uint16_t Roadway_mp_Get(void);
 u8 Countbits(u8 tstByte);
 
 void Control(int L_Spend,int R_Spend);
-void Track_Correct(void);
+void Track_Correct(int Left,int Right,u8 Mode);
 
 extern uint8_t Roadway_GoBack_Check(void);
 void roadway_check_TimInit(uint16_t arr,uint16_t psc);

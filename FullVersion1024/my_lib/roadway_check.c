@@ -14,6 +14,7 @@ u8 Upright_Flag=0;
 uint8_t Track_Flag = 0;
 uint8_t wheel_Nav_Flag = 0; 
 u8 TrackingLamp_Flag =0; //循迹的标志位
+u8 Regression_Flag =0;	//转弯矫正标志位
 
 uint8_t Line_Flag = 0;
 uint16_t count = 0;
@@ -164,6 +165,7 @@ void wheel_Track_check(void)
 void wheel_Track_ANGLE(u8 angle,u16 min)	//转弯角度
 {
 	gd=Get_Host_UpTrack(TRACK_H8);
+	gdg=Get_Host_UpTrack(TRACK_Q7);	
 	if(angle==NAV45 && MP>=min)
 	{
 		Wheel_flag=0;
@@ -181,13 +183,13 @@ void wheel_Track_ANGLE(u8 angle,u16 min)	//转弯角度
 	}
 	else if(angle==NAV90)
 	{
-		if(((!(gd &0X18))&& MP>=min-50 && (!(gd &0X18)))|| MP>min+50)
+		if(((!(gd &0X18))&& MP>=min-50 && (!(gdg &0X18)))|| MP>min+50)
 		{
 			if(Wheel_flag) 
 			{	
 				Wheel_flag=0;
 				Stop_Flag=2;
-	//			Host_Close_UpTrack();  // 关闭寻迹数据上传
+//				Host_Close_UpTrack();  // 关闭寻迹数据上传
 				if(L_Flag==1)
 				{
 					cardirection = getNewDirection(0,&cardirection);
@@ -284,7 +286,8 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)	//循迹检测
         }
     }
 	else if((state == LENMODE )  && (MP >= tracklen))	//循迹长度
-	{	if(tracklen > 2500)
+	{	
+		if(tracklen > 2100)
 			getCarPosition(&cardirection, &car_x, &car_y, 0);
 		else 
 			getCarPosition(&cardirection, &car_x, &car_y, 1);
@@ -299,45 +302,55 @@ void Track_Check(u16 tracklen, u8 roadSum, u8 state)	//循迹检测
     }
 	else 
 	{
-		Track_Correct();
+		Track_Correct(Car_Spend,Car_Spend,1);
 	}
 }
 
 
-void Roadway_Check(void)  
+void Roadway_Check(void)  //道路检测
 {
 	if(Track_Flag==ROADMODE||Track_Flag == BLACKMODE||Track_Flag==LENMODE)//
 	{
 		Set_UpTrack_Value(0);
 		Track_Check(TraLen,RodCnt,Track_Flag);	//循迹程序
 	}
-	if(TrackingLamp_Flag >= 1)	//走地形
-	{	
-		if(intocorner == 2 && TrackingLamp_Flag == 1) //走到了地形标志位上
-		{
-			if(MP >=1000)
-				getCarPosition(&cardirection, &car_x, &car_y, 0);
-			Roadway_mp_syn();MP=0;
-			TrackingLamp_Flag =2;
-			intocorner=0;
-		}
-		if(TrackingLamp_Flag ==2)
-		{
-			Set_UpTrack_Value(1);
-			Track_Check(1350,0,LENMODE);
-		}
-		else 
-		{
-			Set_UpTrack_Value(0);
-			Track_Check(0,1,ROADMODE);
-		}
-		Set_UpTrack_Value(1);
-	}	
-	Go_and_Back_Check();
+	TrackingLamp_check();  //地形
+	Go_and_Back_Check();	//前进
 	wheel_Track_check();  //转弯
+	Regression_check();	  //矫正
 }
 
+void TrackingLamp_check(void)	//地形检测
+{
+	
+}
 
+u8 GoOrBack=0;
+void Regression_check(void)		//矫正检测   说书人
+{
+	if(Regression_Flag >0)	//转弯矫正
+	{
+		Set_UpTrack_Value(0);
+		if((Roadway_mp_Get()) <= 500 && GoOrBack == 0)
+			Track_Correct(Car_Spend,Car_Spend,1);
+		else 
+			GoOrBack=1;
+		if(((Roadway_mp_Get()) >=500 || GoOrBack ==1) && Regression_Flag !=0)
+		{
+			if(light_flagF >2)	//后排退到十字路口停止
+			{
+				Roadway_mp_syn();
+				GoOrBack=0;
+				Regression_Flag--;
+				if(Regression_Flag == 0)//矫正最后一段
+					Go_Test(30, 500);	//go会结束最后的动作，所以矫正动作不需要结束
+				
+			}
+			else
+				Control(-Car_Spend,-Car_Spend);	
+		}
+	}	
+}
 	
 
 /***************************************************************
@@ -389,46 +402,67 @@ u8 Countbits(u8 tstByte)
     return nCount;
 }
 
-void Track_Correct()
+void Track_Correct(int Left,int Right,u8 Mode)	//循迹【速度控制
 {
-//	   	Stop_Flag=0;
-    if(gdg == 0X77 || (light_flagB >= 3) || ((gd == 0xE7 )/* && (Track_Flag != 0)*/)) //)//1、中间3/4传感器检测到黑线，全速运行
+	   	Stop_Flag=0;
+	if(gd==0xFF && gdg ==0x7F)   //循迹灯全亮 
+	{
+		if(count > 10)//走到白线上后  后退找回循迹线
+		{
+			if(count > (10+500)) //
+			{
+				count=0;
+				STOP();
+				if(Line_Flag ==0) 
+					Stop_Flag=4;
+			}
+			Control(-50,-50);
+			return ;
+		}	
+		else 
+			count++;				
+	}
+	else 
+		count=0;
+	
+	
+    if(gdg == 0X77 || (light_flagB >= 3) || (gd == 0xE7 ) || (gdg == 0x7F  && gd == 0xFF)) //)//1、中间3/4传感器检测到黑线，全速运行  全白则前进
     {
-        LSpeed = Car_Spend;
-        RSpeed = Car_Spend;
+        LSpeed = Left;
+        RSpeed = Right;
     }
 
     if(Line_Flag != 2)
     {
         if(gd == 0XF7 || gdg == 0X73) //后 1111 0111  后 ：x111 0011
         {
-            LSpeed = Car_Spend + 50;
-            RSpeed = Car_Spend - 50;
+            LSpeed = Left + 50;
+            RSpeed = 0;
             Line_Flag = 0;
         }
         else if(gd == 0XF3 || gd == 0XFB) //2、中间4、3传感器检测到黑线，微右拐 1111 0011    1111 1011
         {
-            LSpeed = Car_Spend + 50;
-            RSpeed = Car_Spend - 50;
+            LSpeed = Left + 50;
+            RSpeed = 0;
             Line_Flag = 0;
         }
         else if(gd == 0XF9 || gd == 0XFD) //3、中间3、2传感器检测到黑线，再微右拐1111 1001   1111 1101
         {
-            LSpeed = Car_Spend + 50;
-            RSpeed = Car_Spend - 90;
+            LSpeed = Left + 50;
+            RSpeed = Right - 90;
 
             Line_Flag = 0;
         }
         else if(gd == 0XFC) //4、中间2、1传感器检测到黑线，强右拐    1111 1100
         {
-            LSpeed = Car_Spend + 90;
-            RSpeed = Car_Spend - 120;
+            LSpeed = Left + 90;
+            RSpeed = Right - 120;
             Line_Flag = 0;
         }
         else if(gd == 0XFE) //5、最右边1传感器检测到黑线，再强右拐   1111 1110
         {
-            LSpeed = Car_Spend + 120;
-            RSpeed = Car_Spend - 150;
+            LSpeed = Left + 120;
+            RSpeed = Right - 150;
             Line_Flag = 1;
         }
     }
@@ -437,53 +471,44 @@ void Track_Correct()
     {
         if(gd == 0XEF || gdg == 0X67) //1110 1111 x110 0111
         {
-            RSpeed = Car_Spend + 50;
-            LSpeed = Car_Spend - 50;
+            RSpeed = Right + 50;
+            LSpeed = 0;
             Line_Flag = 0;
         }
         if(gd == 0XCF || gd == 0XDF) //6、中间6、5传感器检测到黑线，微左拐
         {
-            RSpeed = Car_Spend + 50;
-            LSpeed = Car_Spend - 50;
+            RSpeed = Right + 50;
+            LSpeed = 0;
             Line_Flag = 0;
         }
         else if(gd == 0X9F || gd == 0XBF) //7、中间7、6传感器检测到黑线，再微左拐
         {
-            RSpeed = Car_Spend + 50;
-            LSpeed = Car_Spend - 90;
+            RSpeed = Right + 50;
+            LSpeed = Left - 90;
             Line_Flag = 0;
             //tempMP = tempMP + 3;
         }
         else if(gd == 0X3F) //8、中间8、7传感器检测到黑线，强左拐
         {
-            RSpeed = Car_Spend + 90;
-            LSpeed = Car_Spend - 120;
+            RSpeed = Right + 90;
+            LSpeed = Left - 120;
             Line_Flag = 0;
         }
         else if(gd == 0X7F) //9、最左8传感器检测到黑线，再强左拐
         {
-            RSpeed = Car_Spend + 120;
-            LSpeed = Car_Spend - 150;
+            RSpeed = Right + 120;
+            LSpeed = Left - 150;
             Line_Flag = 2;
         }
     }
-	
-	if(gd==0xFF)   //循迹灯全亮
+	if(Mode == 1)
 	{
-		if(count > 500)
-		{
-			count=0;
-			STOP();
-			if(Line_Flag ==0) 
-				Stop_Flag=4;
-		}	
-		else 
-			count++;				
+		Control(LSpeed,RSpeed);
 	}
-	else 
-		count=0;
-	
-	Control(LSpeed,RSpeed);
+	else if(Mode == 0)		//反转码盘
+	{
+		Control(-RSpeed,-LSpeed);
+	}
 //	if(Track_Flag != 0)
 //	{
 //		Control(LSpeed,RSpeed);

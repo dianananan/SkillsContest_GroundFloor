@@ -172,6 +172,7 @@ u8 HW_Send_Choose(u8 choose_task)
 //			}
 ////--------------------------------------------------------//
 		case HW_PLATESHOW://立体显示车牌
+			
 			delay_ms(500);
 			for(i=0;i<4;i++)	
 				CP_SHOW1[i+2]=MailboxRe.PlateNumber[i];
@@ -182,6 +183,7 @@ u8 HW_Send_Choose(u8 choose_task)
 				CP_SHOW2[4]= getVauleX(CarRunTask.TaskVaule[CarRunTask.TaskEndPoint])+'A';	//坐标点
 				CP_SHOW2[5]= getVauleY(CarRunTask.TaskVaule[CarRunTask.TaskEndPoint])+'0';			
 			}
+			
 			for(i=0;i<7;i++)
 			{
 				delay_ms(500);	//放置在前头也是为了等待车身稳定

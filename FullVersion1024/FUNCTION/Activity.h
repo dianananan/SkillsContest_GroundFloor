@@ -31,13 +31,13 @@
 #define LEFTSMALL	0x13				//左转前循迹的一小段距离												
 #define RIGHTSMALL	0x14				//右转前循迹的一小段距离
 #define TRAMP		0x15				//自定义循迹走码盘值	
-#define STOPCAR		0x16				//小车停止
 #define MIDDLE_LONGISH 0x17				//走到中间（较长的那边）
 #define MIDDLE_SHORTE  0x18				//走到中间（较短的边）
 #define GO_TERRAIN	0x19 				//过地形标志物
 #define TRACK_LINE_SHORT 0x1A			//走一条边（短边）
 #define TRACK_LINE_LANG  0x1B			//(走一条边) （长边）
 #define DEBUG	0x1C					//debug
+#define REGRESSION 0x2C					//矫正
 
 
 
@@ -48,6 +48,7 @@
 //***************************************************************************
 #define TURNSPEED 	((80-Wheel_Speed_Cut)+Wheel_Speed_Up)	//转弯速度
 #define CARSPEED   	((50-Walk_Speed_Cut)+Walk_Speed_Up)	//跑的速度
+#define INERTANCE	50									//惯性消除
 //***************************************************************************
 #define MAXHALFLEN 	1150				//到达最长线一半的MP值
 #define MIDHALFLEN	1400				//到达中等长度一半的MP值
@@ -98,6 +99,7 @@ void Left_Test( u8 sp, u8 NAV) ;
 void Right_Test(u8 sp,u8 NAV);  // 以80的速度右转弯
 void Track_Test( u8 sp, u16 len, u8 cntrod, u8 state);  //循迹行走
 void TrackingLamp_Test(u8 sp);
+void TrackRegression_Test(u8 sp,u16 len,u8 sum);	//矫正
 void STOP(void);   //停止
 
 void runControl(void);

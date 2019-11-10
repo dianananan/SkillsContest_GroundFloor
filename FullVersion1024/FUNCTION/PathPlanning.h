@@ -36,8 +36,8 @@ struct LineNode
     xyd sexy[MAXLIMIT];     //任务必经点
     u8 TaskDir;     //任务方向 主要设置 45度 为了减少歧义 这里只能设置转45度 方向由前面的 xyd 控制
     u8 LastLineOption;  //最后一步的操作  是否走mp 前进还是后退
-	//u8 mpvaule 这里改为直接调用 run.c 里面的接口
-    u8 isback;	
+    u8 isback;
+	u8 SpecialDispose;		//特殊处理点
 };
 extern struct LineNode TaskControl;
 
@@ -70,7 +70,7 @@ u8 JudgeIntersection(int i );
 void walkIntersection(void);
 void dfs(u8 runxy,int n);
 u8 getStep(u8 *x,u8 *y,u8 type);
-u8 initTask(u8 target,u8 dir,u8 LastOption,u16 mpvaule,u8 runback);
+u8 initTask(u8 target, u8 dir, u8 LastOption, u16 mpvaule, u8 runback, u8 Special);
 u8 getMPvaule(void);
 u8 getNowTask(void);
 void setTaskLimitPot(void);

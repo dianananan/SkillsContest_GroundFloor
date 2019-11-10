@@ -31,7 +31,6 @@ void Back_Test(u8 sp , u16 len ) // 以50的速度后退
 	Roadway_mp_syn();MP=0;
     B_Flag = 1;
     Stop_Flag = 0;
-//    temp_MP = 0;
     temp_MP = len;
     Car_Spend = sp;
     Control(-Car_Spend, -Car_Spend);
@@ -58,7 +57,6 @@ void Right_Test(u8 sp,u8 NAV)  // 以80的速度右转弯
     Control(Car_Spend, -Car_Spend);
 }
 
-
 void Track_Test( u8 sp, u16 len, u8 cntrod, u8 state) // 已50的速度循迹路口
 {
 	Roadway_mp_syn();MP=0;
@@ -75,13 +73,22 @@ void Track_Test( u8 sp, u16 len, u8 cntrod, u8 state) // 已50的速度循迹路口
     TIM_Cmd(TIM9, ENABLE);
 }
 
-void TrackingLamp_Test(u8 sp)
+void TrackingLamp_Test(u8 sp)	//循迹地形标志物
 {
 	Roadway_mp_syn();MP=0;
 	TrackingLamp_Flag =1;
     intocorner = 0;
     Car_Spend = sp;
     Control(Car_Spend,Car_Spend);
+}
+
+void TrackRegression_Test(u8 sp,u16 len,u8 sum)	//矫正速度  矫正长度  矫正次数
+{
+	Roadway_mp_syn();MP=0;
+	Car_Spend = sp;
+	TraLen = len;
+	Regression_Flag =sum;
+	Control(Car_Spend,Car_Spend);
 }
 
 void STOP(void)
@@ -95,7 +102,6 @@ void STOP(void)
 	
 	TIM_Cmd(TIM9,DISABLE);
 	Send_UpMotor(0 , 0);
-	delay_ms(50);				//消除惯性
 	Roadway_mp_syn(); 			//同步码盘
 	Roadway_Flag_clean(); 	 	//清除标志位
 }
@@ -140,54 +146,60 @@ void runControl(void)
 
 u8 Car_Run(u8 order)//行走函数
 {
-    //	char data[10];
-    //	sprintf(data,"t = %d\n",order);
-    //	Send_Debug_Info(data,strlen(data));
     switch(order)
     {
     case LEFT://左转
+		delay_ms(INERTANCE);				//消除惯性
         if(L_Flag == 0)
             Left_Test(TURNSPEED,NAV90);//左转
         break;
     case RIGHT://右转
+		delay_ms(INERTANCE);	
         if(R_Flag == 0)
             Right_Test(TURNSPEED,NAV90);//右转
         break;
     case GO://前进
+		delay_ms(INERTANCE);	
         if(G_Flag == 0)
             Go_Test(CARSPEED, getMPVaule());
         break;
     case BACK://后退
+		delay_ms(INERTANCE);	
         if(B_Flag == 0)
             Back_Test(CARSPEED, getMPVaule()); //后退
         break;
     case CNTONE://循迹第一个十字路口
         //如果有障碍 重新生成路线，break;
-        if(Track_Flag == 0){
+		delay_ms(INERTANCE);	
+        if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADONE, ROADMODE); //循迹一个路口
-				}
         break;
     case CNTTWO:
         //如果有障碍 重新生成路线，break;
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADTWO, ROADMODE); //循迹路循迹第二个十字路口
         break;
     case CNTTHREE:
         //如果有障碍 重新生成路线，break;
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADTHREE, ROADMODE); //循迹三个十字路口
         break;
     case CNTFOUR:
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADFOUR, ROADMODE); 
         break;
     case CNTFIVE:
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ROADFIVE, ROADMODE); 
         break;
 		
     case TRACKLENTH://循迹走mp
         //如果有障碍 重新生成路线，break;
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
 //			 Track_Test(CARSPEED,*(t+taskindex),ZERO,LENMODE);
             Track_Test(CARSPEED, getMPVaule(), ZERO, LENMODE); 
@@ -195,52 +207,68 @@ u8 Car_Run(u8 order)//行走函数
 		
 //***********************************************************************************************//		
     case MIDHALF://循迹中等长度的一半
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, 70, ZERO, LENMODE); //循迹中等长度的一半
         break;
 		
 //***********************************************************************************************//			
     case TRACKBLACK://循迹循迹到一个路口准确停在黑线上
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             Track_Test(CARSPEED, ZERO, ZERO, BLACKMODE); //循迹循迹到一个路口准确停在黑线上
         break;
 		
     case TRAMP://自定义循迹走码盘值
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             trackLength(getRunMpValue(0, 0.5, 0, 0.5));
         break;
 		
     case MIDDLE_LONGISH: //循迹一半的长度x轴
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             trackLength(MAXHALFLEN);
         break;
 		
     case MIDDLE_SHORTE://循迹一半的长度y轴
+		delay_ms(INERTANCE);	
         if(Track_Flag == 0)
             trackLength(MIDHALFLEN);
         break;
 		
     case LEFT45://左转45度
+		delay_ms(INERTANCE);	
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV45);
         break;
 		
     case RIGHT45://右转45度
+		delay_ms(INERTANCE);	
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV45);
         break;
 		
     case LEFT180://左转180度
+		delay_ms(INERTANCE);	
         if(wheel_Nav_Flag == 0)
             Left_Test(80,NAV180);
         break;
 		
     case RIGHT180://右转180度
+		delay_ms(INERTANCE);	
         if(wheel_Nav_Flag == 0)
             Right_Test(80,NAV180);
         break;
 
+	case REGRESSION:	//矫正
+		delay_ms(INERTANCE);
+		if(Regression_Flag ==0)
+			TrackRegression_Test(30, 400,2);
+		break;
+		
     case RIGHTSMALL://右转前循迹一小段距离
+		delay_ms(INERTANCE);	
         if(G_Flag == 0)
 			Go_Test(50,RSMALLLEN);//右转前循迹一小段距离//老车18
 //            Track_Test(CARSPEED, RSMALLLEN, ZERO, LENMODE);
@@ -248,31 +276,31 @@ u8 Car_Run(u8 order)//行走函数
         break;
 
     case LEFTSMALL://左转前循迹一小段距离
+		delay_ms(INERTANCE);	
         if(G_Flag == 0)
 				 Go_Test(50,LSMALLLEN);//左转前的一小段距离//老车18
 //            Track_Test(CARSPEED, LSMALLLEN, ZERO, LENMODE);
         break;
 //***********************************************************************************************//		
     case GOCARBOYLEN:
+		delay_ms(INERTANCE);	
         if(G_Flag == 0)
             Go_Test(CARSPEED, getRunMpValue(2, 1, 0.5, 1.5)); //前进一小段
         break;
 //***********************************************************************************************//				
-    case STOPCAR:
-        Stop_Test();
-        break;
     case GO_TERRAIN:
+		delay_ms(INERTANCE);	
 		TrackingLamp_Test(CARSPEED);
 		break;
 //        Track_Test(CARSPEED, ZERO, ZERO, TRACKTERRAIN); //走地形标志物
 //        delay_ms(50);
 //        break;
-//	case TRACK_LINE_SHORT:
-//		Track_Test(CARSPEED, MP_LINE_SHORT, ZERO, LENMODE); //走地形标志物
-//		break;
-//	case TRACK_LINE_LANG:
-//		Track_Test(CARSPEED, MP_LINE_LANG, ZERO, LENMODE); //走地形标志物
-//		break;
+	case TRACK_LINE_SHORT:
+		Track_Test(CARSPEED, MP_LINE_SHORT, ZERO, LENMODE); //走地形标志物
+		break;
+	case TRACK_LINE_LANG:
+		Track_Test(CARSPEED, MP_LINE_LANG, ZERO, LENMODE); //走地形标志物
+		break;
 	case DEBUG:
 		endAction();
 		break;

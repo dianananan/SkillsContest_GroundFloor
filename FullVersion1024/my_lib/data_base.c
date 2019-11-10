@@ -19,7 +19,6 @@ u8 M08;
 
 u8 getNEWTask() //设置多项任务
 {
-	u16 M05;
     NowTaskPot++;
 
     switch(NowTaskPot)  //2西，1北，0东，3南
@@ -43,22 +42,22 @@ u8 getNEWTask() //设置多项任务
 		
 		
 	case 1 :
-		RFID_S50.RFID_Mode=READ1;
-		RFID_S50.Area=1;
-		Walk_Speed_Cut=20;
 		SYN_TTS((u8 *)"任务开始");
-		initTask(setVaule(6, 5, 0 ),  0, 0, 0, 0 );  //数码管计时
+		initTask(setVaule(6, 5, 0 ),  0, 0, 0, 0 , 0);  //数码管计时
 		setNowTask(TaskZigbee, CMD_ZG_SEG, OPEN_SEG);
 		break;
 	
 	case 2 :
-		initTask(setVaule(5, 3, 2 ), 0 , GO, 150, 1 );  //语音交互
+		RFID_S50.RFID_Mode=READ1;
+		RFID_S50.Area=1;
+		Walk_Speed_Cut=20;			
+		initTask(setVaule(5, 3, 2 ), 0 , GO, 150, 1 ,REGRESSION);  //语音交互
 		setNowTask(TaskZigbee, CMD_VOICE, 0);
 //		setNowTask(TaskCar, DELAY, 500);
 		break;
 	
 	case 3 :
-		initTask(setVaule(5, 1, 0 ), LEFT45 , 0, 0, 1 );  //二维码
+		initTask(setVaule(5, 1, 0 ), LEFT45 , 0, 0, 1 ,REGRESSION);  //二维码
 		setNowTask(TaskWifi, CMD_QR_READ, 0);
 //		setNowTask(TaskCar, DELAY, 500);
 		break;	
@@ -66,7 +65,7 @@ u8 getNEWTask() //设置多项任务
 	case 4 :
 		RFID_S50.RFID_Mode = SLEEP;//关闭寻卡
 		Walk_Speed_Cut=0;
-		initTask(setVaule(3, 1, 3 ), 0 , 0,0,0);  //车牌识别
+		initTask(setVaule(3, 1, 3 ), 0 , 0, 0 , 0 ,REGRESSION);  //车牌识别
 		setNowTask(TaskWifi, CMD_PLATE_READ, 0);
 		break;	
 
@@ -74,35 +73,36 @@ u8 getNEWTask() //设置多项任务
 		RFID_S50.RFID_Mode=READ1;
 		RFID_S50.Area=1;
 		Walk_Speed_Cut=20;		
-		initTask(setVaule(3, 1, 0 ), LEFT45 , GO, 150, 1 );  //立体显示
+		initTask(setVaule(3, 1, 0 ), LEFT45 , 0, 0, 0 ,0);  //立体显示
 		setNowTask(TaskHW, HW_PLATESHOW, RFID_S50.RFID_XYD);
 		break;
 
 	case 6 :
-		initTask(setVaule(3, 3, 1 ), RIGHT45 , 0, 0, 1 );  //烽火台 
+		initTask(setVaule(3, 3, 1 ), RIGHT45 , 0, 0, 1 ,REGRESSION);  //烽火台 
 		setNowTask(TaskZigbee, CMD_ZG_SEG, SHOW2_SEG);
 		setNowTask(TaskHW, HW_OPENBJQ, 0);
 		break;
 
 	case 7 :
-		initTask(setVaule(3, 5, 1 ), 0 , GO, 200, 1 );  //路灯
+		initTask(setVaule(3, 5, 1 ), 0 , GO, 200, 1 ,0);  //路灯
 		setNowTask(TaskHW, HW_LIGHT, 3);
 		break;	
 	
 	case 8 :
 		RFID_S50.RFID_Mode = SLEEP;//关闭寻卡
 		Walk_Speed_Cut=0;
-		initTask(setVaule(3, 5, 0 ), 0 ,0 , 0, 0 ); // 道闸
+		initTask(setVaule(3, 5, 0 ), 0 ,0 , 0, 0 ,0); // 道闸
 		setNowTask(TaskZigbee, CMD_ZG_DOOR, 0);				
 		break;
 	
 	case 9 :
-		initTask(setVaule(1, 5, 2 ), 0 ,0 , 500, 0 ); // 矫正
+		initTask(setVaule(1, 5, 2 ), 0 ,0 , 500, 0 ,0); // 矫正
 		setNowTask(TaskCar, UPRIGHT, 0);
 		break;	
 	
 	case 10 :
-		initTask(setVaule(1, 5, 2 ), 0 ,0 ,0, 0 ); // 入库
+		PrintfDebug(2);
+		initTask(setVaule(1, 5, 2 ), 0 ,0 ,0, 0 ,0); // 入库
 		setNowTask(TaskZigbee, CMD_GETPOINT1, 500);		
 		setNowTask(TaskZigbee, CMD_ZG_SEG, CLOSE_SEG);
 		break;

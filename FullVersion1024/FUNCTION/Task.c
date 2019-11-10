@@ -206,7 +206,6 @@ u8 getNowTask(void)
 
 void InitDataBase()  //默认值
 {
-	u8 i=0;
     MailboxRe.ConfigInfo.distance = 220;			//超声波
 	MailboxRe.ConfigInfo.LightLevelNow =1;		//光源当前位置
     MailboxRe.ConfigInfo.LightLevelTask = 3; 	//光源几档

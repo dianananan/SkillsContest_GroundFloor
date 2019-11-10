@@ -63,7 +63,6 @@ void Can_WifiRx_Save(uint8_t res)
 	{
 		if(Wifi_Rx_num>=8)//在规定的时间里接收数据
 		{
-			Send_ZigbeeData_To_Fifo(Tail->StackData,8);
 			Tail=Tail->Next;
 			Wifi_Rx_flag++;
 			Wifi_Rx_num=0;
@@ -347,7 +346,6 @@ void Can_ZigBeeRx_Save(uint8_t res)
 			Zigbee_Rx_flag = 1;
 		} 
 	} */
-	
 	if(Zigbee_Rx_num >0)
 	{
 	   Zigb_Rx_Buf[Zigbee_Rx_num]=res;
@@ -357,7 +355,7 @@ void Can_ZigBeeRx_Save(uint8_t res)
 	{
 	   Zigb_Rx_Buf[0]=res;
 	   Zigbee_Rx_num=1;
-	   canu_zibe_rxtime = gt_get()+10;	
+	   canu_zibe_rxtime = gt_get()+5;	
 	}
 	else Zigbee_Rx_num =0;
 	

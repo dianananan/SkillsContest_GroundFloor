@@ -96,7 +96,7 @@ void KEY_Check()
 	}
 	if(S3==0){
 		while(S3==0);
-		PrintfDebug(MailboxRe.PlateNumber[1]);
+		Send_ZigbeeData_To_Fifo(LTCK_R,8);
 //		SYN7318_Test();
 //		PrintfDebug(Get_Bh_Value());
 //		Send_WifiData_To_Fifo(ShapeRead, 8);
@@ -104,6 +104,7 @@ void KEY_Check()
 	}
 	if(S4==0){
 		while(S4==0);
+		Send_ZigbeeData_To_Fifo(DZ_R,8);
 //		Send_WifiData_To_Fifo(TrafficLight, 8);
 //		TaskBoardTest(4);
 	}	
@@ -149,6 +150,7 @@ int main(void)
 	STOP();
 	runtimeInit();  //初始化任务标志位
 	initStartCoord(6, 5, 0); //设置起始位置
+//	initStartCoord(1, 5, 2 );
 //    xydInit(&passivity.TerrainPot, 5, 3, 1); //设置地形标物位置
 //    xydInit(&passivity.TrafficPot, 5, 4, 3); //设置交通灯标物位置G4
 //    xydInit(&passivity.ETCPot, 4, 3, 0); //设置ETC标物位置  E2
